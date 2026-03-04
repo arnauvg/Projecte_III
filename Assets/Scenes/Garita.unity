@@ -253,11 +253,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b35f57f2d2bdd0d4fbec3391ddf6d741, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.003
+      value: 0.004
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b35f57f2d2bdd0d4fbec3391ddf6d741, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.769
+      value: 4.176
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b35f57f2d2bdd0d4fbec3391ddf6d741, type: 3}
       propertyPath: m_LocalRotation.w
@@ -849,6 +849,7 @@ GameObject:
   - component: {fileID: 959373508}
   - component: {fileID: 959373511}
   - component: {fileID: 959373512}
+  - component: {fileID: 959373513}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -987,50 +988,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 200
---- !u!1 &1113411594
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1113411596}
-  - component: {fileID: 1113411595}
-  m_Layer: 0
-  m_Name: CustomCursor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1113411595
+--- !u!114 &959373513
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1113411594}
+  m_GameObject: {fileID: 959373507}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a343cef11c6a074fb1c0a8f2ffea5a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1113411596
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1113411594}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.434892, y: 1.406151, z: 4.4426484}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  cursorTexture: {fileID: 2800000, guid: f6937f799a710de4b8b2e9caaa7cf8c8, type: 3}
+  hotspot: {x: 0, y: 0}
 --- !u!1 &1125662008
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,35 +1272,14 @@ GameObject:
   - component: {fileID: 1659184477}
   - component: {fileID: 1659184476}
   - component: {fileID: 1659184475}
-  - component: {fileID: 1659184474}
+  - component: {fileID: 1659184478}
   m_Layer: 0
-  m_Name: Pared 1 (3)
+  m_Name: Mesa
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &1659184474
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1659184473}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1659184475
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1398,6 +1348,27 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1135410937}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!65 &1659184478
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1659184473}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.0000002, z: 1.0000001}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1679604918
 GameObject:
   m_ObjectHideFlags: 0
@@ -2130,7 +2101,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 959373510}
-  - {fileID: 1113411596}
   - {fileID: 1883778582}
   - {fileID: 1135410937}
   - {fileID: 75899097}
