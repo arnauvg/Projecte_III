@@ -7,6 +7,8 @@ public class CustomCursor : MonoBehaviour
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
         Cursor.SetCursor(cursorTexture, hotspot, CursorMode.Auto);
     }
 }

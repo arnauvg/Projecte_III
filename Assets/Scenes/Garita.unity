@@ -1305,7 +1305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81504b661caf4fb47979743ec5b985fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickDistance: 4
+  pickDistance: 6
   moveSpeed: 10
 --- !u!1001 &1025155775
 PrefabInstance:
