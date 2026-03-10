@@ -11,10 +11,18 @@ public class PickUpObject : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             if (heldObject == null)
                 TryPickUp();
             else
                 Drop();
+        if (Physics.Raycast(ray, out RaycastHit hit, 4f))
+        {
+            if (hit.rigidbody != null)
+            {
+                Debug.Log("Objeto detectado");
+            }
+        }
         }
 
         if (heldObject != null)

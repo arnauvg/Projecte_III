@@ -1,16 +1,11 @@
 using UnityEngine;
 
-public class CameraMouseLook : MonoBehaviour
+public class MouseLook360 : MonoBehaviour
 {
     public float mouseSensitivity = 200f;
 
     float xRotation = 0f;
     float yRotation = 0f;
-
-    void Start()
-    {
-        
-    }
 
     void Update()
     {
