@@ -22,6 +22,7 @@ public class VisitanteSimple : MonoBehaviour
     private Vector3 escalaOriginal;
     private bool enMovimiento = false;
     private bool enEscena = false;
+    public Transform puntoEntradaEdificio;
 
     void Start()
     {
@@ -92,9 +93,10 @@ public class VisitanteSimple : MonoBehaviour
     public void Aceptar()
     {
         if (!enCentro) return;
-        StartCoroutine(Salir(true));
+        destinoActual = puntoEntradaEdificio.position;
+        enCentro = false;
     }
-
+        
     public void Rechazar()
     {
         if (!enCentro) return;
