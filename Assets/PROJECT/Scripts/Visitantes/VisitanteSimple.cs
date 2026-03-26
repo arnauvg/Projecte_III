@@ -93,10 +93,18 @@ public class VisitanteSimple : MonoBehaviour
     public void Aceptar()
     {
         if (!enCentro) return;
+
+        if (puntoEntradaEdificio == null)
+        {
+            Debug.LogError("puntoEntradaEdificio no asignado");
+            return;
+        }
+
         destinoActual = puntoEntradaEdificio.position;
+        posicionOriginal = transform.position;
         enCentro = false;
+        enMovimiento = true;
     }
-        
     public void Rechazar()
     {
         if (!enCentro) return;
