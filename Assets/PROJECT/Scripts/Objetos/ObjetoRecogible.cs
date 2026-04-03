@@ -10,7 +10,7 @@ public class ObjetoRecogible : Interactuable
 
     void Start()
     {
-        // Guardar posición y rotación original
+        // Guardar posiciï¿½n y rotaciï¿½n original
         posicionOriginal = transform.position;
         rotacionOriginal = transform.rotation;
         rb = GetComponent<Rigidbody>();
@@ -18,10 +18,10 @@ public class ObjetoRecogible : Interactuable
         if (rb == null)
             rb = gameObject.AddComponent<Rigidbody>();
 
-        // Crear punto donde se colocará el objeto en la mano (derecha)
+        // Crear punto donde se colocarï¿½ el objeto en la mano (derecha)
         GameObject punto = new GameObject("PuntoSujecion");
         punto.transform.SetParent(Camera.main.transform);
-        punto.transform.localPosition = new Vector3(0.5f, -0.2f, 0.8f);
+        punto.transform.localPosition = new Vector3(0f, 0f, 1.2f);
         puntoDeSujecion = punto.transform;
     }
 
@@ -51,7 +51,7 @@ public class ObjetoRecogible : Interactuable
             }
             else
             {
-                // Si no hay superficie, soltar delante de la cámara
+                // Si no hay superficie, soltar delante de la cï¿½mara
                 transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2f;
             }
 
@@ -69,7 +69,7 @@ public class ObjetoRecogible : Interactuable
     {
         if (estaRecogido)
         {
-            // Mover objeto suavemente al punto de sujeción
+            // Mover objeto suavemente al punto de sujeciï¿½n
             transform.position = Vector3.Lerp(transform.position, puntoDeSujecion.position, Time.deltaTime * 15f);
             transform.rotation = Quaternion.Lerp(transform.rotation, puntoDeSujecion.rotation, Time.deltaTime * 15f);
         }
