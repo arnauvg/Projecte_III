@@ -10,7 +10,7 @@ public class Telefono : Interactuable
 
     void Start()
     {
-        // Guardar posición y rotación original
+        // Guardar posiciï¿½n y rotaciï¿½n original
         posicionOriginal = transform.position;
         rotacionOriginal = transform.rotation;
 
@@ -21,10 +21,10 @@ public class Telefono : Interactuable
             rb = gameObject.AddComponent<Rigidbody>();
         }
 
-        // Crear punto donde se colocará el teléfono al hablar (LADO IZQUIERDO)
+        // Crear punto donde se colocarï¿½ el telï¿½fono al hablar (LADO IZQUIERDO)
         GameObject punto = new GameObject("PuntoTelefono");
         punto.transform.SetParent(Camera.main.transform);
-        punto.transform.localPosition = new Vector3(-0.35f, -0.1f, 0.5f);
+        punto.transform.localPosition = new Vector3(0f, 0f, 1.2f);
         punto.transform.localRotation = Quaternion.Euler(15f, 30f, 0f);
         puntoTelefono = punto.transform;
     }
@@ -45,7 +45,7 @@ public class Telefono : Interactuable
     {
         if (estaEnMano)
         {
-            // Volver a posición original
+            // Volver a posiciï¿½n original
             transform.position = posicionOriginal;
             transform.rotation = rotacionOriginal;
             estaEnMano = false;
@@ -62,7 +62,7 @@ public class Telefono : Interactuable
     {
         if (estaEnMano)
         {
-            // Mover suavemente al punto del teléfono
+            // Mover suavemente al punto del telï¿½fono
             transform.position = Vector3.Lerp(transform.position, puntoTelefono.position, Time.deltaTime * 15f);
             transform.rotation = Quaternion.Lerp(transform.rotation, puntoTelefono.rotation, Time.deltaTime * 15f);
         }
