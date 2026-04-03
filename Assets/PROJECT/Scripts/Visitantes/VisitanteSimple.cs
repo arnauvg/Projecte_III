@@ -56,7 +56,7 @@ public class VisitanteSimple : MonoBehaviour
             }
             else
             {
-                // Llegó al destino
+                // Llegï¿½ al destino
                 enMovimiento = false;
                 enCentro = true;
                 transform.position = new Vector3(
@@ -64,7 +64,7 @@ public class VisitanteSimple : MonoBehaviour
                     posicionOriginal.y,
                     transform.position.z
                 );
-                Debug.Log("Visitante llegó al centro");
+                Debug.Log("Visitante llegï¿½ al centro");
             }
         }
     }
@@ -108,7 +108,16 @@ public class VisitanteSimple : MonoBehaviour
     public void Rechazar()
     {
         if (!enCentro) return;
-        StartCoroutine(Salir(false));
+         if (puntoEntrada == null)
+        {
+            Debug.LogError("puntosalida no asignado");
+            return;
+        }
+
+        destinoActual = puntoEntrada.position;
+        posicionOriginal = transform.position;
+        enCentro = false;
+        enMovimiento = true;
     }
 
     IEnumerator Salir(bool haciaDerecha)
@@ -116,7 +125,7 @@ public class VisitanteSimple : MonoBehaviour
         enCentro = false;
         float destinoX = haciaDerecha ? puntoCentro.position.x + 12f : puntoCentro.position.x - 12f;
 
-        // Rebote de despedida rápido
+        // Rebote de despedida rï¿½pido
         float tiempoDespedida = 0f;
         Vector3 posInicial = transform.position;
 
@@ -156,6 +165,6 @@ public class VisitanteSimple : MonoBehaviour
 
         enEscena = false;
         gameObject.SetActive(false);
-        Debug.Log("Visitante salió");
+        Debug.Log("Visitante saliï¿½");
     }
 }
