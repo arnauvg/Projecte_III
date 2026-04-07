@@ -31,7 +31,7 @@ public class ObjetoRecogible : Interactuable
         {
             estaRecogido = true;
             rb.useGravity = false;
-            rb.isKinematic = true;
+            rb.isKinematic = false;
             return true;
         }
         return false;
@@ -70,8 +70,12 @@ public class ObjetoRecogible : Interactuable
         if (estaRecogido)
         {
             // Mover objeto suavemente al punto de sujeci�n
-            transform.position = Vector3.Lerp(transform.position, puntoDeSujecion.position, Time.deltaTime * 15f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, puntoDeSujecion.rotation, Time.deltaTime * 15f);
-        }
+            Vector3 posicionObjetivo = Vector3.Lerp(transform.position, puntoDeSujecion.position, Time.deltaTime * 40f);
+        rb.MovePosition(posicionObjetivo);
+
+        Quaternion rotacionObjetivo = Quaternion.Lerp(transform.rotation, puntoDeSujecion.rotation, Time.deltaTime * 40f);
+        rb.MoveRotation(rotacionObjetivo);
+
+            }
     }
 }
