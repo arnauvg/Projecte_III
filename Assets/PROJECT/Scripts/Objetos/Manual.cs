@@ -1,43 +1,61 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Manual : Interactuable
+public class Manual : MonoBehaviour
 {
-    [Header("Configuración UI")]
-    public GameObject panelManual;
+    public GameObject canvasManual;
+    public Image imagenPagina;
+    public Sprite[] paginas;
 
-    private bool manualAbierto = false;
+    private int paginaActual = 0;
 
     void Start()
     {
-        if (panelManual != null)
-            panelManual.SetActive(false);
+        canvasManual.SetActive(false);
+        MostrarPagina();
     }
 
-    public override bool Recoger()
+    public void AbrirManual()
     {
-        if (!manualAbierto)
-        {
-            manualAbierto = true;
-            panelManual.SetActive(true);
+        canvasManual.SetActive(true);
+        paginaActual = 0;
+        MostrarPagina();
 
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            Time.timeScale = 0f;
-            return true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void CerrarManual()
+    {
+        canvasManual.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    public void PaginaSiguiente()
+    {
+        if (paginaActual < paginas.Length - 1)
+        {
+            paginaActual++;
+            MostrarPagina();
         }
-        return false;
     }
 
-    public override void Soltar()
+    public void PaginaAnterior()
     {
-        if (manualAbierto)
+        if (paginaActual > 0)
         {
-            manualAbierto = false;
-            panelManual.SetActive(false);
+            paginaActual--;
+            MostrarPagina();
+        }
+    }
 
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            Time.timeScale = 1f;
+    void MostrarPagina()
+    {
+        if (paginas.Length > 0 && imagenPagina != null)
+        {
+            imagenPagina.sprite = paginas[paginaActual];
         }
     }
 }

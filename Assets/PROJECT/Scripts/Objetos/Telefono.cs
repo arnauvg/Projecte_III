@@ -24,7 +24,7 @@ public class Telefono : Interactuable
         // Crear punto donde se colocar� el tel�fono al hablar (LADO IZQUIERDO)
         GameObject punto = new GameObject("PuntoTelefono");
         punto.transform.SetParent(Camera.main.transform);
-        punto.transform.localPosition = new Vector3(0f, 0f, 1.2f);
+        punto.transform.localPosition = new Vector3(-0.35f, -0.1f, 0.5f);
         punto.transform.localRotation = Quaternion.Euler(15f, 30f, 0f);
         puntoTelefono = punto.transform;
     }
