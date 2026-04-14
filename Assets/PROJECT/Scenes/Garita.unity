@@ -1888,7 +1888,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &872386721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1985,8 +1985,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasManual: {fileID: 872386720}
+  controladorJugador: {fileID: 0}
   imagenPagina: {fileID: 1526657651}
-  paginas: []
+  paginas:
+  - {fileID: 21300000, guid: 455d3577b928d7144a4eb84bb6c496c1, type: 3}
+  - {fileID: 21300000, guid: f03e2ad42e4ba8641ac61e485420e1dd, type: 3}
+  - {fileID: 21300000, guid: be9272a713c297c4f9fa4abf5c1ac464, type: 3}
+  - {fileID: 21300000, guid: 7d5a7f7757b57664a89fc2b41fc9a16b, type: 3}
 --- !u!4 &891846868 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1ecc4082a155c8445a8d208ae845c20e, type: 3}
@@ -2507,7 +2512,7 @@ GameObject:
   - component: {fileID: 1087944860}
   - component: {fileID: 1087944859}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Atras
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2520,17 +2525,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1087944857}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.21016, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 49580909}
   m_Father: {fileID: 1914730578}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -258, y: -134}
+  m_AnchoredPosition: {x: -258, y: -117}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1087944859
@@ -2577,13 +2582,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 11500000, guid: cdb6f3b55ec3ef840b26af0ad4d2220f, type: 3}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 872386725}
+        m_TargetAssemblyTypeName: Manual, Assembly-CSharp
+        m_MethodName: PaginaAnterior
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2609,8 +2614,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 48a20d06142571e478cbb203f419b64a, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2929,7 +2934,7 @@ GameObject:
   - component: {fileID: 1291972089}
   - component: {fileID: 1291972088}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Salir
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2952,7 +2957,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 259, y: 145}
+  m_AnchoredPosition: {x: 259, y: 116}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1291972088
@@ -2998,7 +3003,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1291972089}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 872386725}
+        m_TargetAssemblyTypeName: Manual, Assembly-CSharp
+        m_MethodName: CerrarManual
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1291972089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3012,15 +3029,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.7610062, g: 0.016751582, b: 0.016751582, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 6d8abae042f731f4c8b388f71e0be647, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -3397,7 +3414,7 @@ RectTransform:
   m_GameObject: {fileID: 1526657649}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 6.684725, y: 3.9699, z: 3.9699}
+  m_LocalScale: {x: 6.684725, y: 3.3244917, z: 3.9699}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1914730578}
@@ -4697,7 +4714,7 @@ GameObject:
   - component: {fileID: 2076220091}
   - component: {fileID: 2076220090}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Endevant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4712,7 +4729,7 @@ RectTransform:
   m_GameObject: {fileID: 2076220088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.21016, y: 1, z: 1}
+  m_LocalScale: {x: 0.274553, y: 1.3064, z: 1.3064}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1576961649}
@@ -4720,7 +4737,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 268, y: -127}
+  m_AnchoredPosition: {x: 268, y: -110}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2076220090
@@ -4766,7 +4783,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2076220091}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 872386725}
+        m_TargetAssemblyTypeName: Manual, Assembly-CSharp
+        m_MethodName: PaginaSiguiente
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2076220091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4787,8 +4816,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 48a20d06142571e478cbb203f419b64a, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4

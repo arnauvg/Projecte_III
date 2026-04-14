@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class Manual : MonoBehaviour
 {
     public GameObject canvasManual;
+    public MonoBehaviour controladorJugador;
     public Image imagenPagina;
     public Sprite[] paginas;
 
@@ -31,6 +32,9 @@ public class Manual : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        if (controladorJugador != null)
+            controladorJugador.enabled = true;
     }
 
     public void PaginaSiguiente()
