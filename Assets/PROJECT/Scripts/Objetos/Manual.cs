@@ -24,6 +24,9 @@ public class Manual : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        if (controladorJugador != null)
+            controladorJugador.enabled = false;
     }
 
     public void CerrarManual()
