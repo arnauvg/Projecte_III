@@ -404,7 +404,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 93, y: 147}
+  m_AnchoredPosition: {x: 93, y: 136}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &67867512
@@ -1359,7 +1359,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 376, y: 174}
+  m_AnchoredPosition: {x: 308, y: 106}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &354694017
@@ -1751,7 +1751,7 @@ GameObject:
   - component: {fileID: 505385114}
   - component: {fileID: 505385113}
   m_Layer: 5
-  m_Name: PanelMapa
+  m_Name: panelMapa
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1766,7 +1766,7 @@ RectTransform:
   m_GameObject: {fileID: 505385111}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.991898, y: 0.992452, z: 0.992452}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1878874793}
@@ -1778,7 +1778,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 2, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &505385113
@@ -2055,7 +2055,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -163, y: 192}
+  m_AnchoredPosition: {x: -163, y: 149}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &590111535
@@ -2101,7 +2101,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 590111536}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 884190271}
+        m_TargetAssemblyTypeName: MapaToggle, Assembly-CSharp
+        m_MethodName: IrAEscena
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Tumbas
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &590111536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2571,6 +2583,51 @@ MonoBehaviour:
   - {fileID: 21300000, guid: f03e2ad42e4ba8641ac61e485420e1dd, type: 3}
   - {fileID: 21300000, guid: be9272a713c297c4f9fa4abf5c1ac464, type: 3}
   - {fileID: 21300000, guid: 7d5a7f7757b57664a89fc2b41fc9a16b, type: 3}
+--- !u!1 &884190270
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 884190272}
+  - component: {fileID: 884190271}
+  m_Layer: 0
+  m_Name: ControlMapa
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &884190271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 884190270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2184721069507c48a7e41f5d9c1c535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelMapa: {fileID: 505385111}
+--- !u!4 &884190272
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 884190270}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 510, y: 300, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &891846868 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1ecc4082a155c8445a8d208ae845c20e, type: 3}
@@ -3808,7 +3865,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -188, y: -147}
+  m_AnchoredPosition: {x: -188, y: -120}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1286589358
@@ -3854,7 +3911,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1286589359}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 884190271}
+        m_TargetAssemblyTypeName: MapaToggle, Assembly-CSharp
+        m_MethodName: IrAEscena
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Garita
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1286589359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4353,7 +4422,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1432785585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5707,7 +5776,7 @@ RectTransform:
   m_GameObject: {fileID: 1878874792}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10.525636, y: 5.4932, z: 1}
+  m_LocalScale: {x: 8.106739, y: 4.230808, z: 0.77019}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 505385112}
@@ -6307,3 +6376,4 @@ SceneRoots:
   - {fileID: 308161201}
   - {fileID: 872386724}
   - {fileID: 1432785588}
+  - {fileID: 884190272}
