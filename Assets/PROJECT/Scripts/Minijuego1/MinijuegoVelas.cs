@@ -6,12 +6,14 @@ public class MinijuegoVelas : MonoBehaviour
     public GameObject[] velasViejas;
     public GameObject[] velasNuevas;
     public TextMeshProUGUI textoEstado;
+    public GameObject ZonaHuecosVelasNuevas;
 
     private int velasViejasEliminadas = 0;
     private int velasNuevasColocadas = 0;
 
     void Start()
     {
+        ZonaHuecosVelasNuevas.SetActive(false);
         // Al empezar, las velas nuevas están ocultas
         for (int i = 0; i < velasNuevas.Length; i++)
         {
@@ -29,6 +31,7 @@ public class MinijuegoVelas : MonoBehaviour
         if (velasViejasEliminadas >= velasViejas.Length)
         {
             ActivarVelasNuevas();
+            ZonaHuecosVelasNuevas.SetActive(true);
         }
     }
 
