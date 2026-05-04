@@ -7,14 +7,16 @@ public class MinijuegoVelas : MonoBehaviour
     public GameObject[] velasNuevas;
     public TextMeshProUGUI textoEstado;
     public GameObject ZonaHuecosVelasNuevas;
+    public GameObject botonCerrar; // Botón de salir del minijuego
 
     private int velasViejasEliminadas = 0;
     private int velasNuevasColocadas = 0;
+    private bool minijuegoCompletado = false;
 
     void Start()
     {
         ZonaHuecosVelasNuevas.SetActive(false);
-        // Al empezar, las velas nuevas están ocultas
+
         for (int i = 0; i < velasNuevas.Length; i++)
         {
             velasNuevas[i].SetActive(false);
@@ -22,11 +24,16 @@ public class MinijuegoVelas : MonoBehaviour
 
         if (textoEstado != null)
             textoEstado.text = "Retira las velas viejas y tíralas a la papelera";
+
+        // Si hay botón de cerrar, desactivarlo hasta completar
+        if (botonCerrar != null)
+            botonCerrar.SetActive(false);
     }
 
     public void VelaViejaEliminada()
     {
         velasViejasEliminadas++;
+        Debug.Log($"Vela vieja eliminada: {velasViejasEliminadas}/{velasViejas.Length}");
 
         if (velasViejasEliminadas >= velasViejas.Length)
         {
@@ -49,8 +56,9 @@ public class MinijuegoVelas : MonoBehaviour
     public void VelaNuevaColocada()
     {
         velasNuevasColocadas++;
+        Debug.Log($"Vela nueva colocada: {velasNuevasColocadas}/{velasNuevas.Length}");
 
-        if (velasNuevasColocadas >= velasNuevas.Length)
+        if (velasNuevasColocadas >= velasNuevas.Length && !minijuegoCompletado)
         {
             CompletarMinijuego();
         }
@@ -58,15 +66,23 @@ public class MinijuegoVelas : MonoBehaviour
 
     void CompletarMinijuego()
     {
+        minijuegoCompletado = true;
+
         if (textoEstado != null)
-            textoEstado.text = "Minijuego completado";
+            textoEstado.text = "¡Minijuego completado! Puedes salir";
 
         Debug.Log("Minijuego de velas completado");
 
-        // Aquí puedes:
-        // - cerrar el minijuego
-        // - dar una llave
-        // - activar otra fase
-        // - volver al juego principal
+        // NOTIFICAR AL SISTEMA DE NOCHES
+        GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
+        if (gestion != null)
+        {
+            gestion.CompletarTarea();
+            Debug.Log("Tarea de velas registrada en el sistema de noches");
+        }
+
+        // Activar botón de cerrar
+        if (botonCerrar != null)
+            botonCerrar.SetActive(true);
     }
 }

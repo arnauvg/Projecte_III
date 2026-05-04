@@ -14,6 +14,11 @@ public class VisitanteSimple : MonoBehaviour
 
     [Header("Estados")]
     public bool enCentro = false;
+    public bool estaEnEscena = false;
+    public bool haSidoAtendido = false;
+
+    [Header("Referencias")]
+    public Transform puntoEntradaEdificio;
 
     private Vector3 destinoActual;
     private Vector3 posicionOriginal;
@@ -21,56 +26,85 @@ public class VisitanteSimple : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Vector3 escalaOriginal;
     private bool enMovimiento = false;
-    private bool enEscena = false;
-    public Transform puntoEntradaEdificio;
+
+    private static VisitanteSimple instancia;
+
+    void Awake()
+    {
+        // Si ya existe una instancia y no soy yo, destruirme
+        if (instancia != null && instancia != this)
+        {
+            Debug.Log("Vampirikiki duplicado destruido - Ya existe una instancia");
+            Destroy(gameObject);
+            return;
+        }
+
+        // Asegurar que el objeto es raíz
+        if (transform.parent != null)
+        {
+            transform.SetParent(null);
+        }
+
+        // Soy la instancia principal
+        instancia = this;
+        DontDestroyOnLoad(gameObject);
+        Debug.Log("Vampirikiki configurado como persistente (instancia única)");
+    }
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         escalaOriginal = transform.localScale;
-        gameObject.SetActive(false);
+
+        if (!estaEnEscena)
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    void OnDestroy()
+    {
+        // Si soy la instancia principal y me destruyen, limpiar la referencia
+        if (instancia == this)
+        {
+            instancia = null;
+            Debug.Log("Vampirikiki: Instancia principal destruida");
+        }
     }
 
     void Update()
     {
-        if (enEscena && enMovimiento)
+        if (estaEnEscena && enMovimiento)
         {
             Vector3 nuevaPos = transform.position;
             float distanciaAlDestino = Mathf.Abs(nuevaPos.x - destinoActual.x);
 
             if (distanciaAlDestino > 0.05f)
             {
-                // Movimiento horizontal
-                nuevaPos.x = Mathf.MoveTowards(
-                    nuevaPos.x,
-                    destinoActual.x,
-                    velocidadMovimiento * Time.deltaTime
-                );
-
-                // Rebote mientras camina
+                nuevaPos.x = Mathf.MoveTowards(nuevaPos.x, destinoActual.x, velocidadMovimiento * Time.deltaTime);
                 tiempoRebote += Time.deltaTime * frecuenciaRebote;
                 float offsetY = Mathf.Abs(Mathf.Sin(tiempoRebote)) * alturaRebote;
                 nuevaPos.y = posicionOriginal.y + offsetY;
-
                 transform.position = nuevaPos;
             }
             else
             {
-                // Lleg� al destino
                 enMovimiento = false;
                 enCentro = true;
-                transform.position = new Vector3(
-                    transform.position.x,
-                    posicionOriginal.y,
-                    transform.position.z
-                );
-                Debug.Log("Visitante lleg� al centro");
+                transform.position = new Vector3(transform.position.x, posicionOriginal.y, transform.position.z);
+                Debug.Log("Visitante llegó al centro");
             }
         }
     }
 
     public void Aparecer()
     {
+        if (haSidoAtendido)
+        {
+            Debug.Log("Visitante ya fue atendido esta noche, no aparece de nuevo");
+            return;
+        }
+
         if (puntoEntrada == null || puntoCentro == null)
         {
             Debug.LogError("Puntos de entrada o centro no asignados!");
@@ -81,9 +115,10 @@ public class VisitanteSimple : MonoBehaviour
         transform.position = puntoEntrada.position;
         posicionOriginal = puntoEntrada.position;
         destinoActual = puntoCentro.position;
-        enEscena = true;
+        estaEnEscena = true;
         enCentro = false;
         enMovimiento = true;
+        haSidoAtendido = false;
         tiempoRebote = 0f;
         transform.localScale = escalaOriginal;
 
@@ -92,7 +127,25 @@ public class VisitanteSimple : MonoBehaviour
 
     public void Aceptar()
     {
-        if (!enCentro) return;
+        if (!enCentro)
+        {
+            Debug.Log("No se puede aceptar: visitante no está en el centro");
+            return;
+        }
+        if (haSidoAtendido)
+        {
+            Debug.Log("Visitante ya fue atendido");
+            return;
+        }
+
+        haSidoAtendido = true;
+
+        GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
+        if (gestion != null)
+        {
+            gestion.RegistrarVisitanteAceptado();
+            Debug.Log("Visitante ACEPTADO - Registrado en sistema");
+        }
 
         if (puntoEntradaEdificio == null)
         {
@@ -104,13 +157,35 @@ public class VisitanteSimple : MonoBehaviour
         posicionOriginal = transform.position;
         enCentro = false;
         enMovimiento = true;
+
+        StartCoroutine(DesactivarDespuesDeSalir());
     }
+
     public void Rechazar()
     {
-        if (!enCentro) return;
-         if (puntoEntrada == null)
+        if (!enCentro)
         {
-            Debug.LogError("puntosalida no asignado");
+            Debug.Log("No se puede rechazar: visitante no está en el centro");
+            return;
+        }
+        if (haSidoAtendido)
+        {
+            Debug.Log("Visitante ya fue atendido");
+            return;
+        }
+
+        haSidoAtendido = true;
+
+        GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
+        if (gestion != null)
+        {
+            gestion.RegistrarVisitanteRechazado();
+            Debug.Log("Visitante RECHAZADO - Registrado en sistema");
+        }
+
+        if (puntoEntrada == null)
+        {
+            Debug.LogError("puntoEntrada no asignado");
             return;
         }
 
@@ -118,53 +193,29 @@ public class VisitanteSimple : MonoBehaviour
         posicionOriginal = transform.position;
         enCentro = false;
         enMovimiento = true;
+
+        StartCoroutine(DesactivarDespuesDeSalir());
     }
 
-    IEnumerator Salir(bool haciaDerecha)
+    IEnumerator DesactivarDespuesDeSalir()
     {
-        enCentro = false;
-        float destinoX = haciaDerecha ? puntoCentro.position.x + 12f : puntoCentro.position.x - 12f;
-
-        // Rebote de despedida r�pido
-        float tiempoDespedida = 0f;
-        Vector3 posInicial = transform.position;
-
-        while (tiempoDespedida < 0.2f)
-        {
-            tiempoDespedida += Time.deltaTime;
-            float yOffset = Mathf.Sin(tiempoDespedida * 20f) * 0.1f;
-            transform.position = new Vector3(
-                transform.position.x,
-                posInicial.y + yOffset,
-                transform.position.z
-            );
-            yield return null;
-        }
-
-        // Girar sprite si es necesario
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.flipX = haciaDerecha;
-        }
-
-        // Salir corriendo
-        enMovimiento = true;
-        while ((haciaDerecha && transform.position.x < destinoX) ||
-               (!haciaDerecha && transform.position.x > destinoX))
-        {
-            float step = velocidadMovimiento * 4f * Time.deltaTime;
-            float nuevoX = transform.position.x + (haciaDerecha ? step : -step);
-            float yOffset = Mathf.Sin(Time.time * 20f) * 0.05f;
-            transform.position = new Vector3(
-                nuevoX,
-                posicionOriginal.y + yOffset,
-                transform.position.z
-            );
-            yield return null;
-        }
-
-        enEscena = false;
+        yield return new WaitForSeconds(2f);
+        estaEnEscena = false;
         gameObject.SetActive(false);
-        Debug.Log("Visitante sali�");
+        Debug.Log("Visitante desactivado después de salir");
+    }
+
+    public void ReiniciarParaNuevaNoche()
+    {
+        haSidoAtendido = false;
+        estaEnEscena = false;
+        gameObject.SetActive(false);
+        Debug.Log("Visitante reiniciado para nueva noche");
+    }
+
+    // Método para verificar si el objeto sigue vivo
+    public bool EstaVivo()
+    {
+        return this != null && gameObject != null;
     }
 }
