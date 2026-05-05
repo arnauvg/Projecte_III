@@ -6,9 +6,9 @@ public class VisitanteSimple : MonoBehaviour
     [Header("Movimiento")]
     public Transform puntoEntrada;
     public Transform puntoCentro;
-    public float velocidadMovimiento = 1.5f;
+    public Transform puntoEntradaEdificio;
 
-    [Header("Rebote mientras camina")]
+    public float velocidadMovimiento = 1.5f;
     public float alturaRebote = 0.1f;
     public float frecuenciaRebote = 10f;
 
@@ -17,16 +17,11 @@ public class VisitanteSimple : MonoBehaviour
     public bool estaEnEscena = false;
     public bool haSidoAtendido = false;
 
-    [Header("Referencias")]
-    public Transform puntoEntradaEdificio;
-
     private Vector3 destinoActual;
     private Vector3 posicionOriginal;
     private float tiempoRebote = 0f;
-    private SpriteRenderer spriteRenderer;
     private Vector3 escalaOriginal;
     private bool enMovimiento = false;
-
     private static VisitanteSimple instancia;
 
     void Awake()
@@ -53,7 +48,6 @@ public class VisitanteSimple : MonoBehaviour
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
         escalaOriginal = transform.localScale;
 
         if (!estaEnEscena)
@@ -64,7 +58,6 @@ public class VisitanteSimple : MonoBehaviour
 
     void OnDestroy()
     {
-        // Si soy la instancia principal y me destruyen, limpiar la referencia
         if (instancia == this)
         {
             instancia = null;
@@ -74,27 +67,31 @@ public class VisitanteSimple : MonoBehaviour
 
     void Update()
     {
-        if (estaEnEscena && enMovimiento)
-        {
-            Vector3 nuevaPos = transform.position;
-            float distanciaAlDestino = Mathf.Abs(nuevaPos.x - destinoActual.x);
+        if (!estaEnEscena || !enMovimiento) return;
 
-            if (distanciaAlDestino > 0.05f)
-            {
-                nuevaPos.x = Mathf.MoveTowards(nuevaPos.x, destinoActual.x, velocidadMovimiento * Time.deltaTime);
-                tiempoRebote += Time.deltaTime * frecuenciaRebote;
-                float offsetY = Mathf.Abs(Mathf.Sin(tiempoRebote)) * alturaRebote;
-                nuevaPos.y = posicionOriginal.y + offsetY;
-                transform.position = nuevaPos;
-            }
-            else
-            {
-                enMovimiento = false;
-                enCentro = true;
-                transform.position = new Vector3(transform.position.x, posicionOriginal.y, transform.position.z);
-                Debug.Log("Visitante llegó al centro");
-            }
+        Vector3 nuevaPos = transform.position;
+        float distancia = Mathf.Abs(nuevaPos.x - destinoActual.x);
+
+        if (distancia > 0.05f)
+        {
+            nuevaPos.x = Mathf.MoveTowards(nuevaPos.x, destinoActual.x, velocidadMovimiento * Time.deltaTime);
+            tiempoRebote += Time.deltaTime * frecuenciaRebote;
+            float offsetY = Mathf.Abs(Mathf.Sin(tiempoRebote)) * alturaRebote;
+            nuevaPos.y = posicionOriginal.y + offsetY;
+            transform.position = nuevaPos;
         }
+        else
+        {
+            LlegarDestino();
+        }
+    }
+
+    void LlegarDestino()
+    {
+        enMovimiento = false;
+        enCentro = true;
+        transform.position = new Vector3(destinoActual.x, posicionOriginal.y, transform.position.z);
+        Debug.Log("Visitante llegó al centro");
     }
 
     public void Aparecer()
@@ -213,7 +210,6 @@ public class VisitanteSimple : MonoBehaviour
         Debug.Log("Visitante reiniciado para nueva noche");
     }
 
-    // Método para verificar si el objeto sigue vivo
     public bool EstaVivo()
     {
         return this != null && gameObject != null;
