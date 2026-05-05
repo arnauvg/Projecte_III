@@ -2,55 +2,30 @@ using UnityEngine;
 
 public class GestorVisitantes : MonoBehaviour
 {
-    [Header("Configuración")]
-    public VisitanteSimple visitante;
-    public float tiempoEntreVisitantes = 2f;
-
     private GestionNoches gestionNoches;
-    private int visitantesAtendidos = 0;
+    private bool visitanteAtendido = false;
 
     void Start()
     {
         gestionNoches = FindFirstObjectByType<GestionNoches>();
 
-        if (visitante == null)
-            visitante = FindFirstObjectByType<VisitanteSimple>();
-
-        if (visitante == null || gestionNoches == null)
-        {
-            Debug.LogError("Faltan referencias!");
-            return;
-        }
-
-        IniciarNoche();
-    }
-
-    public void IniciarNoche()
-    {
-        visitantesAtendidos = 0;
-        visitante.ReiniciarParaNuevaNoche();
-        Debug.Log("Noche iniciada");
+        if (gestionNoches == null)
+            Debug.LogError("No se encontró GestionNoches!");
     }
 
     public void RegistrarRespuestaVisitante()
     {
-        visitantesAtendidos++;
-        Debug.Log($"Visitante atendido ({visitantesAtendidos}/3)");
+        if (visitanteAtendido) return;
 
-        if (visitantesAtendidos >= 3)
-        {
-            if (gestionNoches != null)
-                gestionNoches.TerminarNoche();
-        }
-        else
-        {
-            Invoke(nameof(SiguienteVisitante), tiempoEntreVisitantes);
-        }
+        visitanteAtendido = true;
+        Debug.Log("Visitante atendido - Esperando que termine de salir");
     }
 
-    void SiguienteVisitante()
+    public void VisitanteTerminoSalir()
     {
-        visitante.ReiniciarParaNuevaNoche();
-        Debug.Log("Siguiente visitante aparece");
+        Debug.Log("Visitante terminó de salir - Terminando noche");
+
+        if (gestionNoches != null)
+            gestionNoches.TerminarNoche();
     }
 }

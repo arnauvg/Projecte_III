@@ -28,14 +28,13 @@ public class VisitanteSimple : MonoBehaviour
 
     void Start()
     {
-        // El visitante siempre visible desde el inicio
         transform.localScale = escalaOriginal;
         transform.position = puntoEntrada.position;
         destinoActual = puntoCentro.position;
         posicionOriginal = puntoEntrada.position;
         enMovimiento = true;
         yaAtendido = false;
-        Debug.Log("Visitante listo en la entrada");
+        Debug.Log("Visitante aparece desde la entrada");
     }
 
     void Update()
@@ -58,7 +57,7 @@ public class VisitanteSimple : MonoBehaviour
             enMovimiento = false;
             enCentro = true;
             transform.position = new Vector3(destinoActual.x, posicionOriginal.y, transform.position.z);
-            Debug.Log("🦇 Visitante llegó al centro");
+            Debug.Log("Visitante llegó al centro - Esperando decisión");
         }
     }
 
@@ -73,11 +72,14 @@ public class VisitanteSimple : MonoBehaviour
         if (gestion != null)
             gestion.RegistrarVisitanteAceptado();
 
-        Debug.Log("❌ Has dejado pasar al vampiro! -50€");
+        Debug.Log("Visitante aceptado - Saliendo por la derecha");
 
         destinoActual = puntoEntradaEdificio.position;
         posicionOriginal = transform.position;
         enMovimiento = true;
+
+        // Cuando termine de moverse, notificar fin de movimiento
+        StartCoroutine(EsperarFinMovimiento());
     }
 
     public void Rechazar()
@@ -91,11 +93,33 @@ public class VisitanteSimple : MonoBehaviour
         if (gestion != null)
             gestion.RegistrarVisitanteRechazado();
 
-        Debug.Log("✅ Has rechazado al vampiro! Bien hecho");
+        Debug.Log("Visitante rechazado - Saliendo por la izquierda");
 
         destinoActual = puntoEntrada.position;
         posicionOriginal = transform.position;
         enMovimiento = true;
+
+        // Cuando termine de moverse, notificar fin de movimiento
+        StartCoroutine(EsperarFinMovimiento());
+    }
+
+    IEnumerator EsperarFinMovimiento()
+    {
+        // Esperar mientras se mueve
+        while (enMovimiento)
+        {
+            yield return null;
+        }
+
+        // Un pequeño retraso después de llegar al destino
+        yield return new WaitForSeconds(0.5f);
+
+        Debug.Log("Visitante terminó de salir - Fin de la noche");
+
+        // Notificar al gestor que el visitante terminó
+        GestorVisitantes gestor = FindFirstObjectByType<GestorVisitantes>();
+        if (gestor != null)
+            gestor.VisitanteTerminoSalir();
     }
 
     public void ReiniciarParaNuevaNoche()
@@ -110,3 +134,4 @@ public class VisitanteSimple : MonoBehaviour
         Debug.Log("Visitante reiniciado para nueva noche");
     }
 }
+
