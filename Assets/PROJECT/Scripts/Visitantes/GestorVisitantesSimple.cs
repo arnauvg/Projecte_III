@@ -2,98 +2,55 @@ using UnityEngine;
 
 public class GestorVisitantes : MonoBehaviour
 {
-    [Header("Referencias")]
+    [Header("Configuración")]
     public VisitanteSimple visitante;
-    public GestionNoches gestionNoches;
-    public float tiempoPrimeraAparicion = 1f;
+    public float tiempoEntreVisitantes = 2f;
 
-    private int visitantesLlamadosEnNoche = 0;
-    private bool juegoInicializado = false;
+    private GestionNoches gestionNoches;
+    private int visitantesAtendidos = 0;
 
     void Start()
     {
-        // Buscar visitante si no está asignado o fue destruido
-        if (visitante == null || !visitante.EstaVivo())
-        {
+        gestionNoches = FindFirstObjectByType<GestionNoches>();
+
+        if (visitante == null)
             visitante = FindFirstObjectByType<VisitanteSimple>();
-            if (visitante == null)
-            {
-                Debug.LogError("No hay visitante asignado y no se encontró uno en la escena!");
-                return;
-            }
-            Debug.Log("Visitante encontrado automáticamente");
-        }
 
-        // Buscar GestionNoches si no está asignado
-        if (gestionNoches == null)
+        if (visitante == null || gestionNoches == null)
         {
-            gestionNoches = FindFirstObjectByType<GestionNoches>();
-            if (gestionNoches == null)
-            {
-                Debug.LogError("No se encontró GestionNoches en la escena!");
-                return;
-            }
-        }
-
-        // Solo llamar al primer visitante si es la primera vez
-        if (!juegoInicializado)
-        {
-            juegoInicializado = true;
-            Invoke(nameof(LlamarVisitante), tiempoPrimeraAparicion);
-        }
-    }
-
-    void LlamarVisitante()
-    {
-        // Verificar que el visitante sigue existiendo
-        if (visitante == null || !visitante.EstaVivo())
-        {
-            Debug.LogError("El visitante ha sido destruido! Buscando uno nuevo...");
-            visitante = FindFirstObjectByType<VisitanteSimple>();
-            if (visitante == null)
-            {
-                Debug.LogError("No se encontró visitante, no se puede continuar");
-                return;
-            }
-        }
-
-        if (visitantesLlamadosEnNoche >= 3)
-        {
-            Debug.Log("Ya se atendieron los 3 visitantes de esta noche");
+            Debug.LogError("Faltan referencias!");
             return;
         }
 
-        if (gestionNoches != null && gestionNoches.EstaNocheActiva())
+        IniciarNoche();
+    }
+
+    public void IniciarNoche()
+    {
+        visitantesAtendidos = 0;
+        visitante.ReiniciarParaNuevaNoche();
+        Debug.Log("Noche iniciada");
+    }
+
+    public void RegistrarRespuestaVisitante()
+    {
+        visitantesAtendidos++;
+        Debug.Log($"Visitante atendido ({visitantesAtendidos}/3)");
+
+        if (visitantesAtendidos >= 3)
         {
-            Debug.Log($"Llamando al visitante... ({visitantesLlamadosEnNoche + 1}/3)");
-            visitante.ReiniciarParaNuevaNoche();
-            visitante.Aparecer();
-            visitantesLlamadosEnNoche++;
+            if (gestionNoches != null)
+                gestionNoches.TerminarNoche();
         }
         else
         {
-            Debug.Log("No se puede llamar visitante: noche no activa o sistema no disponible");
+            Invoke(nameof(SiguienteVisitante), tiempoEntreVisitantes);
         }
     }
 
-    public void ReiniciarNoche()
+    void SiguienteVisitante()
     {
-        visitantesLlamadosEnNoche = 0;
-        CancelInvoke();
-        Invoke(nameof(LlamarVisitante), tiempoPrimeraAparicion);
-        Debug.Log("GestorVisitantes: Noche reiniciada");
-    }
-
-    public void ReiniciarJuego()
-    {
-        visitantesLlamadosEnNoche = 0;
-        juegoInicializado = false;
-        CancelInvoke();
-        Debug.Log("GestorVisitantes: Juego reiniciado");
-    }
-
-    public int GetVisitantesAtendidos()
-    {
-        return visitantesLlamadosEnNoche;
+        visitante.ReiniciarParaNuevaNoche();
+        Debug.Log("Siguiente visitante aparece");
     }
 }
