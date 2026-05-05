@@ -19,7 +19,12 @@ public class ClickCentro : MonoBehaviour
                 // VERDE
                 if (hit.collider.CompareTag("BotonVerde"))
                 {
-                    FindObjectOfType<VisitanteSimple>().Aceptar();
+                    VisitanteSimple visitante = FindObjectOfType<VisitanteSimple>();
+
+                    if (visitante != null)
+                    {
+                        visitante.Aceptar();
+                    }
                 }
 
                 // ROJO
