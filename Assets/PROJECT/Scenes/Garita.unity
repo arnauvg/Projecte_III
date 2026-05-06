@@ -4003,6 +4003,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 833502453606520987, guid: 74091c39a8d1b00438645a3f09942165, type: 3}
   m_PrefabInstance: {fileID: 3470551962803736872}
   m_PrefabAsset: {fileID: 0}
+--- !u!212 &1003058979 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 250963891689644101, guid: 74091c39a8d1b00438645a3f09942165, type: 3}
+  m_PrefabInstance: {fileID: 3470551962803736872}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1025155775
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5073,7 +5078,7 @@ PrefabInstance:
       addedObject: {fileID: 1451569035}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ddcce08830643c4458797fb8ece0fa0b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1451569037}
+      addedObject: {fileID: 1451569038}
   m_SourcePrefab: {fileID: 100100000, guid: ddcce08830643c4458797fb8ece0fa0b, type: 3}
 --- !u!1 &1397015770 stripped
 GameObject:
@@ -5260,7 +5265,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.2273705, y: 0.21584594, z: 0.4364102}
   m_Center: {x: 0.0012003615, y: -0.0027124286, z: 0.15967093}
---- !u!114 &1451569037
+--- !u!114 &1451569038
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5269,15 +5274,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1441965229}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Script: {fileID: 11500000, guid: 3881b2857f6a6684689ac9f8dcf0f541, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  outlineMode: 0
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 6
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!1 &1457676208
 GameObject:
   m_ObjectHideFlags: 0
@@ -6154,6 +6153,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 64f207620d2cfc54e903fed2b4ec3831, type: 3}
+      propertyPath: m_TagString
+      value: ObjetoRevelador
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6419,7 +6422,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: 'Next
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6966,7 +6971,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.9999905, y: -3.4450989}
+  m_AnchoredPosition: {x: 3.9999905, y: -38}
   m_SizeDelta: {x: 251.1925, y: 38.3967}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1971911990
@@ -7106,7 +7111,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: SIGUIENTE NOCHE
+  m_text: SIGUIENTE  NOCHE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7171,7 +7176,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: -151.11008, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -7194,14 +7199,14 @@ RectTransform:
   m_GameObject: {fileID: 1975405672}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3875, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 455585371}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -118, y: 0}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2076220088
@@ -7567,6 +7572,18 @@ PrefabInstance:
       propertyPath: puntoEntrada
       value: 
       objectReference: {fileID: 1244678835}
+    - target: {fileID: 7863247652961084908, guid: 74091c39a8d1b00438645a3f09942165, type: 3}
+      propertyPath: spriteNormal
+      value: 
+      objectReference: {fileID: 21300000, guid: b25e232b312780f4e81357c2b0772cbb, type: 3}
+    - target: {fileID: 7863247652961084908, guid: 74091c39a8d1b00438645a3f09942165, type: 3}
+      propertyPath: spriteRevelado
+      value: 
+      objectReference: {fileID: 21300000, guid: 2c560d46b98315a43a0c5756bf7d3090, type: 3}
+    - target: {fileID: 7863247652961084908, guid: 74091c39a8d1b00438645a3f09942165, type: 3}
+      propertyPath: spriteVisitante
+      value: 
+      objectReference: {fileID: 1003058979}
     - target: {fileID: 7863247652961084908, guid: 74091c39a8d1b00438645a3f09942165, type: 3}
       propertyPath: puntoEntradaEdificio
       value: 

@@ -21,6 +21,12 @@ public class VisitanteSimple : MonoBehaviour
     private bool yaAtendido = false;
     private Vector3 escalaOriginal;
 
+    [Header("Camuflaje")]
+    public SpriteRenderer spriteVisitante;
+    public Sprite spriteNormal;
+    public Sprite spriteRevelado;
+    private bool camuflajeRevelado = false;
+
     void Awake()
     {
         escalaOriginal = transform.localScale;
@@ -59,6 +65,19 @@ public class VisitanteSimple : MonoBehaviour
             transform.position = new Vector3(destinoActual.x, posicionOriginal.y, transform.position.z);
             Debug.Log("Visitante llegó al centro - Esperando decisión");
         }
+    }
+    public void RevelarCamuflado()
+    {
+        if (camuflajeRevelado) return;
+
+        camuflajeRevelado = true;
+
+        if (spriteVisitante != null && spriteRevelado != null)
+        {
+            spriteVisitante.sprite = spriteRevelado;
+        }
+
+        Debug.Log("El visitante ha sido revelado: estaba camuflado");
     }
 
     public void Aceptar()
@@ -131,6 +150,14 @@ public class VisitanteSimple : MonoBehaviour
         destinoActual = puntoCentro.position;
         posicionOriginal = puntoEntrada.position;
         transform.localScale = escalaOriginal;
+
+        camuflajeRevelado = false;
+
+        if (spriteVisitante != null && spriteNormal != null)
+        {
+            spriteVisitante.sprite = spriteNormal;
+        }
+
         Debug.Log("Visitante reiniciado para nueva noche");
     }
 }

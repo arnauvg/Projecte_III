@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BotonVerde
   - BotonRojo
+  - ObjetoRevelador
   layers:
   - Default
   - TransparentFX

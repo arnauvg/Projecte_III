@@ -13,6 +13,26 @@ public class ClickCentro : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, distanciaMax))
             {
+                // Buscar objeto revelador
+                Transform objetoActual = hit.collider.transform;
+                while (objetoActual != null)
+                {
+                    if (objetoActual.CompareTag("ObjetoRevelador"))
+                    {
+                        VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
+
+                        if (visitante != null)
+                        {
+                            visitante.RevelarCamuflado();
+                        }
+
+
+                        return;
+                    }
+
+                    objetoActual = objetoActual.parent;
+                }
+
                 // Buscar botón VERDE
                 Transform actual = hit.collider.transform;
                 while (actual != null)
