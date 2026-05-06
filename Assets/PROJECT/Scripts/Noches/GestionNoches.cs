@@ -11,14 +11,20 @@ public class GestionNoches : MonoBehaviour
     [Header("Penalizaciones")]
     public int penalizacionVisitanteIncorrecto = 50;
 
-    [Header("UI")]
+    [Header("UI - Pantalla")]
     public GameObject pantallaFinNoche;
     public TextMeshProUGUI textoNoche;
     public TextMeshProUGUI textoEstado;
-    public TextMeshProUGUI textoVisitantes;
-    public TextMeshProUGUI textoDineroVisitantes;
-    public TextMeshProUGUI textoTareas;
-    public TextMeshProUGUI textoDineroTareas;
+
+    [Header("UI - Visitantes")]
+    public TextMeshProUGUI textoNumVisitantes;   // "Num visitantes"
+    public TextMeshProUGUI textoDineroVisitantes; // "Dinero visitantes"
+
+    [Header("UI - Tareas")]
+    public TextMeshProUGUI textoNumTareas;       // "Num tareas"
+    public TextMeshProUGUI textoDineroTareas;    // "Dinero tareas"
+
+    [Header("UI - Botón")]
     public Button botonContinuar;
 
     public GestorVisitantes gestorVisitantes;
@@ -38,7 +44,6 @@ public class GestionNoches : MonoBehaviour
 
     public void RegistrarVisitanteAceptado()
     {
-        // Aceptar = INCORRECTO (dejar pasar al vampiro)
         penalizacionVisitante = penalizacionVisitanteIncorrecto;
         visitanteCorrecto = false;
         sueldoActual -= penalizacionVisitante;
@@ -50,7 +55,6 @@ public class GestionNoches : MonoBehaviour
 
     public void RegistrarVisitanteRechazado()
     {
-        // Rechazar = CORRECTO
         penalizacionVisitante = 0;
         visitanteCorrecto = true;
         Debug.Log($"Visitante CORRECTO! Sin penalización");
@@ -69,7 +73,6 @@ public class GestionNoches : MonoBehaviour
     {
         Debug.Log("=== FIN DE LA NOCHE ===");
 
-        // Calcular penalización por tarea pendiente
         int penalizacionTarea = tareaCompletada ? 0 : 100;
         if (penalizacionTarea > 0)
         {
@@ -83,13 +86,29 @@ public class GestionNoches : MonoBehaviour
     void MostrarPantallaFinNoche(int penalizacionTarea)
     {
         textoNoche.text = $"NOCHE {nocheActual}";
-        textoVisitantes.text = visitanteCorrecto ? "1/1" : "0/1";
-        textoDineroVisitantes.text = $"-{penalizacionVisitante}€";
-        textoTareas.text = tareaCompletada ? "1/1" : "0/1";
-        textoDineroTareas.text = $"-{penalizacionTarea}€";
+
+        // Visitantes
+        if (textoNumVisitantes != null)
+            textoNumVisitantes.text = visitanteCorrecto ? "1/1" : "0/1";
+        if (textoDineroVisitantes != null)
+            textoDineroVisitantes.text = $"-{penalizacionVisitante}€";
+
+        // Tareas
+        if (textoNumTareas != null)
+            textoNumTareas.text = tareaCompletada ? "1/1" : "0/1";
+        if (textoDineroTareas != null)
+            textoDineroTareas.text = $"-{penalizacionTarea}€";
+
+        // Colores
+        if (textoDineroVisitantes != null)
+            textoDineroVisitantes.color = penalizacionVisitante > 0 ? Color.red : Color.green;
+        if (textoDineroTareas != null)
+            textoDineroTareas.color = penalizacionTarea > 0 ? Color.red : Color.green;
 
         bool despedido = sueldoActual < umbralDespido;
         bool victoria = !despedido && nocheActual >= 5;
+
+        botonContinuar.onClick.RemoveAllListeners();
 
         if (despedido)
         {
@@ -110,9 +129,6 @@ public class GestionNoches : MonoBehaviour
             botonContinuar.onClick.AddListener(SiguienteNoche);
         }
 
-        textoDineroVisitantes.color = penalizacionVisitante > 0 ? Color.red : Color.green;
-        textoDineroTareas.color = penalizacionTarea > 0 ? Color.red : Color.green;
-
         pantallaFinNoche.SetActive(true);
         Time.timeScale = 0f;
     }
@@ -127,7 +143,6 @@ public class GestionNoches : MonoBehaviour
         pantallaFinNoche.SetActive(false);
         Time.timeScale = 1f;
 
-        // Reiniciar visitante
         VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
         if (visitante != null)
             visitante.ReiniciarParaNuevaNoche();
