@@ -136,7 +136,7 @@ public class VisitanteSimple : MonoBehaviour
         Debug.Log("Visitante terminó de salir - Fin de la noche");
 
         // Notificar al gestor que el visitante terminó
-        GestorVisitantes gestor = FindFirstObjectByType<GestorVisitantes>();
+        GestorVisitantesSimple gestor = FindFirstObjectByType<GestorVisitantesSimple>();
         if (gestor != null)
             gestor.VisitanteTerminoSalir();
     }

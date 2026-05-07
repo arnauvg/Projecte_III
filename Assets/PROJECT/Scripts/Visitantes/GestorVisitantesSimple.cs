@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GestorVisitantes : MonoBehaviour
+public class GestorVisitantesSimple : MonoBehaviour
 {
     private GestionNoches gestionNoches;
     private bool visitanteAtendido = false;

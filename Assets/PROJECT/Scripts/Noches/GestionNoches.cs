@@ -11,24 +11,13 @@ public class GestionNoches : MonoBehaviour
     [Header("Penalizaciones")]
     public int penalizacionVisitanteIncorrecto = 50;
 
-    [Header("UI - Pantalla")]
-    public GameObject pantallaFinNoche;
-    public TextMeshProUGUI textoNoche;
-    public TextMeshProUGUI textoEstado;
+    [Header("UI (UI Toolkit)")]
+    public UIFinNocheController uiFinNocheController;   // ← NUEVO: controlador de la UI con UI Toolkit
 
-    [Header("UI - Visitantes")]
-    public TextMeshProUGUI textoNumVisitantes;   // "Num visitantes"
-    public TextMeshProUGUI textoDineroVisitantes; // "Dinero visitantes"
+    [Header("Referencias (opcional, solo si usas Canvas antiguo)")]
+    public GestorVisitantesSimple gestorVisitantes;
 
-    [Header("UI - Tareas")]
-    public TextMeshProUGUI textoNumTareas;       // "Num tareas"
-    public TextMeshProUGUI textoDineroTareas;    // "Dinero tareas"
-
-    [Header("UI - Botón")]
-    public Button botonContinuar;
-
-    public GestorVisitantes gestorVisitantes;
-
+    // Variables internas
     private int sueldoActual;
     private int nocheActual = 1;
     private bool visitanteCorrecto = false;
@@ -38,10 +27,10 @@ public class GestionNoches : MonoBehaviour
     void Start()
     {
         sueldoActual = sueldoBase;
-        pantallaFinNoche.SetActive(false);
         Debug.Log($"NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
+    // Llamado desde VisitanteSimple cuando pulsan VERDE (INCORRECTO)
     public void RegistrarVisitanteAceptado()
     {
         penalizacionVisitante = penalizacionVisitanteIncorrecto;
@@ -53,6 +42,7 @@ public class GestionNoches : MonoBehaviour
             gestorVisitantes.RegistrarRespuestaVisitante();
     }
 
+    // Llamado desde VisitanteSimple cuando pulsan ROJO (CORRECTO)
     public void RegistrarVisitanteRechazado()
     {
         penalizacionVisitante = 0;
@@ -63,12 +53,14 @@ public class GestionNoches : MonoBehaviour
             gestorVisitantes.RegistrarRespuestaVisitante();
     }
 
+    // Llamado desde el minijuego de velas al completarlo
     public void CompletarTarea()
     {
         tareaCompletada = true;
         Debug.Log("Tarea completada!");
     }
 
+    // Llamado por GestorVisitantes cuando el visitante termina de salir
     public void TerminarNoche()
     {
         Debug.Log("=== FIN DE LA NOCHE ===");
@@ -83,66 +75,47 @@ public class GestionNoches : MonoBehaviour
         MostrarPantallaFinNoche(penalizacionTarea);
     }
 
-    void MostrarPantallaFinNoche(int penalizacionTarea)
+    // Aquí se muestra la pantalla usando UI Toolkit (ya no usa Canvas)
+    private void MostrarPantallaFinNoche(int penalizacionTarea)
     {
-        textoNoche.text = $"NOCHE {nocheActual}";
-
-        // Visitantes
-        if (textoNumVisitantes != null)
-            textoNumVisitantes.text = visitanteCorrecto ? "1/1" : "0/1";
-        if (textoDineroVisitantes != null)
-            textoDineroVisitantes.text = $"-{penalizacionVisitante}€";
-
-        // Tareas
-        if (textoNumTareas != null)
-            textoNumTareas.text = tareaCompletada ? "1/1" : "0/1";
-        if (textoDineroTareas != null)
-            textoDineroTareas.text = $"-{penalizacionTarea}€";
-
-        // Colores
-        if (textoDineroVisitantes != null)
-            textoDineroVisitantes.color = penalizacionVisitante > 0 ? Color.red : Color.green;
-        if (textoDineroTareas != null)
-            textoDineroTareas.color = penalizacionTarea > 0 ? Color.red : Color.green;
-
         bool despedido = sueldoActual < umbralDespido;
         bool victoria = !despedido && nocheActual >= 5;
 
-        botonContinuar.onClick.RemoveAllListeners();
+        // Acción que se ejecutará cuando el usuario pulse el botón
+        System.Action onContinue = () =>
+        {
+            if (despedido || victoria)
+                ReiniciarJuego();
+            else
+                SiguienteNoche();
+        };
 
-        if (despedido)
-        {
-            textoEstado.text = "💀 GAME OVER 💀";
-            botonContinuar.GetComponentInChildren<TextMeshProUGUI>().text = "REINICIAR";
-            botonContinuar.onClick.AddListener(ReiniciarJuego);
-        }
-        else if (victoria)
-        {
-            textoEstado.text = "🏆 VICTORIA 🏆";
-            botonContinuar.GetComponentInChildren<TextMeshProUGUI>().text = "JUGAR DE NUEVO";
-            botonContinuar.onClick.AddListener(ReiniciarJuego);
-        }
-        else
-        {
-            textoEstado.text = "COMPLETADA";
-            botonContinuar.GetComponentInChildren<TextMeshProUGUI>().text = "SIGUIENTE NOCHE";
-            botonContinuar.onClick.AddListener(SiguienteNoche);
-        }
-
-        pantallaFinNoche.SetActive(true);
-        Time.timeScale = 0f;
+        // Mostrar la pantalla con el controlador de UI Toolkit
+        uiFinNocheController.MostrarResultados(
+            noche: nocheActual,
+            visitanteCorrecto: visitanteCorrecto,
+            penalizacionVisitante: penalizacionVisitante,
+            tareaCompletada: tareaCompletada,
+            penalizacionTarea: penalizacionTarea,
+            sueldoActual: sueldoActual,
+            onContinue: onContinue
+        );
     }
 
-    void SiguienteNoche()
+    private void SiguienteNoche()
     {
         nocheActual++;
         visitanteCorrecto = false;
         tareaCompletada = false;
         penalizacionVisitante = 0;
 
-        pantallaFinNoche.SetActive(false);
+        // Ocultamos la pantalla
+        uiFinNocheController.Ocultar();
+
+        // Reanudar el tiempo (por si estaba pausado)
         Time.timeScale = 1f;
 
+        // Reiniciar el visitante para que vuelva a aparecer
         VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
         if (visitante != null)
             visitante.ReiniciarParaNuevaNoche();
@@ -150,7 +123,7 @@ public class GestionNoches : MonoBehaviour
         Debug.Log($"NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
-    void ReiniciarJuego()
+    private void ReiniciarJuego()
     {
         nocheActual = 1;
         sueldoActual = sueldoBase;
@@ -158,7 +131,8 @@ public class GestionNoches : MonoBehaviour
         tareaCompletada = false;
         penalizacionVisitante = 0;
 
-        pantallaFinNoche.SetActive(false);
+        uiFinNocheController.Ocultar();
+
         Time.timeScale = 1f;
 
         VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
