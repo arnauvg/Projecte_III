@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ObjetoRecogible : Interactuable
+public class Recogible : Interactuable
 {
     private bool estaRecogido = false;
     private Vector3 posicionOriginal;
@@ -10,15 +10,14 @@ public class ObjetoRecogible : Interactuable
 
     void Start()
     {
-        // Guardar posiciï¿½n y rotaciï¿½n original
+        // Guardar posición y rotación original
         posicionOriginal = transform.position;
         rotacionOriginal = transform.rotation;
         rb = GetComponent<Rigidbody>();
-
         if (rb == null)
             rb = gameObject.AddComponent<Rigidbody>();
 
-        // Crear punto donde se colocarï¿½ el objeto en la mano (derecha)
+        // Crear punto donde se colocará el objeto en la mano (derecha)
         GameObject punto = new GameObject("PuntoSujecion");
         punto.transform.SetParent(Camera.main.transform);
         punto.transform.localPosition = new Vector3(0f, 0f, 1.2f);
@@ -51,7 +50,7 @@ public class ObjetoRecogible : Interactuable
             }
             else
             {
-                // Si no hay superficie, soltar delante de la cï¿½mara
+                // Si no hay superficie, soltar delante de la cámara
                 transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2f;
             }
 
@@ -69,13 +68,12 @@ public class ObjetoRecogible : Interactuable
     {
         if (estaRecogido)
         {
-            // Mover objeto suavemente al punto de sujeciï¿½n
+            // Mover objeto suavemente al punto de sujeción
             Vector3 posicionObjetivo = Vector3.Lerp(transform.position, puntoDeSujecion.position, Time.deltaTime * 40f);
-        rb.MovePosition(posicionObjetivo);
+            rb.MovePosition(posicionObjetivo);
 
-        Quaternion rotacionObjetivo = Quaternion.Lerp(transform.rotation, puntoDeSujecion.rotation, Time.deltaTime * 40f);
-        rb.MoveRotation(rotacionObjetivo);
-
-            }
+            Quaternion rotacionObjetivo = Quaternion.Lerp(transform.rotation, puntoDeSujecion.rotation, Time.deltaTime * 40f);
+            rb.MoveRotation(rotacionObjetivo);
+        }
     }
 }
