@@ -401,13 +401,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10960689316080a4ca7c9f499832b211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdPoint: {fileID: 0}
-  holdLocalPos: {x: 0, y: 0, z: 0}
-  holdLocalRot: {x: 0, y: 0, z: 0}
-  interiorTag: DrawerInterior
-  agarrado: 0
-  padreOriginal: {fileID: 0}
-  rb: {fileID: 0}
 --- !u!114 &99795612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2758,7 +2751,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 355c666d50e9bae4f9d2077f2ab0ac30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distancia: 3
 --- !u!4 &1003058977 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 833502453606520987, guid: 74091c39a8d1b00438645a3f09942165, type: 3}
@@ -2936,13 +2928,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10960689316080a4ca7c9f499832b211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdPoint: {fileID: 0}
-  holdLocalPos: {x: 0, y: 0, z: 0}
-  holdLocalRot: {x: 0, y: 0, z: 0}
-  interiorTag: DrawerInterior
-  agarrado: 0
-  padreOriginal: {fileID: 0}
-  rb: {fileID: 0}
 --- !u!114 &1045669435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3180,8 +3165,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 872386725}
-        m_TargetAssemblyTypeName: Manual, Assembly-CSharp
-        m_MethodName: PaginaAnterior
+        m_TargetAssemblyTypeName: ManualUI, Assembly-CSharp
+        m_MethodName: AnteriorPagina
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3766,8 +3751,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 872386725}
-        m_TargetAssemblyTypeName: Manual, Assembly-CSharp
-        m_MethodName: CerrarManual
+        m_TargetAssemblyTypeName: ManualUI, Assembly-CSharp
+        m_MethodName: Cerrar
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4148,13 +4133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10960689316080a4ca7c9f499832b211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdPoint: {fileID: 0}
-  holdLocalPos: {x: 0, y: 0, z: 0}
-  holdLocalRot: {x: 0, y: 0, z: 0}
-  interiorTag: DrawerInterior
-  agarrado: 0
-  padreOriginal: {fileID: 0}
-  rb: {fileID: 0}
 --- !u!65 &1451569036
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4872,7 +4850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e88fafaa0d39c4ea3cc88f4abaa16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manual: {fileID: 872386725}
+  manualUI: {fileID: 0}
 --- !u!1 &1751496921
 GameObject:
   m_ObjectHideFlags: 0
@@ -5123,13 +5101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10960689316080a4ca7c9f499832b211, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdPoint: {fileID: 0}
-  holdLocalPos: {x: 0, y: 0, z: 0}
-  holdLocalRot: {x: 0, y: 0, z: 0}
-  interiorTag: DrawerInterior
-  agarrado: 0
-  padreOriginal: {fileID: 0}
-  rb: {fileID: 0}
 --- !u!114 &1768145596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5809,8 +5780,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 872386725}
-        m_TargetAssemblyTypeName: Manual, Assembly-CSharp
-        m_MethodName: PaginaSiguiente
+        m_TargetAssemblyTypeName: ManualUI, Assembly-CSharp
+        m_MethodName: SiguientePagina
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6506,7 +6477,6 @@ GameObject:
   - component: {fileID: 5880947993951615761}
   - component: {fileID: 6566577896346527425}
   - component: {fileID: 2060314495106301206}
-  - component: {fileID: 6566577896346527426}
   m_Layer: 0
   m_Name: mug
   m_TagString: Untagged
@@ -7251,13 +7221,35 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3123996341944661659}
+  - component: {fileID: 4050575399647533292}
   m_Layer: 0
   m_Name: red_button_padre
-  m_TagString: Untagged
+  m_TagString: BotonRojo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!65 &4050575399647533292
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4050575399647533291}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.9, y: 1.86, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4058796751892983174
 GameObject:
   m_ObjectHideFlags: 0
@@ -7537,6 +7529,8 @@ GameObject:
   - component: {fileID: 6815776361753197737}
   - component: {fileID: 6597270317456757742}
   - component: {fileID: 5066136767028581459}
+  - component: {fileID: 6815776361753197738}
+  - component: {fileID: 6815776361753197739}
   m_Layer: 0
   m_Name: phone_handset
   m_TagString: Untagged
@@ -8068,7 +8062,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e88fafaa0d39c4ea3cc88f4abaa16d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  manual: {fileID: 872386725}
+  manualUI: {fileID: 872386725}
 --- !u!65 &5388621150776211382
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8645,27 +8639,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2201726269357238119}
   m_Mesh: {fileID: -1357407304804093125, guid: d39dfc32f6b9b0549ba18a94ff9bb4e9, type: 3}
---- !u!65 &6566577896346527426
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2201726269357238119}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2.051181, y: 2.476306, z: 2.1176817}
-  m_Center: {x: -0.0509601, y: 0.2635292, z: 0.060071394}
 --- !u!33 &6597270317456757742
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -8720,6 +8693,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7931234945788430840}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6815776361753197738
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4479198715782009955}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.181666, y: 20.068216, z: 5.798019}
+  m_Center: {x: -0.11202518, y: 0.000004820826, z: -1.9823383}
+--- !u!114 &6815776361753197739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4479198715782009955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7bb2771b97ff9b419098ee48c0d0f0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6818478480044181578
 GameObject:
   m_ObjectHideFlags: 0
@@ -9386,6 +9392,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3010913619053657213}
+  - component: {fileID: 8744258513897944550}
+  - component: {fileID: 8744258513897944551}
   m_Layer: 0
   m_Name: mug_padre
   m_TagString: Untagged
@@ -9393,6 +9401,39 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8744258513897944550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8744258513897944549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef7b4b290f051a24f8f2a86780cc2d30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!65 &8744258513897944551
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8744258513897944549}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.32, y: 1.64, z: 1.52}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!65 &8756834085948628707
 BoxCollider:
   m_ObjectHideFlags: 0

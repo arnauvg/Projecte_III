@@ -1,2 +1,14 @@
 fileFormatVersion: 2
 guid: cdb6f3b55ec3ef840b26af0ad4d2220f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - canvasManual: {instanceID: 0}
+  - controladorJugador: {instanceID: 0}
+  - imagenPagina: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
