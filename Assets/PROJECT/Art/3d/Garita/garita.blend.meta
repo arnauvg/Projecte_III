@@ -3,7 +3,102 @@ guid: d39dfc32f6b9b0549ba18a94ff9bb4e9
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Base
+    second: {fileID: 2100000, guid: a2256da74324e2c4c9c41b4438dd7f4d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Book_cover
+    second: {fileID: 2100000, guid: 4750c9bba5cc6b147be45308c569dda2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: "Bot\xF3n"
+    second: {fileID: 2100000, guid: 1a3d29a9f8335264a83334c3c84ef3ab, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cafe
+    second: {fileID: 2100000, guid: 79ae7f2357641814eab3a23952136c2c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Green_b
+    second: {fileID: 2100000, guid: 1133eaa0a854d014f9fa9944e4e1b7f7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Light
+    second: {fileID: 2100000, guid: bf0ab921e665c09469f0c9c4482680fc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: afc56cf070bc1cc42b1aec60f1ce993c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.001
+    second: {fileID: 2100000, guid: 0d315bb7b6d56a04a9db1a31d9b30822, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.003
+    second: {fileID: 2100000, guid: 056782db422e2174eba0e38959bf113d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Metal
+    second: {fileID: 2100000, guid: 5e08d24f7111c3649832dab444e70c6f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Metal_locker
+    second: {fileID: 2100000, guid: d1fe1517f4e986747aabbae1d597d07d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: PC
+    second: {fileID: 2100000, guid: 50abb31aa0f59104aa4789263b605b35, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pages
+    second: {fileID: 2100000, guid: 6b18ee11078ce5f43b6dcc2a94d9badb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pantalla.001
+    second: {fileID: 2100000, guid: 42f213022b5380e439cce4e3786076d9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pomo
+    second: {fileID: 2100000, guid: eb2a8911e5c45af4a970a6fb8cedf527, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Red_b
+    second: {fileID: 2100000, guid: 0e3fd43148ecb12499b6b7b68d2a2714, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood
+    second: {fileID: 2100000, guid: 1b1017f759adbcc42ac956d9004d352e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ajo
+    second: {fileID: 2100000, guid: da684232688e3fe41b5f84790e16770d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: garita_walls
+    second: {fileID: 2100000, guid: 6aa875b98e2990247a4d064e3c717c68, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
