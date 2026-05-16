@@ -8,14 +8,13 @@ public class ObjetoArrastrableUI : MonoBehaviour, IBeginDragHandler, IDragHandle
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Canvas canvas;
-
     private Vector2 posicionInicial;
 
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-        canvasGroup = GetComponent<CanvasGroup>();
         canvas = GetComponentInParent<Canvas>();
+        canvasGroup = GetComponent<CanvasGroup>();
 
         if (canvasGroup == null)
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
@@ -40,7 +39,7 @@ public class ObjetoArrastrableUI : MonoBehaviour, IBeginDragHandler, IDragHandle
     {
         canvasGroup.blocksRaycasts = true;
 
-        // Siempre vuelve a su sitio después de soltarlo
+        // Vuelve a su posición original
         rectTransform.anchoredPosition = posicionInicial;
     }
 }

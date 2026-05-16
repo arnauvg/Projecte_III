@@ -7,9 +7,17 @@ public class ZonaPilaDrop : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        Debug.Log("He soltado algo en ZonaPila");
+
         ObjetoArrastrableUI objeto = eventData.pointerDrag.GetComponent<ObjetoArrastrableUI>();
 
-        if (objeto == null) return;
+        if (objeto == null)
+        {
+            Debug.Log("El objeto soltado no tiene ObjetoArrastrableUI");
+            return;
+        }
+
+        Debug.Log("Objeto soltado: " + objeto.tipoObjeto);
 
         if (objeto.tipoObjeto == "Trapo")
         {

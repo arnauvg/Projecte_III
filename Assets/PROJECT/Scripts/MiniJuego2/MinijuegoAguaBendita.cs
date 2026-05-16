@@ -5,14 +5,13 @@ public class MinijuegoAguaBendita : MonoBehaviour
     [Header("Canvas")]
     public GameObject canvasMinijuego;
 
-    [Header("Estados de la pila")]
-    public GameObject pilaSucia1;
-    public GameObject pilaSucia2;
-    public GameObject pilaLimpiaSinAgua;
-    public GameObject pilaLimpiaConAgua;
+    [Header("Estados visuales de la pila")]
+    public GameObject pilaMuySucia;
+    public GameObject pilaAguaSucia;
+    public GameObject pilaVacia;
+    public GameObject pilaLlenaAguaLimpia;
 
-    private int nivelLimpieza = 0;
-    private bool tieneAgua = false;
+    private int estadoPila = 0;
     private bool minijuegoCompletado = false;
 
     void Start()
@@ -25,14 +24,13 @@ public class MinijuegoAguaBendita : MonoBehaviour
 
     void MostrarEstadoInicial()
     {
-        pilaSucia1.SetActive(true);
-        pilaSucia2.SetActive(false);
-        pilaLimpiaSinAgua.SetActive(false);
-        pilaLimpiaConAgua.SetActive(false);
-
-        nivelLimpieza = 0;
-        tieneAgua = false;
+        estadoPila = 0;
         minijuegoCompletado = false;
+
+        pilaMuySucia.SetActive(true);
+        pilaAguaSucia.SetActive(false);
+        pilaVacia.SetActive(false);
+        pilaLlenaAguaLimpia.SetActive(false);
     }
 
     public void AbrirMinijuego()
@@ -54,31 +52,34 @@ public class MinijuegoAguaBendita : MonoBehaviour
     public void UsarTrapo()
     {
         if (minijuegoCompletado) return;
-        if (tieneAgua) return;
 
-        nivelLimpieza++;
-
-        if (nivelLimpieza == 1)
+        if (estadoPila == 0)
         {
-            pilaSucia1.SetActive(false);
-            pilaSucia2.SetActive(true);
-            pilaLimpiaSinAgua.SetActive(false);
-            pilaLimpiaConAgua.SetActive(false);
+            // De pila muy sucia a pila con agua sucia
+            pilaMuySucia.SetActive(false);
+            pilaAguaSucia.SetActive(true);
+            pilaVacia.SetActive(false);
+            pilaLlenaAguaLimpia.SetActive(false);
 
-            Debug.Log("Primer paso de limpieza completado.");
+            estadoPila = 1;
+
+            Debug.Log("Primer paso: has limpiado la suciedad exterior.");
         }
-        else if (nivelLimpieza == 2)
+        else if (estadoPila == 1)
         {
-            pilaSucia1.SetActive(false);
-            pilaSucia2.SetActive(false);
-            pilaLimpiaSinAgua.SetActive(true);
-            pilaLimpiaConAgua.SetActive(false);
+            // De pila con agua sucia a pila vacía
+            pilaMuySucia.SetActive(false);
+            pilaAguaSucia.SetActive(false);
+            pilaVacia.SetActive(true);
+            pilaLlenaAguaLimpia.SetActive(false);
 
-            Debug.Log("Pila limpia. Ahora puedes rellenarla con agua bendita.");
+            estadoPila = 2;
+
+            Debug.Log("Segundo paso: has quitado el agua sucia. Ahora falta rellenar.");
         }
-        else
+        else if (estadoPila == 2)
         {
-            nivelLimpieza = 2;
+            Debug.Log("La pila ya está limpia. Ahora usa la botella de agua bendita.");
         }
     }
 
@@ -86,20 +87,24 @@ public class MinijuegoAguaBendita : MonoBehaviour
     {
         if (minijuegoCompletado) return;
 
-        if (nivelLimpieza < 2)
+        if (estadoPila < 2)
         {
-            Debug.Log("Primero tienes que limpiar completamente la pila.");
+            Debug.Log("Primero tienes que limpiar la pila con el trapo.");
             return;
         }
 
-        pilaSucia1.SetActive(false);
-        pilaSucia2.SetActive(false);
-        pilaLimpiaSinAgua.SetActive(false);
-        pilaLimpiaConAgua.SetActive(true);
+        if (estadoPila == 2)
+        {
+            // De pila vacía a pila llena con agua limpia
+            pilaMuySucia.SetActive(false);
+            pilaAguaSucia.SetActive(false);
+            pilaVacia.SetActive(false);
+            pilaLlenaAguaLimpia.SetActive(true);
 
-        tieneAgua = true;
-        minijuegoCompletado = true;
+            estadoPila = 3;
+            minijuegoCompletado = true;
 
-        Debug.Log("Minijuego completado: pila limpia y llena de agua bendita.");
+            Debug.Log("Minijuego completado: pila limpia y llena de agua bendita.");
+        }
     }
 }
