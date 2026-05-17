@@ -8,32 +8,32 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Grave path
-    second: {fileID: 2100000, guid: e3e902ab996b8b245b326d893181d77c, type: 2}
+    second: {fileID: 2100000, guid: 8754e1768f473f046819bbad7125469b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Gravestone
-    second: {fileID: 2100000, guid: 0eb743c4e367fa14497558480d0f1ebc, type: 2}
+    second: {fileID: 2100000, guid: bc538ce7219f5c84c94a40627748e720, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Light
-    second: {fileID: 2100000, guid: bddbca88456024f4fbe0369260404e84, type: 2}
+    second: {fileID: 2100000, guid: 3ca646b3cc328ca46ac6883eef439164, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Material
-    second: {fileID: 2100000, guid: 96b7331eafb17f24ab010028690760ed, type: 2}
+    second: {fileID: 2100000, guid: 86e3909e51ef67544be3bf9ce33f7b38, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Metal
-    second: {fileID: 2100000, guid: b9b40b60593def74ab5220cd39d8bd96, type: 2}
+    second: {fileID: 2100000, guid: 6e891e44dcfe7274b9a9d416d61079f6, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Tree
-    second: {fileID: 2100000, guid: a8c51d9e10b7b3141ae427ae229eb41b, type: 2}
+    second: {fileID: 2100000, guid: cca1d51b81946304abed2ae2eb992bd7, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
