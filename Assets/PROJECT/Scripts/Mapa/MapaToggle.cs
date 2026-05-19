@@ -30,6 +30,7 @@ public class MapaToggle : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        
 
         Time.timeScale = 0f; // pausa el juego
     }

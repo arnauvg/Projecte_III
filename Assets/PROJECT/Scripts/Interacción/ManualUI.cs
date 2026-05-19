@@ -23,6 +23,7 @@ public class ManualUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         if (controladorJugador != null) controladorJugador.enabled = false;
+        
     }
 
     public void Cerrar()
@@ -31,6 +32,7 @@ public class ManualUI : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         if (controladorJugador != null) controladorJugador.enabled = true;
+        
     }
 
     public void SiguientePagina() { if (paginaActual < paginas.Length - 1) { paginaActual++; MostrarPagina(); } }
