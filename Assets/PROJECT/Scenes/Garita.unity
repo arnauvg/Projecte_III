@@ -3958,7 +3958,7 @@ Transform:
   - {fileID: 232485568}
   - {fileID: 471620196}
   - {fileID: 1846807983}
-  - {fileID: 1589162818}
+  - {fileID: 1828898099}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1451569034 stripped
@@ -4275,55 +4275,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5219675757743817171, guid: 824aabb401d7e7742b2e9f4fd510e198, type: 3}
   m_PrefabInstance: {fileID: 501158081633139451}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1589162817
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1589162818}
-  - component: {fileID: 1589162819}
-  m_Layer: 0
-  m_Name: 'DialogueManager '
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1589162818
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1589162817}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 510.0724, y: 297.9653, z: -8.5805855}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1442760443}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1589162819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1589162817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a386dd74a8d94df4f8b4221cd5164ef7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiDocument: {fileID: 0}
-  dialogues: []
-  charDelay: 0.05
-  typingClip: {fileID: 0}
-  audioSource: {fileID: 0}
 --- !u!1 &1598622689 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1803268687796672030, guid: 7dab5241f7f3d324eae327d8923a9cab, type: 3}
@@ -5053,6 +5004,94 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 2591195794852922921, guid: 0e74faa7e6fa0c74cae80cf5af94b357, type: 3}
+--- !u!1 &1828898096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1828898099}
+  - component: {fileID: 1828898098}
+  - component: {fileID: 1828898097}
+  m_Layer: 0
+  m_Name: UI_Dialogue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1828898097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828898096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a386dd74a8d94df4f8b4221cd5164ef7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1828898098}
+  dialogues:
+  - speakerName: Jefe
+    sentences:
+    - "\xA1Eh, Johnny! Por fin coges el tel\xE9fono. Soy Don Ernesto, tu jefe."
+    - "El anterior vigilante\u2026 desapareci\xF3. Pero no te rayes, \xBFvale? Bueno,
+      un poco s\xED."
+    - Abre el manual de criaturas que tienes en la mesa. Es el libro amarillo.
+    - "Ah\xED ver\xE1s seres m\xE1gicos que vienen a hacer el mal: vampiros, brujas,
+      diablos\u2026"
+    - "Cada criatura tiene sus caracter\xEDsticas. Est\xFAdiatelas bien o la liar\xE1s."
+    - Cuando aparezca alguien en la ventanilla de la garita, usa el manual para identificar.
+    - "Si es malo, pulsa el bot\xF3n ROJO: no pasa. Si es inofensivo, pulsa VERDE
+      y que entre."
+    - "Pero si dejas pasar a un vampiro o a una bruja\u2026 te aseguro que te quedas
+      sin sueldo."
+    - El cementerio es sagrado, no podemos permitir magia negra ni vandalismo.
+    - "\xBFQueda claro? Me juego el prestigio contigo. A la m\xEDnima, est\xE1s despedido."
+    - "Tambi\xE9n tendr\xE1s tareas extras que hacer antes de que acabe la noche."
+    - "Pero de eso ya te hablar\xE9 cuando surjan. Por ahora, centrate en la entrada."
+    - "En fin\u2026 empieza ya. No me falles, que el que falla se va al paro."
+  charDelay: 0.05
+  typingSound: {fileID: 8300000, guid: 17be527c9e0ba964ea842b843bd4b89a, type: 3}
+  audioSource: {fileID: 0}
+--- !u!114 &1828898098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828898096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: d47595520fe6c8c4eaaee69b778240c4, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 87daf00b1155e3f429c2ebc03b21807b, type: 3}
+  m_SortingOrder: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+--- !u!4 &1828898099
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1828898096}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.1408935, y: -1.2827022, z: -3.2454948}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1442760443}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1832110151
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5600,6 +5639,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7bb2771b97ff9b419098ee48c0d0f0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ringtone: {fileID: 0}
+  audioSource: {fileID: 0}
+  dialogueManager: {fileID: 0}
+  dialogueIndex: 0
 --- !u!64 &2144533569
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -5807,6 +5850,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7225918262177351592, guid: 8ce28a3be1919c143a19e96333db830a, type: 3}
+      propertyPath: ringtone
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e195d83b6fbddc4faeede6525793d0a, type: 3}
+    - target: {fileID: 7225918262177351592, guid: 8ce28a3be1919c143a19e96333db830a, type: 3}
+      propertyPath: dialogueManager
+      value: 
+      objectReference: {fileID: 1828898097}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
