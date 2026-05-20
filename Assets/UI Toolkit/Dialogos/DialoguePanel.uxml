@@ -1,10 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/Dialogos/DialogueStyle.uss?fileID=7433441132597879392&amp;guid=5ae05c9bd2a7817479e206c437eff020&amp;type=3#DialogueStyle" />
-    <ui:VisualElement name="DialogueContainer" style="flex-grow: 1; justify-content: flex-end; margin-bottom: 40px;" />
     <ui:VisualElement name="DialogueContainer" style="flex-grow: 1; justify-content: flex-end; margin-bottom: 40px;">
         <ui:VisualElement name="DialogueBox" style="background-color: rgba(0, 0, 0, 0.85); border-radius: 12px; padding: 18px; margin-left: 120px; margin-right: 120px; flex-direction: column;">
-            <ui:Label name="SpeakerNameLabel" text="Habla" style="color: white; font-size: 20px; -unity-font-style: bold; margin-bottom: 10px;" />
-            <ui:Label name="DialogueTextLabel" text="..." style="color: white; font-size: 24px; white-space: normal;" />
+            <ui:Label name="SpeakerNameLabel" text="Habla" style="color: white; font-size: 14px; -unity-font-style: bold; margin-bottom: 10px;" />
+            <ui:Label name="DialogueTextLabel" text="..." style="color: white; font-size: 16px; white-space: normal;" />
             <ui:Label name="NextIndicatorLabel" text="Espacio »" style="align-self: flex-end; margin-top: 12px; font-size: 14px; color: rgba(255, 255, 255, 0.7); -unity-font-style: normal; opacity: 1;" />
         </ui:VisualElement>
     </ui:VisualElement>

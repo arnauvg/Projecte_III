@@ -1,16 +1,17 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 public class Telefono : Interactuable
 {
     [Header("Audio")]
-    public AudioClip ringtone;        // Sonido que suena al inicio
-    public AudioSource audioSource;   // Se asignará automáticamente si no está
+    public AudioClip ringtone;
+    public AudioSource audioSource;
 
-    [Header("Diálogo")]
-    public DialogueManager dialogueManager; // Referencia al sistema de diálogo
-    public int dialogueIndex = 0;           // Índice del diálogo del jefe
+    [Header("DiÃ¡logo")]
+    public DialogueManager dialogueManager;
+    public int dialogueIndex = 0;
 
     private bool enMano = false;
+    private bool yaActivado = false; // ðŸ”’ Control para que solo se active una vez
     private Vector3 posOriginal;
     private Quaternion rotOriginal;
     private Transform puntoMano;
@@ -23,31 +24,24 @@ public class Telefono : Interactuable
         rb = GetComponent<Rigidbody>();
         if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
 
-        // Crear punto de agarre (hijo de la cámara)
         GameObject punto = new GameObject("PuntoTelefono");
         punto.transform.SetParent(Camera.main.transform);
         punto.transform.localPosition = new Vector3(-0.35f, -0.1f, 0.5f);
         punto.transform.localRotation = Quaternion.Euler(15f, 30f, 0f);
         puntoMano = punto.transform;
 
-        // Configurar AudioSource si no está
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
-        audioSource.loop = true;  // Que suene en bucle hasta que lo cojas
+        audioSource.loop = true;
 
-        // Reproducir tono al empezar
-        if (ringtone != null)
+        // Solo reproducir ringtone si aÃºn no se ha activado el diÃ¡logo
+        if (!yaActivado && ringtone != null)
         {
             audioSource.clip = ringtone;
             audioSource.Play();
         }
-        else
-        {
-            Debug.LogWarning("Teléfono sin sonido asignado.");
-        }
 
-        // Buscar automáticamente el DialogueManager si no está asignado
         if (dialogueManager == null)
             dialogueManager = FindObjectOfType<DialogueManager>();
     }
@@ -60,19 +54,16 @@ public class Telefono : Interactuable
             rb.isKinematic = true;
             rb.useGravity = false;
 
-            // Parar el sonido
-            if (audioSource.isPlaying) audioSource.Stop();
-
-            // Iniciar diálogo del jefe
-            if (dialogueManager != null)
+            // Si es la primera vez que se recoge, activar diÃ¡logo
+            if (!yaActivado)
             {
-                dialogueManager.StartDialogue(dialogueIndex);
+                if (audioSource.isPlaying) audioSource.Stop();
+                if (dialogueManager != null)
+                {
+                    dialogueManager.StartDialogue(dialogueIndex);
+                    yaActivado = true; // ðŸš« No se volverÃ¡ a activar
+                }
             }
-            else
-            {
-                Debug.LogError("No se encontró DialogueManager en la escena.");
-            }
-
             return true;
         }
         return false;
