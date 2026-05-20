@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -15,21 +15,19 @@ public class DialogueManager : MonoBehaviour
     [Header("UI Document")]
     [SerializeField] private UIDocument uiDocument;
 
-    [Header("Di�logos")]
+    [Header("Diálogos")]
     [SerializeField] private DialogueEntry[] dialogues;
 
-    [Header("M�quina de escribir")]
+    [Header("Máquina de escribir")]
     [SerializeField] private float charDelay = 0.05f;
     [SerializeField] private AudioClip typingSound;
     [SerializeField] private AudioSource audioSource;
 
-    // Elementos UI
     private VisualElement dialogueContainer;
     private Label speakerLabel;
     private Label textLabel;
     private Label nextIndicator;
 
-    // Estados
     private bool isActive = false;
     private int currentDialogue = 0;
     private int currentSentence = 0;
@@ -38,37 +36,35 @@ public class DialogueManager : MonoBehaviour
     private Coroutine typingCoroutine;
     private Coroutine blinkCoroutine;
 
-    void Start()
+    // 🟢 Usamos Awake para ocultar la UI antes del primer frame
+    private void Awake()
     {
-        // Obtener o a�adir AudioSource
+        if (uiDocument == null) uiDocument = GetComponent<UIDocument>();
+        if (uiDocument != null)
+        {
+            var root = uiDocument.rootVisualElement;
+            dialogueContainer = root.Q<VisualElement>("DialogueContainer");
+            speakerLabel = root.Q<Label>("SpeakerNameLabel");
+            textLabel = root.Q<Label>("DialogueTextLabel");
+            nextIndicator = root.Q<Label>("NextIndicatorLabel");
+
+            if (dialogueContainer != null)
+            {
+                dialogueContainer.style.display = DisplayStyle.None;
+            }
+        }
+
+        // Configurar audio
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (audioSource == null && typingSound != null)
             audioSource = gameObject.AddComponent<AudioSource>();
+    }
 
-        // Obtener el UIDocument
-        if (uiDocument == null) uiDocument = GetComponent<UIDocument>();
-        if (uiDocument == null)
-        {
-            Debug.LogError("DialogueManager: No hay UIDocument asignado ni en el GameObject.");
-            return;
-        }
-
-        var root = uiDocument.rootVisualElement;
-
-        dialogueContainer = root.Q<VisualElement>("DialogueContainer");
-        speakerLabel = root.Q<Label>("SpeakerNameLabel");
-        textLabel = root.Q<Label>("DialogueTextLabel");
-        nextIndicator = root.Q<Label>("NextIndicatorLabel");
-
-        if (dialogueContainer == null || speakerLabel == null || textLabel == null)
-        {
-            Debug.LogError("DialogueManager: No se encontraron los elementos UI. Revisa los nombres en el UXML.");
-            return;
-        }
-
-        // Ocultar al inicio
-        dialogueContainer.style.display = DisplayStyle.None;
-        if (nextIndicator != null) nextIndicator.style.display = DisplayStyle.None;
+    void Start()
+    {
+        // Doble seguridad: si por algún motivo no se ocultó en Awake, lo ocultamos ahora
+        if (dialogueContainer != null && dialogueContainer.style.display != DisplayStyle.None)
+            dialogueContainer.style.display = DisplayStyle.None;
     }
 
     void Update()
@@ -86,7 +82,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (dialogueIndex < 0 || dialogueIndex >= dialogues.Length)
         {
-            Debug.LogError("�ndice de di�logo inv�lido: " + dialogueIndex);
+            Debug.LogError("Índice de diálogo inválido: " + dialogueIndex);
             return;
         }
 
@@ -113,6 +109,9 @@ public class DialogueManager : MonoBehaviour
         isTyping = true;
         if (nextIndicator != null) nextIndicator.style.display = DisplayStyle.None;
 
+        // Detener cualquier sonido residual antes de empezar a escribir
+        if (audioSource != null) audioSource.Stop();
+
         for (int i = 0; i <= fullText.Length; i++)
         {
             textLabel.text = fullText.Substring(0, i);
@@ -122,6 +121,9 @@ public class DialogueManager : MonoBehaviour
             }
             yield return new WaitForSeconds(charDelay);
         }
+
+        // 🟢 Al terminar, paramos el audio por si queda algún clip largo (no suele pasar, pero por seguridad)
+        if (audioSource != null) audioSource.Stop();
 
         isTyping = false;
         if (nextIndicator != null)
@@ -137,6 +139,10 @@ public class DialogueManager : MonoBehaviour
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         textLabel.text = fullText;
         isTyping = false;
+
+        // Detener el sonido inmediatamente al saltar
+        if (audioSource != null) audioSource.Stop();
+
         if (nextIndicator != null)
         {
             nextIndicator.style.display = DisplayStyle.Flex;
@@ -185,5 +191,6 @@ public class DialogueManager : MonoBehaviour
         if (nextIndicator != null) nextIndicator.style.display = DisplayStyle.None;
         if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+        if (audioSource != null) audioSource.Stop(); // Aseguramos que el sonido se detiene al acabar el diálogo
     }
 }
