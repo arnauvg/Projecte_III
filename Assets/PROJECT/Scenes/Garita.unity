@@ -2053,6 +2053,51 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 2959467708922500008, guid: e6c59fe657179ac4382c1dfb531d94c3, type: 3}
+--- !u!1 &771070010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 771070011}
+  - component: {fileID: 771070012}
+  m_Layer: 0
+  m_Name: DevCheats
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &771070011
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771070010}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.1408935, y: -1.2827022, z: -3.2454948}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1442760443}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &771070012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771070010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01a8198dfceefd845907ddaee828ebd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skipKey: 282
 --- !u!1 &794005080
 GameObject:
   m_ObjectHideFlags: 0
@@ -3958,6 +4003,7 @@ Transform:
   - {fileID: 232485568}
   - {fileID: 471620196}
   - {fileID: 1846807983}
+  - {fileID: 771070011}
   - {fileID: 1828898099}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5055,7 +5101,7 @@ MonoBehaviour:
     - "Tambi\xE9n tendr\xE1s tareas extras que hacer antes de que acabe la noche."
     - "Pero de eso ya te hablar\xE9 cuando surjan. Por ahora, centrate en la entrada."
     - "En fin\u2026 empieza ya. No me falles, que el que falla se va al paro."
-  charDelay: 0.05
+  charDelay: 0.015
   typingSound: {fileID: 8300000, guid: 17be527c9e0ba964ea842b843bd4b89a, type: 3}
   audioSource: {fileID: 0}
 --- !u!114 &1828898098

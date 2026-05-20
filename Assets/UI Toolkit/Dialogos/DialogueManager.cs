@@ -18,8 +18,8 @@ public class DialogueManager : MonoBehaviour
     [Header("Diálogos")]
     [SerializeField] private DialogueEntry[] dialogues;
 
-    [Header("Máquina de escribir")]
-    [SerializeField] private float charDelay = 0.05f;
+    [Header("Typewriter")]
+    [SerializeField] private float charDelay = 1f;
     [SerializeField] private AudioClip typingSound;
     [SerializeField] private AudioSource audioSource;
 
@@ -36,7 +36,6 @@ public class DialogueManager : MonoBehaviour
     private Coroutine typingCoroutine;
     private Coroutine blinkCoroutine;
 
-    // 🟢 Usamos Awake para ocultar la UI antes del primer frame
     private void Awake()
     {
         if (uiDocument == null) uiDocument = GetComponent<UIDocument>();
@@ -49,12 +48,9 @@ public class DialogueManager : MonoBehaviour
             nextIndicator = root.Q<Label>("NextIndicatorLabel");
 
             if (dialogueContainer != null)
-            {
                 dialogueContainer.style.display = DisplayStyle.None;
-            }
         }
 
-        // Configurar audio
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (audioSource == null && typingSound != null)
             audioSource = gameObject.AddComponent<AudioSource>();
@@ -62,7 +58,6 @@ public class DialogueManager : MonoBehaviour
 
     void Start()
     {
-        // Doble seguridad: si por algún motivo no se ocultó en Awake, lo ocultamos ahora
         if (dialogueContainer != null && dialogueContainer.style.display != DisplayStyle.None)
             dialogueContainer.style.display = DisplayStyle.None;
     }
@@ -90,6 +85,11 @@ public class DialogueManager : MonoBehaviour
         currentSentence = 0;
         isActive = true;
         dialogueContainer.style.display = DisplayStyle.Flex;
+
+        // Iniciar parpadeo del indicador (estará siempre visible)
+        if (nextIndicator != null && blinkCoroutine == null)
+            blinkCoroutine = StartCoroutine(BlinkIndicator());
+
         ShowCurrentSentence();
     }
 
@@ -107,9 +107,7 @@ public class DialogueManager : MonoBehaviour
     private IEnumerator Typewriter()
     {
         isTyping = true;
-        if (nextIndicator != null) nextIndicator.style.display = DisplayStyle.None;
-
-        // Detener cualquier sonido residual antes de empezar a escribir
+        // Ya no ocultamos el indicador
         if (audioSource != null) audioSource.Stop();
 
         for (int i = 0; i <= fullText.Length; i++)
@@ -122,16 +120,9 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForSeconds(charDelay);
         }
 
-        // 🟢 Al terminar, paramos el audio por si queda algún clip largo (no suele pasar, pero por seguridad)
         if (audioSource != null) audioSource.Stop();
-
         isTyping = false;
-        if (nextIndicator != null)
-        {
-            nextIndicator.style.display = DisplayStyle.Flex;
-            if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
-            blinkCoroutine = StartCoroutine(BlinkIndicator());
-        }
+        // No hacemos nada con el indicador, sigue parpadeando
     }
 
     private void SkipTyping()
@@ -139,16 +130,7 @@ public class DialogueManager : MonoBehaviour
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         textLabel.text = fullText;
         isTyping = false;
-
-        // Detener el sonido inmediatamente al saltar
         if (audioSource != null) audioSource.Stop();
-
-        if (nextIndicator != null)
-        {
-            nextIndicator.style.display = DisplayStyle.Flex;
-            if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
-            blinkCoroutine = StartCoroutine(BlinkIndicator());
-        }
     }
 
     private IEnumerator BlinkIndicator()
@@ -158,18 +140,19 @@ public class DialogueManager : MonoBehaviour
         bool visible = true;
         float blinkSpeed = 0.5f;
 
-        while (!isTyping && isActive)
+        while (isActive) // Parpadea mientras el diálogo esté activo, aunque se esté escribiendo
         {
             visible = !visible;
-            nextIndicator.style.opacity = visible ? 1f : 0.3f;
+            nextIndicator.style.opacity = visible ? 1f : 0.4f;
             yield return new WaitForSeconds(blinkSpeed);
         }
+        // Al salir, restaurar opacidad total
         nextIndicator.style.opacity = 1f;
     }
 
     private void Advance()
     {
-        if (!isActive || isTyping) return;
+        if (!isActive) return; // No se avanza si el diálogo no está activo
 
         var entry = dialogues[currentDialogue];
         currentSentence++;
@@ -188,38 +171,15 @@ public class DialogueManager : MonoBehaviour
     {
         isActive = false;
         dialogueContainer.style.display = DisplayStyle.None;
-        if (nextIndicator != null) nextIndicator.style.display = DisplayStyle.None;
         if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
-        if (audioSource != null) audioSource.Stop(); // Aseguramos que el sonido se detiene al acabar el diálogo
+        if (audioSource != null) audioSource.Stop();
+        blinkCoroutine = null;
     }
 
     public void ForceEndDialogue()
     {
-        if (isActive)
-        {
-            // Detener corrutinas de escritura y parpadeo
-            if (typingCoroutine != null) StopCoroutine(typingCoroutine);
-            if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
-
-            // Detener sonido de typing
-            if (audioSource != null) audioSource.Stop();
-
-            // Ocultar UI
-            if (dialogueContainer != null)
-                dialogueContainer.style.display = DisplayStyle.None;
-            if (nextIndicator != null)
-                nextIndicator.style.display = DisplayStyle.None;
-
-            isActive = false;
-            isTyping = false;
-            Debug.Log("[Cheat] Diálogo forzado a terminar.");
-        }
-        else
-        {
-            // Por si acaso la UI quedó visible por error
-            if (dialogueContainer != null && dialogueContainer.style.display != DisplayStyle.None)
-                dialogueContainer.style.display = DisplayStyle.None;
-        }
+        if (isActive) EndDialogue();
+        else if (dialogueContainer != null) dialogueContainer.style.display = DisplayStyle.None;
     }
 }
