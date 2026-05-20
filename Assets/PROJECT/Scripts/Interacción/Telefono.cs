@@ -90,4 +90,15 @@ public class Telefono : Interactuable
             transform.rotation = Quaternion.Lerp(transform.rotation, puntoMano.rotation, Time.deltaTime * 15f);
         }
     }
+
+    public void SkipPhone()
+    {
+        if (!yaActivado)
+        {
+            if (audioSource != null && audioSource.isPlaying)
+                audioSource.Stop();
+            yaActivado = true;
+            Debug.Log("[Cheat] Teléfono desactivado (ya no sonará ni activará diálogo).");
+        }
+    }
 }

@@ -193,4 +193,33 @@ public class DialogueManager : MonoBehaviour
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         if (audioSource != null) audioSource.Stop(); // Aseguramos que el sonido se detiene al acabar el diálogo
     }
+
+    public void ForceEndDialogue()
+    {
+        if (isActive)
+        {
+            // Detener corrutinas de escritura y parpadeo
+            if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+            if (blinkCoroutine != null) StopCoroutine(blinkCoroutine);
+
+            // Detener sonido de typing
+            if (audioSource != null) audioSource.Stop();
+
+            // Ocultar UI
+            if (dialogueContainer != null)
+                dialogueContainer.style.display = DisplayStyle.None;
+            if (nextIndicator != null)
+                nextIndicator.style.display = DisplayStyle.None;
+
+            isActive = false;
+            isTyping = false;
+            Debug.Log("[Cheat] Diálogo forzado a terminar.");
+        }
+        else
+        {
+            // Por si acaso la UI quedó visible por error
+            if (dialogueContainer != null && dialogueContainer.style.display != DisplayStyle.None)
+                dialogueContainer.style.display = DisplayStyle.None;
+        }
+    }
 }
