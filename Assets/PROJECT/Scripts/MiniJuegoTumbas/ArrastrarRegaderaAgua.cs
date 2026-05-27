@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ArrastrarRegadera : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class ArrastrarRegaderaAgua : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    public GestorMinijuegoAgua gestor;
+
     private RectTransform rectTransform;
     private Canvas canvas;
     private Vector2 posicionInicial;
-
-    public GestorMinijuegoAgua gestor;   // Arrastra el objeto GestorMinijuegoAgua desde el inspector
+    private bool puedoArrastrar = false;
 
     void Awake()
     {
@@ -18,26 +19,33 @@ public class ArrastrarRegadera : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        posicionInicial = rectTransform.anchoredPosition;
+        if (gestor == null) return;
+
+        if (!gestor.PuedeMoverRegadera())
+        {
+            Debug.Log("La regadera todavía no está llena");
+            puedoArrastrar = false;
+            return;
+        }
+
+        puedoArrastrar = true;
+        gestor.EmpezarMoverRegadera();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!puedoArrastrar) return;
+
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (gestor != null)
-        {
-            gestor.ComprobarSuelta(rectTransform);
-        }
-        else
-        {
-            Debug.LogError("No se ha asignado el GestorMinijuegoAgua en ArrastrarRegadera");
-        }
+        if (!puedoArrastrar) return;
 
-        // Vuelve a su posición inicial (con o sin riego)
+        gestor.SoltarRegadera(rectTransform);
+
         rectTransform.anchoredPosition = posicionInicial;
+        puedoArrastrar = false;
     }
 }

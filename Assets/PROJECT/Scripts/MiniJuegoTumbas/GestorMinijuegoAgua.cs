@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GestorMinijuegoAgua : MonoBehaviour
@@ -15,12 +16,16 @@ public class GestorMinijuegoAgua : MonoBehaviour
     public GameObject regaderaLlena;
     public GameObject regaderaAguaSale;
 
-    // Referencia para detección por posición (opcional, solo si usas UI)
-    [Header("Opcional - UI")]
-    public RectTransform tumbaRectTransform;  // Asigna aquí el RectTransform de la tumba (si es UI)
+    [Header("Zona")]
+    public RectTransform zonaTumba;
 
-    private bool tieneAgua = false;
-    private bool completado = false;
+    [Header("Tiempo")]
+    public float tiempoLlenado = 2f;
+
+    private bool grifoAbiertoEstado = false;
+    private bool regaderaEstaLlena = false;
+    private bool tareaCompletada = false;
+    private bool llenando = false;
 
     void Start()
     {
@@ -29,29 +34,67 @@ public class GestorMinijuegoAgua : MonoBehaviour
 
     public void ClickGrifo()
     {
-        if (completado) return;
+        if (tareaCompletada) return;
 
-        Debug.Log("Has clicado el grifo");
+        if (!grifoAbiertoEstado)
+        {
+            AbrirGrifo();
+        }
+        else
+        {
+            CerrarGrifo();
+        }
+    }
 
-        tieneAgua = true;
+    void AbrirGrifo()
+    {
+        Debug.Log("Grifo abierto");
+
+        grifoAbiertoEstado = true;
 
         grifoNormal.SetActive(false);
         grifoAbierto.SetActive(true);
 
+        if (!regaderaEstaLlena && !llenando)
+        {
+            StartCoroutine(LlenarRegaderaDespuesDeTiempo());
+        }
+    }
+
+    IEnumerator LlenarRegaderaDespuesDeTiempo()
+    {
+        llenando = true;
+
+        yield return new WaitForSecondsRealtime(tiempoLlenado);
+
+        regaderaEstaLlena = true;
+        llenando = false;
+
         regaderaNormal.SetActive(false);
         regaderaLlena.SetActive(true);
         regaderaAguaSale.SetActive(false);
+
+        Debug.Log("Regadera llena");
     }
 
-    public void ClickRegadera()
+    void CerrarGrifo()
     {
-        if (completado) return;
+        Debug.Log("Grifo cerrado");
 
-        if (!tieneAgua)
-        {
-            Debug.Log("Primero tienes que abrir el grifo");
-            return;
-        }
+        grifoAbiertoEstado = false;
+
+        grifoNormal.SetActive(true);
+        grifoAbierto.SetActive(false);
+    }
+
+    public bool PuedeMoverRegadera()
+    {
+        return regaderaEstaLlena && !tareaCompletada;
+    }
+
+    public void EmpezarMoverRegadera()
+    {
+        if (!PuedeMoverRegadera()) return;
 
         Debug.Log("Has cogido la regadera llena");
 
@@ -60,69 +103,58 @@ public class GestorMinijuegoAgua : MonoBehaviour
         regaderaAguaSale.SetActive(true);
     }
 
-    public void ClickTumba()
+    public void SoltarRegadera(RectTransform regadera)
     {
-        if (completado) return;
+        if (!PuedeMoverRegadera()) return;
 
-        if (!tieneAgua)
+        if (EstaEncimaDeZona(regadera, zonaTumba))
         {
-            Debug.Log("Primero tienes que llenar la regadera");
-            return;
+            CompletarTarea();
         }
+        else
+        {
+            Debug.Log("No has soltado la regadera sobre la tumba");
 
-        Debug.Log("Has regado la tumba");
+            regaderaNormal.SetActive(false);
+            regaderaLlena.SetActive(true);
+            regaderaAguaSale.SetActive(false);
+        }
+    }
 
-        completado = true;
+    bool EstaEncimaDeZona(RectTransform objeto, RectTransform zona)
+    {
+        return RectTransformUtility.RectangleContainsScreenPoint(
+            zona,
+            objeto.position,
+            null
+        );
+    }
+
+    void CompletarTarea()
+    {
+        Debug.Log("Tumba regada. Tarea completada.");
+
+        tareaCompletada = true;
 
         tumbaNormal.SetActive(false);
         tumbaFlores.SetActive(true);
 
-        regaderaNormal.SetActive(false);
+        // La regadera vuelve a su estado normal/vacía
+        regaderaNormal.SetActive(true);
         regaderaLlena.SetActive(false);
-        regaderaAguaSale.SetActive(true);
+        regaderaAguaSale.SetActive(false);
 
-        grifoAbierto.SetActive(false);
+        // El grifo queda cerrado
         grifoNormal.SetActive(true);
-    }
-
-    // NUEVO MÉTODO: Se llama cuando se suelta la regadera
-    public void ComprobarSuelta(RectTransform regaderaRect)
-    {
-        if (completado) return;
-        if (!tieneAgua)
-        {
-            Debug.Log("La regadera no tiene agua aún.");
-            return;
-        }
-
-        // ---------- OPCIÓN A (fácil): Riega siempre al soltar ----------
-        ClickTumba();
-
-        // ---------- OPCIÓN B (detección por posición): Solo riega si la regadera está cerca de la tumba ----------
-        /*
-        if (tumbaRectTransform != null)
-        {
-            float distancia = Vector2.Distance(regaderaRect.anchoredPosition, tumbaRectTransform.anchoredPosition);
-            if (distancia < 100f)  // Ajusta el umbral según tu interfaz
-            {
-                ClickTumba();
-            }
-            else
-            {
-                Debug.Log("Debes soltar la regadera sobre la tumba");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("No asignaste el RectTransform de la tumba en el GestorMinijuegoAgua");
-        }
-        */
+        grifoAbierto.SetActive(false);
     }
 
     public void ReiniciarMinijuego()
     {
-        tieneAgua = false;
-        completado = false;
+        grifoAbiertoEstado = false;
+        regaderaEstaLlena = false;
+        tareaCompletada = false;
+        llenando = false;
 
         tumbaNormal.SetActive(true);
         tumbaFlores.SetActive(false);

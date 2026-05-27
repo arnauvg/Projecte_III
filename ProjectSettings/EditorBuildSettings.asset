@@ -20,9 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/PROJECT/Scenes/Cementerio.unity
     guid: 34ddf063d6aa9b749b042cc372f9df25
+  - enabled: 0
+    path: Assets/PROJECT/Scenes/OldAfueras.unity
+    guid: 7dc934031660d9949a1dd7b022c0a296
   - enabled: 1
     path: Assets/PROJECT/Scenes/Afueras.unity
-    guid: 7dc934031660d9949a1dd7b022c0a296
+    guid: b0dcf490a91777240bfd980c711d9d36
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
