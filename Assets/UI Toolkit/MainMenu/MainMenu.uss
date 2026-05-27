@@ -1,0 +1,10 @@
+Button {
+    height: 35px;
+}
+
+Button:hover {
+    scale: 1.2 1.2;
+    transition-property: scale;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out-cubic;
+}

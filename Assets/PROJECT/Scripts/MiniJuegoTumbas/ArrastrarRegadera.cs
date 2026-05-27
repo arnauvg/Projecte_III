@@ -7,7 +7,7 @@ public class ArrastrarRegadera : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private Canvas canvas;
     private Vector2 posicionInicial;
 
-    public GestorMinijuegoAgua gestor;
+    public GestorMinijuegoAgua gestor;   // Arrastra el objeto GestorMinijuegoAgua desde el inspector
 
     void Awake()
     {
@@ -32,7 +32,12 @@ public class ArrastrarRegadera : MonoBehaviour, IBeginDragHandler, IDragHandler,
         {
             gestor.ComprobarSuelta(rectTransform);
         }
+        else
+        {
+            Debug.LogError("No se ha asignado el GestorMinijuegoAgua en ArrastrarRegadera");
+        }
 
+        // Vuelve a su posición inicial (con o sin riego)
         rectTransform.anchoredPosition = posicionInicial;
     }
 }

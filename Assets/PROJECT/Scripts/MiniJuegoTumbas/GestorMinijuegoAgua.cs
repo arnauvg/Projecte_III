@@ -15,6 +15,10 @@ public class GestorMinijuegoAgua : MonoBehaviour
     public GameObject regaderaLlena;
     public GameObject regaderaAguaSale;
 
+    // Referencia para detección por posición (opcional, solo si usas UI)
+    [Header("Opcional - UI")]
+    public RectTransform tumbaRectTransform;  // Asigna aquí el RectTransform de la tumba (si es UI)
+
     private bool tieneAgua = false;
     private bool completado = false;
 
@@ -79,6 +83,40 @@ public class GestorMinijuegoAgua : MonoBehaviour
 
         grifoAbierto.SetActive(false);
         grifoNormal.SetActive(true);
+    }
+
+    // NUEVO MÉTODO: Se llama cuando se suelta la regadera
+    public void ComprobarSuelta(RectTransform regaderaRect)
+    {
+        if (completado) return;
+        if (!tieneAgua)
+        {
+            Debug.Log("La regadera no tiene agua aún.");
+            return;
+        }
+
+        // ---------- OPCIÓN A (fácil): Riega siempre al soltar ----------
+        ClickTumba();
+
+        // ---------- OPCIÓN B (detección por posición): Solo riega si la regadera está cerca de la tumba ----------
+        /*
+        if (tumbaRectTransform != null)
+        {
+            float distancia = Vector2.Distance(regaderaRect.anchoredPosition, tumbaRectTransform.anchoredPosition);
+            if (distancia < 100f)  // Ajusta el umbral según tu interfaz
+            {
+                ClickTumba();
+            }
+            else
+            {
+                Debug.Log("Debes soltar la regadera sobre la tumba");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No asignaste el RectTransform de la tumba en el GestorMinijuegoAgua");
+        }
+        */
     }
 
     public void ReiniciarMinijuego()
