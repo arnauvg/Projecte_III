@@ -1627,6 +1627,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.006318897, y: 0.008572137, z: 0.015357455}
   m_Center: {x: 0.003657443, y: -0.017088223, z: 0.0063491003}
+--- !u!114 &1347600014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1347600007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c55c29c179cfc24eb1cb76d55874156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1350439457
 GameObject:
   m_ObjectHideFlags: 0
@@ -2407,6 +2419,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 30e20eb7301a53748bdc43193ba94bf2, type: 2}
+    - target: {fileID: -8551654070373378105, guid: 6087f3d1c0dff8f4191dfc0a86e77d89, type: 3}
+      propertyPath: m_Name
+      value: TumaMJ
+      objectReference: {fileID: 0}
     - target: {fileID: -8270237889823493819, guid: 6087f3d1c0dff8f4191dfc0a86e77d89, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -2577,10 +2593,13 @@ PrefabInstance:
       addedObject: {fileID: 1347600013}
     - targetCorrespondingSourceObject: {fileID: -8551654070373378105, guid: 6087f3d1c0dff8f4191dfc0a86e77d89, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1347600012}
+      addedObject: {fileID: 1347600014}
     - targetCorrespondingSourceObject: {fileID: -8551654070373378105, guid: 6087f3d1c0dff8f4191dfc0a86e77d89, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1347600011}
+    - targetCorrespondingSourceObject: {fileID: -8551654070373378105, guid: 6087f3d1c0dff8f4191dfc0a86e77d89, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1347600012}
   m_SourcePrefab: {fileID: 100100000, guid: 6087f3d1c0dff8f4191dfc0a86e77d89, type: 3}
 --- !u!1 &1881611568
 GameObject:
