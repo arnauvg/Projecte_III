@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using Cursor = UnityEngine.Cursor;
@@ -14,17 +14,23 @@ public class GameManager : MonoBehaviour
     [Header("Escenas")]
     public string mainMenuSceneName = "MainMenu";
 
-    [Header("Escenas de juego (todas las que tengan menú de pausa)")]
+    [Header("Escenas de juego (todas las que tengan menÃº de pausa)")]
     public List<string> gameSceneNames = new List<string> { "Garita", "Cementerio", "Afueras" };
 
     [Header("Sonido Hover")]
     public AudioClip sonidoHover;
+
+    [Header("Cursor personalizado")]
+    public Color colorCursor = Color.white;
+    public int tamaÃ±oCursor = 32;
+    public float radioCursor = 14f;
 
     private MouseLook360 mouseLook;
     private ReproductorSonidoHover reproductorHover;
     private VisualElement pauseRoot;
     private VisualElement mainRoot;
     private bool isGameScene = false;
+    private Texture2D cursorPersonalizado;
 
     private void Awake()
     {
@@ -36,8 +42,47 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
+        // Crear cursor personalizado
+        CrearCursorCircularBlanco();
+
         // Configurar el reproductor de hover UNA SOLA VEZ
         ConfigurarAudioHover();
+    }
+
+    void CrearCursorCircularBlanco()
+    {
+        // Crear textura circular
+        cursorPersonalizado = new Texture2D(tamaÃ±oCursor, tamaÃ±oCursor, TextureFormat.RGBA32, false);
+
+        for (int y = 0; y < tamaÃ±oCursor; y++)
+        {
+            for (int x = 0; x < tamaÃ±oCursor; x++)
+            {
+                float dist = Vector2.Distance(new Vector2(tamaÃ±oCursor / 2, tamaÃ±oCursor / 2), new Vector2(x, y));
+
+                if (dist < radioCursor)
+                {
+                    cursorPersonalizado.SetPixel(x, y, colorCursor);
+                }
+                else
+                {
+                    cursorPersonalizado.SetPixel(x, y, Color.clear);
+                }
+            }
+        }
+
+        cursorPersonalizado.Apply();
+        Debug.Log("Cursor circular blanco creado");
+    }
+
+    void AplicarCursorPersonalizado()
+    {
+        if (cursorPersonalizado != null)
+        {
+            Vector2 hotspot = new Vector2(tamaÃ±oCursor / 2, tamaÃ±oCursor / 2);
+            Cursor.SetCursor(cursorPersonalizado, hotspot, CursorMode.Auto);
+            Debug.Log("Cursor personalizado aplicado");
+        }
     }
 
     private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
@@ -52,11 +97,11 @@ public class GameManager : MonoBehaviour
         // Verificar si es una escena de juego
         isGameScene = gameSceneNames.Contains(scene.name);
 
-        // Buscar MouseLook en la cámara (solo en escenas de juego)
+        // Buscar MouseLook en la cÃ¡mara (solo en escenas de juego)
         Camera mainCam = Camera.main;
         if (mainCam != null) mouseLook = mainCam.GetComponent<MouseLook360>();
 
-        // Configurar según la escena cargada
+        // Configurar segÃºn la escena cargada
         if (scene.name == mainMenuSceneName)
         {
             BuscarYConfigurarMainMenu();
@@ -81,7 +126,7 @@ public class GameManager : MonoBehaviour
 
     void BuscarYConfigurarMainMenu()
     {
-        // Buscar el UIDocument del menú principal
+        // Buscar el UIDocument del menÃº principal
         var documentos = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
         foreach (var doc in documentos)
         {
@@ -100,7 +145,7 @@ public class GameManager : MonoBehaviour
                 // Asegurar que se vea
                 mainRoot.style.display = DisplayStyle.Flex;
 
-                Debug.Log("Menú principal configurado correctamente");
+                Debug.Log("MenÃº principal configurado correctamente");
                 break;
             }
         }
@@ -108,7 +153,7 @@ public class GameManager : MonoBehaviour
 
     void BuscarYConfigurarPauseMenu()
     {
-        // Buscar el UIDocument del menú de pausa en la escena actual
+        // Buscar el UIDocument del menÃº de pausa en la escena actual
         var documentos = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
         foreach (var doc in documentos)
         {
@@ -124,18 +169,18 @@ public class GameManager : MonoBehaviour
                 ConfigurarBotonConHover(continuar, ResumeGame);
                 ConfigurarBotonConHover(salirMenu, BackToMainMenu);
 
-                // Ocultar al inicio (cuando se está jugando)
+                // Ocultar al inicio (cuando se estÃ¡ jugando)
                 pauseRoot.style.display = DisplayStyle.None;
 
-                Debug.Log($"Menú de pausa configurado en escena: {SceneManager.GetActiveScene().name}");
+                Debug.Log($"MenÃº de pausa configurado en escena: {SceneManager.GetActiveScene().name}");
                 break;
             }
         }
 
-        // Si no se encontró el menú de pausa, mostrar advertencia
+        // Si no se encontrÃ³ el menÃº de pausa, mostrar advertencia
         if (pauseRoot == null)
         {
-            Debug.LogWarning($"No se encontró menú de pausa en la escena {SceneManager.GetActiveScene().name}. Asegúrate de que haya un UIDocument con botones 'BotonContinuar' y 'BotonSalirMenu'");
+            Debug.LogWarning($"No se encontrÃ³ menÃº de pausa en la escena {SceneManager.GetActiveScene().name}. AsegÃºrate de que haya un UIDocument con botones 'BotonContinuar' y 'BotonSalirMenu'");
         }
     }
 
@@ -160,7 +205,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        // Detectar Escape SOLO en escenas de juego y cuando está jugando
+        // Detectar Escape SOLO en escenas de juego y cuando estÃ¡ jugando
         if (isGameScene && currentState == GameState.Playing)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
@@ -180,6 +225,7 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 1f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                AplicarCursorPersonalizado(); // ðŸ‘ˆ Cursor blanco circular
                 if (mouseLook) mouseLook.enabled = false;
                 if (pauseRoot != null) pauseRoot.style.display = DisplayStyle.None;
                 if (mainRoot != null) mainRoot.style.display = DisplayStyle.Flex;
@@ -188,7 +234,7 @@ public class GameManager : MonoBehaviour
             case GameState.Playing:
                 Time.timeScale = 1f;
                 Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
+                Cursor.visible = false; // Cursor invisible mientras juegas (FPS)
                 if (mouseLook) mouseLook.enabled = true;
                 if (pauseRoot != null) pauseRoot.style.display = DisplayStyle.None;
                 if (mainRoot != null) mainRoot.style.display = DisplayStyle.None;
@@ -198,6 +244,7 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+                AplicarCursorPersonalizado(); // ðŸ‘ˆ Cursor blanco circular
                 if (mouseLook) mouseLook.enabled = false;
                 if (pauseRoot != null) pauseRoot.style.display = DisplayStyle.Flex;
                 if (mainRoot != null) mainRoot.style.display = DisplayStyle.None;
@@ -207,7 +254,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Estado cambiado a: {newState}");
     }
 
-    // ============ MÉTODOS PÚBLICOS PARA LOS BOTONES ============
+    // ============ MÃ‰TODOS PÃšBLICOS PARA LOS BOTONES ============
 
     public void StartGame()
     {
@@ -222,7 +269,7 @@ public class GameManager : MonoBehaviour
     public void QuitGame()
     {
 #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
+        UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
