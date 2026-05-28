@@ -14,7 +14,6 @@ public class ClickCentro : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, distanciaMax))
         {
-            // Buscar botón VERDE o ROJO
             GameObject nuevoObjeto = null;
             Transform actual = hit.collider.transform;
 
@@ -41,7 +40,7 @@ public class ClickCentro : MonoBehaviour
             DesactivarOutline();
         }
 
-        // Input click (código original corregido)
+        // Input click
         if (Input.GetMouseButtonDown(0))
         {
             Ray rayClick = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -67,6 +66,19 @@ public class ClickCentro : MonoBehaviour
                 {
                     if (actualVerde.CompareTag("BotonVerde"))
                     {
+                        Debug.Log($"Click en botón VERDE: {actualVerde.name}");
+
+                        // Activar animación de presión
+                        BotonPresionAnimacion botonAnim = actualVerde.GetComponent<BotonPresionAnimacion>();
+                        if (botonAnim != null)
+                        {
+                            botonAnim.Presionar();
+                        }
+                        else
+                        {
+                            Debug.LogError($"No se encontró BotonPresionAnimacion en {actualVerde.name}");
+                        }
+
                         VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
                         if (visitante != null && visitante.enCentro) visitante.Aceptar();
                         return;
@@ -80,6 +92,19 @@ public class ClickCentro : MonoBehaviour
                 {
                     if (actualRojo.CompareTag("BotonRojo"))
                     {
+                        Debug.Log($"Click en botón ROJO: {actualRojo.name}");
+
+                        // Activar animación de presión
+                        BotonPresionAnimacion botonAnim = actualRojo.GetComponent<BotonPresionAnimacion>();
+                        if (botonAnim != null)
+                        {
+                            botonAnim.Presionar();
+                        }
+                        else
+                        {
+                            Debug.LogError($"No se encontró BotonPresionAnimacion en {actualRojo.name}");
+                        }
+
                         VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
                         if (visitante != null && visitante.enCentro) visitante.Rechazar();
                         return;
