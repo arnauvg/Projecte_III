@@ -13,44 +13,129 @@ public class InteraccionJugador : MonoBehaviour
 
         if (objetoEnMano == null)
         {
-            if (Physics.Raycast(ray, out RaycastHit hit, distanciaInteraccion))
+            // Obtener TODOS los objetos que el rayo golpea
+            RaycastHit[] hits = Physics.RaycastAll(ray, distanciaInteraccion);
+
+            GameObject mejorObjeto = null;
+
+            // Primero: Buscar un objeto Interactuable (como la biblia)
+            foreach (RaycastHit hit in hits)
             {
-                Interactuable interactuable = hit.collider.GetComponent<Interactuable>();
-                Cajon cajon = hit.collider.GetComponent<Cajon>();
-                if (interactuable != null || cajon != null)
+                GameObject objetoActual = hit.collider.gameObject;
+
+                // Buscar componente Interactuable en el objeto o en su padre
+                Interactuable interactuable = objetoActual.GetComponent<Interactuable>();
+                if (interactuable == null && objetoActual.transform.parent != null)
+                    interactuable = objetoActual.transform.parent.GetComponent<Interactuable>();
+
+                // Si encontramos un Interactuable, verificamos si es válido
+                if (interactuable != null)
                 {
-                    GameObject nuevo = hit.collider.gameObject;
-                    if (objetoApuntado != nuevo)
+                    // Verificar si es un objeto recogible y está dentro de un cajón cerrado
+                    Recogible recogible = interactuable as Recogible;
+                    if (recogible != null)
                     {
-                        DesactivarOutline();
-                        objetoApuntado = nuevo;
-                        ActivarOutline();
+                        // Si es recogible y está en un cajón cerrado, lo ignoramos
+                        if (recogible.EstaEnCajonCerrado())
+                        {
+                            continue; // Saltar este objeto, no seleccionarlo
+                        }
+                    }
+
+                    mejorObjeto = interactuable.gameObject;
+                    break; // Salir del bucle, prioridad máxima
+                }
+            }
+
+            // Segundo: Si no hay Interactuable, buscar un Cajón
+            if (mejorObjeto == null)
+            {
+                foreach (RaycastHit hit in hits)
+                {
+                    GameObject objetoActual = hit.collider.gameObject;
+                    Cajon cajon = objetoActual.GetComponent<Cajon>();
+
+                    if (cajon != null)
+                    {
+                        mejorObjeto = cajon.gameObject;
+                        break;
                     }
                 }
-                else DesactivarOutline();
             }
-            else DesactivarOutline();
-        }
-        else DesactivarOutline();
 
+            // Activar o desactivar outline según corresponda
+            if (mejorObjeto != null && mejorObjeto != objetoApuntado)
+            {
+                DesactivarOutline();
+                objetoApuntado = mejorObjeto;
+                ActivarOutline();
+            }
+            else if (mejorObjeto == null)
+            {
+                DesactivarOutline();
+            }
+        }
+        else
+        {
+            DesactivarOutline();
+        }
+
+        // ========== CLICK DEL RATÓN ==========
         if (Input.GetMouseButtonDown(0))
         {
+            // Si tenemos algo en la mano, lo soltamos
             if (objetoEnMano != null)
             {
                 objetoEnMano.Soltar();
                 objetoEnMano = null;
             }
-            else if (Physics.Raycast(ray, out RaycastHit hitClick, distanciaInteraccion))
+            else
             {
-                Cajon cajon = hitClick.collider.GetComponent<Cajon>();
-                if (cajon != null)
+                // Obtener TODOS los objetos que el rayo golpea
+                RaycastHit[] hits = Physics.RaycastAll(ray, distanciaInteraccion);
+
+                // Primero: Buscar Interactuable (biblia, teléfono, etc.)
+                foreach (RaycastHit hit in hits)
                 {
-                    cajon.Interact();
-                    return;
+                    GameObject objetoActual = hit.collider.gameObject;
+
+                    // Buscar Interactuable en el objeto o su padre
+                    Interactuable interactuable = objetoActual.GetComponent<Interactuable>();
+                    if (interactuable == null && objetoActual.transform.parent != null)
+                        interactuable = objetoActual.transform.parent.GetComponent<Interactuable>();
+
+                    if (interactuable != null)
+                    {
+                        // Verificar si es un objeto recogible y está en un cajón cerrado
+                        Recogible recogible = interactuable as Recogible;
+                        if (recogible != null)
+                        {
+                            if (recogible.EstaEnCajonCerrado())
+                            {
+                                continue; // No permitir recoger de un cajón cerrado
+                            }
+                        }
+
+                        Debug.Log($"Intentando recoger: {interactuable.gameObject.name}");
+                        if (interactuable.Recoger())
+                            objetoEnMano = interactuable;
+                        return; // Salir después de recoger
+                    }
                 }
-                Interactuable interactuable = hitClick.collider.GetComponent<Interactuable>();
-                if (interactuable != null && interactuable.Recoger())
-                    objetoEnMano = interactuable;
+
+                // Segundo: Buscar Cajón
+                foreach (RaycastHit hit in hits)
+                {
+                    GameObject objetoActual = hit.collider.gameObject;
+                    Cajon cajon = objetoActual.GetComponent<Cajon>();
+
+                    if (cajon != null)
+                    {
+                        Debug.Log($"Abriendo cajón: {cajon.gameObject.name}");
+                        cajon.Interact();
+                        return;
+                    }
+                }
             }
         }
     }
@@ -60,15 +145,18 @@ public class InteraccionJugador : MonoBehaviour
         if (objetoApuntado != null)
         {
             outlineApuntado = objetoApuntado.GetComponent<Outline>();
-            if (outlineApuntado == null) outlineApuntado = objetoApuntado.AddComponent<Outline>();
+            if (outlineApuntado == null)
+                outlineApuntado = objetoApuntado.AddComponent<Outline>();
             outlineApuntado.OutlineMode = Outline.Mode.OutlineAll;
             outlineApuntado.OutlineColor = Color.yellow;
             outlineApuntado.OutlineWidth = 4f;
         }
     }
+
     void DesactivarOutline()
     {
-        if (outlineApuntado != null) Destroy(outlineApuntado);
+        if (outlineApuntado != null)
+            Destroy(outlineApuntado);
         objetoApuntado = null;
     }
 }

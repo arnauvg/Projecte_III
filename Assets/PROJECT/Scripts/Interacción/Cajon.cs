@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Cajon : MonoBehaviour
 {
@@ -15,5 +15,11 @@ public class Cajon : MonoBehaviour
     {
         isOpen = !isOpen;
         animator.SetBool(openParam, isOpen);
+    }
+
+    // 👇 NUEVA FUNCIÓN: Devuelve si el cajón está abierto
+    public bool EstaAbierto()
+    {
+        return isOpen;
     }
 }
