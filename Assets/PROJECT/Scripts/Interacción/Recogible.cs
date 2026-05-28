@@ -1,4 +1,4 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class Recogible : Interactuable
 {
@@ -10,14 +10,14 @@ public class Recogible : Interactuable
 
     void Start()
     {
-        // Guardar posiciÛn y rotaciÛn original
+        // Guardar posici√≥n y rotaci√≥n original
         posicionOriginal = transform.position;
         rotacionOriginal = transform.rotation;
         rb = GetComponent<Rigidbody>();
         if (rb == null)
             rb = gameObject.AddComponent<Rigidbody>();
 
-        // Crear punto donde se colocar· el objeto en la mano (derecha)
+        // Crear punto donde se colocar√° el objeto en la mano (derecha)
         GameObject punto = new GameObject("PuntoSujecion");
         punto.transform.SetParent(Camera.main.transform);
         punto.transform.localPosition = new Vector3(0f, 0f, 1.2f);
@@ -50,7 +50,7 @@ public class Recogible : Interactuable
             }
             else
             {
-                // Si no hay superficie, soltar delante de la c·mara
+                // Si no hay superficie, soltar delante de la c√°mara
                 transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2f;
             }
 
@@ -68,7 +68,7 @@ public class Recogible : Interactuable
     {
         if (estaRecogido)
         {
-            // Mover objeto suavemente al punto de sujeciÛn
+            // Mover objeto suavemente al punto de sujeci√≥n
             Vector3 posicionObjetivo = Vector3.Lerp(transform.position, puntoDeSujecion.position, Time.deltaTime * 40f);
             rb.MovePosition(posicionObjetivo);
 

@@ -3,15 +3,50 @@
 public class ClickCentro : MonoBehaviour
 {
     public float distanciaMax = 5f;
+    private GameObject objetoApuntado;
+    private Outline outlineApuntado;
 
     void Update()
     {
+        // Detectar hover con Raycast
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, distanciaMax))
+        {
+            // Buscar botón VERDE o ROJO
+            GameObject nuevoObjeto = null;
+            Transform actual = hit.collider.transform;
+
+            while (actual != null)
+            {
+                if (actual.CompareTag("BotonVerde") || actual.CompareTag("BotonRojo"))
+                {
+                    nuevoObjeto = actual.gameObject;
+                    break;
+                }
+                actual = actual.parent;
+            }
+
+            if (nuevoObjeto != objetoApuntado)
+            {
+                DesactivarOutline();
+                objetoApuntado = nuevoObjeto;
+                if (objetoApuntado != null)
+                    ActivarOutline();
+            }
+        }
+        else
+        {
+            DesactivarOutline();
+        }
+
+        // Input click (código original corregido)
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            RaycastHit hit;
+            Ray rayClick = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
-            if (Physics.Raycast(ray, out hit, distanciaMax))
+            if (Physics.Raycast(rayClick, out hit, distanciaMax))
             {
                 // Buscar objeto revelador
                 Transform objetoActual = hit.collider.transform;
@@ -20,47 +55,59 @@ public class ClickCentro : MonoBehaviour
                     if (objetoActual.CompareTag("ObjetoRevelador"))
                     {
                         VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
-
-                        if (visitante != null)
-                        {
-                            visitante.RevelarCamuflado();
-                        }
-
-
+                        if (visitante != null) visitante.RevelarCamuflado();
                         return;
                     }
-
                     objetoActual = objetoActual.parent;
                 }
 
                 // Buscar botón VERDE
-                Transform actual = hit.collider.transform;
-                while (actual != null)
+                Transform actualVerde = hit.collider.transform;
+                while (actualVerde != null)
                 {
-                    if (actual.CompareTag("BotonVerde"))
+                    if (actualVerde.CompareTag("BotonVerde"))
                     {
                         VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
-                        if (visitante != null && visitante.enCentro)
-                            visitante.Aceptar();
+                        if (visitante != null && visitante.enCentro) visitante.Aceptar();
                         return;
                     }
-                    actual = actual.parent;
+                    actualVerde = actualVerde.parent;
                 }
 
                 // Buscar botón ROJO
-                actual = hit.collider.transform;
-                while (actual != null)
+                Transform actualRojo = hit.collider.transform;
+                while (actualRojo != null)
                 {
-                    if (actual.CompareTag("BotonRojo"))
+                    if (actualRojo.CompareTag("BotonRojo"))
                     {
                         VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
-                        if (visitante != null && visitante.enCentro)
-                            visitante.Rechazar();
+                        if (visitante != null && visitante.enCentro) visitante.Rechazar();
                         return;
                     }
-                    actual = actual.parent;
+                    actualRojo = actualRojo.parent;
                 }
             }
         }
+    }
+
+    void ActivarOutline()
+    {
+        if (objetoApuntado != null)
+        {
+            outlineApuntado = objetoApuntado.GetComponent<Outline>();
+            if (outlineApuntado == null)
+                outlineApuntado = objetoApuntado.AddComponent<Outline>();
+
+            outlineApuntado.OutlineMode = Outline.Mode.OutlineAll;
+            outlineApuntado.OutlineColor = Color.yellow;
+            outlineApuntado.OutlineWidth = 4f;
+        }
+    }
+
+    void DesactivarOutline()
+    {
+        if (outlineApuntado != null)
+            Destroy(outlineApuntado);
+        objetoApuntado = null;
     }
 }
