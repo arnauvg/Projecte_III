@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a726b22cc7ad96499a6ebac64cbfc65, type: 3}
+  m_Name: Bruja
+  m_EditorClassIdentifier: 
+  nombreVisitante: Bruja
+  spriteNormal: {fileID: 21300000, guid: f99b2fdc61f64eb4a885632de4d557df, type: 3}
+  spriteRevelado: {fileID: 21300000, guid: 8b8151ceac62e4b45aa16209fb32d6cb, type: 3}
+  esDoble: 1

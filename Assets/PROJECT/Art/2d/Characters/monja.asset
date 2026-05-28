@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a726b22cc7ad96499a6ebac64cbfc65, type: 3}
+  m_Name: monja
+  m_EditorClassIdentifier: 
+  nombreVisitante: Monja
+  spriteNormal: {fileID: 21300000, guid: 707a8ce507b5b4049ab2fd0367ea9e7d, type: 3}
+  spriteRevelado: {fileID: 21300000, guid: 15b12ad7db6c7f945b1c987f45d97ddb, type: 3}
+  esDoble: 1
