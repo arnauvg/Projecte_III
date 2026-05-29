@@ -9,6 +9,7 @@ TagManager:
   - ObjetoRevelador
   - ZonaPila
   - Cajon
+  - Tareatumbas
   layers:
   - Default
   - TransparentFX

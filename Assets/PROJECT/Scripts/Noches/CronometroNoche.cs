@@ -4,7 +4,7 @@ using TMPro;
 public class CronometroNoche : MonoBehaviour
 {
     [Header("Tiempo real")]
-    public float tiempoTotalSegundos = 120f; // 2 minutos reales = 6 horas de juego
+    public float tiempoTotalSegundos = 120f;
 
     [Header("Referencias UI")]
     public TextMeshProUGUI textoReloj;
@@ -12,10 +12,14 @@ public class CronometroNoche : MonoBehaviour
     [Header("Referencias del sistema de noches")]
     public GestionNoches gestionNoches;
 
+    [Header("Sistema de tareas")]
+    public TareaManager tareaManager;
+
     private float tiempoRestante;
     private bool nocheActiva = true;
     private int ultimoIntervaloMostrado = -1;
     private bool nocheTerminada = false;
+    private bool tareasSpawned = false;
 
     void Start()
     {
@@ -24,6 +28,11 @@ public class CronometroNoche : MonoBehaviour
 
         if (gestionNoches == null)
             gestionNoches = FindFirstObjectByType<GestionNoches>();
+
+        if (tareaManager == null)
+            tareaManager = FindFirstObjectByType<TareaManager>();
+
+        Debug.Log("⏰ Cronómetro iniciado");
     }
 
     void Update()
@@ -40,6 +49,11 @@ public class CronometroNoche : MonoBehaviour
         }
 
         ActualizarTexto();
+
+        if (!tareasSpawned && ultimoIntervaloMostrado >= 1)
+        {
+            SpawnearTareas();
+        }
     }
 
     void ActualizarTexto()
@@ -64,6 +78,21 @@ public class CronometroNoche : MonoBehaviour
         }
     }
 
+    void SpawnearTareas()
+    {
+        if (tareasSpawned) return;
+        tareasSpawned = true;
+
+        Debug.Log("📋 Generando tareas para esta noche...");
+
+        if (tareaManager != null)
+        {
+            // ✅ AHORA SÍ FUNCIONA
+            int noche = gestionNoches != null ? gestionNoches.GetNocheActual() : 1;
+            tareaManager.IniciarNoche(noche);
+        }
+    }
+
     void TerminarNoche()
     {
         if (nocheTerminada) return;
@@ -71,7 +100,7 @@ public class CronometroNoche : MonoBehaviour
         nocheTerminada = true;
         nocheActiva = false;
 
-        Debug.Log("🌙 LA NOCHE HA TERMINADO - Son las 06:00 AM");
+        Debug.Log("🌙 LA NOCHE HA TERMINADO - 06:00 AM");
         textoReloj.text = "06:00 AM";
 
         if (gestionNoches != null)
@@ -85,8 +114,10 @@ public class CronometroNoche : MonoBehaviour
         tiempoRestante = tiempoTotalSegundos;
         nocheActiva = true;
         nocheTerminada = false;
+        tareasSpawned = false;
         ultimoIntervaloMostrado = -1;
         ActualizarTexto();
+        Debug.Log("🔄 Cronómetro reiniciado");
     }
 
     public void DetenerCronometro()

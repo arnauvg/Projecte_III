@@ -25,7 +25,7 @@ public class GestionNoches : MonoBehaviour
     private int totalVisitantes = 0;
     private int dineroPerdidoVisitantes = 0;
     private int tareasCompletadas = 0;
-    private int totalTareas = 1; // Por ahora 1 tarea por noche
+    private int totalTareas = 1;
     private int dineroPerdidoTareas = 0;
     private bool tareaCompletada = false;
 
@@ -36,7 +36,6 @@ public class GestionNoches : MonoBehaviour
         if (cronometro == null)
             cronometro = FindFirstObjectByType<CronometroNoche>();
 
-        // Contar visitantes totales de esta noche
         ContarTotalVisitantes();
 
         Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
@@ -46,11 +45,6 @@ public class GestionNoches : MonoBehaviour
     {
         if (EstadoVisitantes.Instancia != null)
         {
-            // Esto depende de cómo tengas configurado EstadoVisitantes
-            // Si usas lista plana:
-            // totalVisitantes = 3; // o calcula según la noche
-
-            // Por ahora manual:
             switch (nocheActual)
             {
                 case 1: totalVisitantes = 3; break;
@@ -61,14 +55,12 @@ public class GestionNoches : MonoBehaviour
         }
     }
 
-    // Llamado cuando el jugador acierta (deja pasar bueno O rechaza malo)
     public void RegistrarAcierto()
     {
         visitantesAcertados++;
         Debug.Log($"✅ Visitante acertado ({visitantesAcertados}/{totalVisitantes})");
     }
 
-    // Llamado cuando el jugador falla (rechaza bueno O acepta malo)
     public void RegistrarFallo()
     {
         dineroPerdidoVisitantes += penalizacionVisitanteIncorrecto;
@@ -76,7 +68,6 @@ public class GestionNoches : MonoBehaviour
         Debug.Log($"❌ Visitante fallado! -{penalizacionVisitanteIncorrecto}€");
     }
 
-    // Llamado desde el minijuego al completar la tarea
     public void CompletarTarea()
     {
         tareaCompletada = true;
@@ -84,7 +75,6 @@ public class GestionNoches : MonoBehaviour
         Debug.Log("✅ Tarea completada!");
     }
 
-    // La noche termina SOLO por el reloj (06:00 AM)
     public void TerminarNochePorTiempo()
     {
         if (yaNocheTerminada) return;
@@ -92,7 +82,6 @@ public class GestionNoches : MonoBehaviour
 
         Debug.Log("=== FIN DE LA NOCHE (06:00 AM) ===");
 
-        // Calcular penalización por tarea pendiente
         dineroPerdidoTareas = tareaCompletada ? 0 : penalizacionTareaPendiente;
         if (dineroPerdidoTareas > 0)
         {
@@ -100,7 +89,6 @@ public class GestionNoches : MonoBehaviour
             Debug.Log($"⚠️ Tarea pendiente! -{dineroPerdidoTareas}€");
         }
 
-        // Mostrar pantalla de resultados
         MostrarPantallaFinNoche();
     }
 
@@ -175,5 +163,11 @@ public class GestionNoches : MonoBehaviour
         tareasCompletadas = 0;
         dineroPerdidoTareas = 0;
         tareaCompletada = false;
+    }
+
+    // 👇 ESTE ES EL MÉTODO QUE FALTABA 👇
+    public int GetNocheActual()
+    {
+        return nocheActual;
     }
 }
