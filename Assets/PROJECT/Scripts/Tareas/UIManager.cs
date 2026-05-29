@@ -31,7 +31,7 @@ public class UIManager : MonoBehaviour
     public Sprite criptaNotificacion;
     public Sprite tumbasNotificacion;
 
-    [Header("Texto contador (opcional)")]
+    [Header("Texto contador")]
     public TextMeshProUGUI textoVisitantes;
 
     private bool tareaPendiente = false;
@@ -53,7 +53,7 @@ public class UIManager : MonoBehaviour
         tareaPendiente = mostrar;
         tareaUbicacion = ubicacion;
 
-        Debug.Log($"UIManager: MostrarAvisoTarea - mostrar={mostrar}, ubicacion={ubicacion}");
+        Debug.Log($"📢 UIManager: MostrarAvisoTarea - mostrar={mostrar}, ubicacion={ubicacion}");
 
         // Cambiar ícono del mapa en HUD
         if (mapaLogo != null)
@@ -61,26 +61,24 @@ public class UIManager : MonoBehaviour
             mapaLogo.sprite = mostrar ? mapaNotificacion : mapaNormal;
         }
 
-        // Si el mapa está abierto, actualizar botones inmediatamente
-        if (panelMapa != null && panelMapa.activeSelf)
-        {
-            ActualizarBotonesMapa();
-        }
+        // IMPORTANTE: Actualizar botones ahora aunque el mapa NO esté abierto
+        // Así cuando se abra, ya estarán actualizados
+        ActualizarBotonesMapa();
     }
 
     public void AbrirMapa()
     {
+        Debug.Log($"🗺️ Abriendo mapa - Tarea pendiente: {tareaPendiente}, ubicación: {tareaUbicacion}");
+
         if (panelMapa != null)
         {
-            // Actualizar botones antes de mostrar
+            // Actualizar botones antes de mostrar (por si acaso)
             ActualizarBotonesMapa();
 
             panelMapa.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             Time.timeScale = 0f;
-
-            Debug.Log("UIManager: Mapa abierto");
         }
     }
 
@@ -92,14 +90,12 @@ public class UIManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Time.timeScale = 1f;
-
-            Debug.Log("UIManager: Mapa cerrado");
         }
     }
 
     void ActualizarBotonesMapa()
     {
-        Debug.Log($"UIManager: Actualizando botones - tareaPendiente={tareaPendiente}, ubicacion={tareaUbicacion}");
+        Debug.Log($"🎨 Actualizando botones del mapa - tareaPendiente={tareaPendiente}, ubicacion={tareaUbicacion}");
 
         // Primero resetear todos a normal
         ResetearBotonesMapa();
@@ -107,13 +103,20 @@ public class UIManager : MonoBehaviour
         // Si hay tarea pendiente, cambiar el botón correspondiente
         if (tareaPendiente && !string.IsNullOrEmpty(tareaUbicacion))
         {
-            switch (tareaUbicacion.ToLower())
+            string ubicacionLower = tareaUbicacion.ToLower();
+            Debug.Log($"Buscando botón para ubicación: {ubicacionLower}");
+
+            switch (ubicacionLower)
             {
                 case "garita":
                     if (botonGarita != null && garitaNotificacion != null)
                     {
                         botonGarita.sprite = garitaNotificacion;
                         Debug.Log("✅ Botón Garita actualizado a notificación");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Botón Garita o sprite notificación es NULL. botonGarita={botonGarita != null}, garitaNotificacion={garitaNotificacion != null}");
                     }
                     break;
                 case "afueras":
@@ -122,12 +125,20 @@ public class UIManager : MonoBehaviour
                         botonAfueras.sprite = afuerasNotificacion;
                         Debug.Log("✅ Botón Afueras actualizado a notificación");
                     }
+                    else
+                    {
+                        Debug.LogWarning($"Botón Afueras o sprite notificación es NULL. botonAfueras={botonAfueras != null}, afuerasNotificacion={afuerasNotificacion != null}");
+                    }
                     break;
                 case "cripta":
                     if (botonCripta != null && criptaNotificacion != null)
                     {
                         botonCripta.sprite = criptaNotificacion;
                         Debug.Log("✅ Botón Cripta actualizado a notificación");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"Botón Cripta o sprite notificación es NULL. botonCripta={botonCripta != null}, criptaNotificacion={criptaNotificacion != null}");
                     }
                     break;
                 case "tumbas":
@@ -136,9 +147,13 @@ public class UIManager : MonoBehaviour
                         botonTumbas.sprite = tumbasNotificacion;
                         Debug.Log("✅ Botón Tumbas actualizado a notificación");
                     }
+                    else
+                    {
+                        Debug.LogWarning($"Botón Tumbas o sprite notificación es NULL. botonTumbas={botonTumbas != null}, tumbasNotificacion={tumbasNotificacion != null}");
+                    }
                     break;
                 default:
-                    Debug.LogWarning($"Ubicación no reconocida: {tareaUbicacion}");
+                    Debug.LogWarning($"Ubicación no reconocida: {ubicacionLower}");
                     break;
             }
         }
@@ -150,6 +165,8 @@ public class UIManager : MonoBehaviour
 
     void ResetearBotonesMapa()
     {
+        Debug.Log("Resetear botones del mapa a normales");
+
         if (botonGarita != null && garitaNormal != null)
             botonGarita.sprite = garitaNormal;
 
@@ -161,8 +178,6 @@ public class UIManager : MonoBehaviour
 
         if (botonTumbas != null && tumbasNormal != null)
             botonTumbas.sprite = tumbasNormal;
-
-        Debug.Log("Botones del mapa reseteados a normales");
     }
 
     public void MarcarTareaCompletada()
@@ -175,16 +190,7 @@ public class UIManager : MonoBehaviour
 
         ResetearBotonesMapa();
 
-        Debug.Log("UIManager: Tarea marcada como completada");
-    }
-
-    public void ReiniciarContadores()
-    {
-        if (textoVisitantes != null)
-            textoVisitantes.text = "Visitantes: 0/3";
-        tareaPendiente = false;
-        tareaUbicacion = "";
-        ResetearBotonesMapa();
+        Debug.Log("✅ Tarea marcada como completada en UIManager");
     }
 
     public void ActualizarContadorVisitantes(int actual, int total)
