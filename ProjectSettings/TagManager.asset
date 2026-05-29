@@ -10,6 +10,7 @@ TagManager:
   - ZonaPila
   - Cajon
   - Tareatumbas
+  - Tareaafueras
   layers:
   - Default
   - TransparentFX

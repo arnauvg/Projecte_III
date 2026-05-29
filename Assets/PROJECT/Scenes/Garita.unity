@@ -178,7 +178,7 @@ MonoBehaviour:
   botonCripta: {fileID: 590111536}
   botonTumbas: {fileID: 67867513}
   garitaNormal: {fileID: 21300000, guid: 5c56340a35c1cde48b1faa52bdd29edc, type: 3}
-  afuerasNormal: {fileID: 21300000, guid: e0b4b1beb4ad3764d9cbd0473f67a409, type: 3}
+  afuerasNormal: {fileID: 21300000, guid: 138a63fe6534f484ea21ae5ff2740bac, type: 3}
   criptaNormal: {fileID: 21300000, guid: f27ba3178ef1d0040919dcd4812877fe, type: 3}
   tumbasNormal: {fileID: 21300000, guid: e93dbe548b93ba4488b27ffd399aecf2, type: 3}
   garitaNotificacion: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
@@ -1019,6 +1019,11 @@ MonoBehaviour:
   - id: tumbas
     nombre: Regar flores
     escenaDestino: Tumbas
+    completada: 0
+    objetoEnEscena: {fileID: 0}
+  - id: afueras
+    nombre: Reparar farolillos
+    escenaDestino: Afueras
     completada: 0
     objetoEnEscena: {fileID: 0}
   minTareasPorNoche: 1
