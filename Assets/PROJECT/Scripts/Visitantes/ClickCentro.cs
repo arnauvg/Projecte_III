@@ -3,136 +3,82 @@
 public class ClickCentro : MonoBehaviour
 {
     public float distanciaMax = 5f;
-    private GameObject objetoApuntado;
-    private Outline outlineApuntado;
+
+    private GestorVisitantesSimple gestorVisitantes;
+
+    void Start()
+    {
+        gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
+    }
 
     void Update()
     {
-        // Detectar hover con Raycast
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, distanciaMax))
-        {
-            GameObject nuevoObjeto = null;
-            Transform actual = hit.collider.transform;
-
-            while (actual != null)
-            {
-                if (actual.CompareTag("BotonVerde") || actual.CompareTag("BotonRojo"))
-                {
-                    nuevoObjeto = actual.gameObject;
-                    break;
-                }
-                actual = actual.parent;
-            }
-
-            if (nuevoObjeto != objetoApuntado)
-            {
-                DesactivarOutline();
-                objetoApuntado = nuevoObjeto;
-                if (objetoApuntado != null)
-                    ActivarOutline();
-            }
-        }
-        else
-        {
-            DesactivarOutline();
-        }
-
-        // Input click
         if (Input.GetMouseButtonDown(0))
         {
-            Ray rayClick = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+            RaycastHit hit;
 
-            if (Physics.Raycast(rayClick, out hit, distanciaMax))
+            if (Physics.Raycast(ray, out hit, distanciaMax))
             {
-                // Buscar objeto revelador
+                VisitanteSimple visitante = null;
+
+                if (gestorVisitantes != null)
+                {
+                    visitante = gestorVisitantes.ObtenerVisitanteActual();
+                }
+
+                if (visitante == null) return;
+
+                // Buscar objeto revelador, por ejemplo el ajo
                 Transform objetoActual = hit.collider.transform;
+
                 while (objetoActual != null)
                 {
                     if (objetoActual.CompareTag("ObjetoRevelador"))
                     {
-                        VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
-                        if (visitante != null) visitante.RevelarCamuflado();
+                        visitante.RevelarCamuflado();
                         return;
                     }
+
                     objetoActual = objetoActual.parent;
                 }
 
                 // Buscar botón VERDE
-                Transform actualVerde = hit.collider.transform;
-                while (actualVerde != null)
+                Transform actual = hit.collider.transform;
+
+                while (actual != null)
                 {
-                    if (actualVerde.CompareTag("BotonVerde"))
+                    if (actual.CompareTag("BotonVerde"))
                     {
-                        Debug.Log($"Click en botón VERDE: {actualVerde.name}");
-
-                        // Activar animación de presión
-                        BotonPresionAnimacion botonAnim = actualVerde.GetComponent<BotonPresionAnimacion>();
-                        if (botonAnim != null)
+                        if (visitante.enCentro)
                         {
-                            botonAnim.Presionar();
-                        }
-                        else
-                        {
-                            Debug.LogError($"No se encontró BotonPresionAnimacion en {actualVerde.name}");
+                            visitante.Aceptar();
                         }
 
-                        VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
-                        if (visitante != null && visitante.enCentro) visitante.Aceptar();
                         return;
                     }
-                    actualVerde = actualVerde.parent;
+
+                    actual = actual.parent;
                 }
 
                 // Buscar botón ROJO
-                Transform actualRojo = hit.collider.transform;
-                while (actualRojo != null)
+                actual = hit.collider.transform;
+
+                while (actual != null)
                 {
-                    if (actualRojo.CompareTag("BotonRojo"))
+                    if (actual.CompareTag("BotonRojo"))
                     {
-                        Debug.Log($"Click en botón ROJO: {actualRojo.name}");
-
-                        // Activar animación de presión
-                        BotonPresionAnimacion botonAnim = actualRojo.GetComponent<BotonPresionAnimacion>();
-                        if (botonAnim != null)
+                        if (visitante.enCentro)
                         {
-                            botonAnim.Presionar();
-                        }
-                        else
-                        {
-                            Debug.LogError($"No se encontró BotonPresionAnimacion en {actualRojo.name}");
+                            visitante.Rechazar();
                         }
 
-                        VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
-                        if (visitante != null && visitante.enCentro) visitante.Rechazar();
                         return;
                     }
-                    actualRojo = actualRojo.parent;
+
+                    actual = actual.parent;
                 }
             }
         }
-    }
-
-    void ActivarOutline()
-    {
-        if (objetoApuntado != null)
-        {
-            outlineApuntado = objetoApuntado.GetComponent<Outline>();
-            if (outlineApuntado == null)
-                outlineApuntado = objetoApuntado.AddComponent<Outline>();
-
-            outlineApuntado.OutlineMode = Outline.Mode.OutlineAll;
-            outlineApuntado.OutlineColor = Color.yellow;
-            outlineApuntado.OutlineWidth = 4f;
-        }
-    }
-
-    void DesactivarOutline()
-    {
-        if (outlineApuntado != null)
-            Destroy(outlineApuntado);
-        objetoApuntado = null;
     }
 }

@@ -23,24 +23,49 @@ public class VisitanteSimple : MonoBehaviour
 
     [Header("Camuflaje")]
     public SpriteRenderer spriteVisitante;
-    public Sprite spriteNormal;
-    public Sprite spriteRevelado;
+
     private bool camuflajeRevelado = false;
+    private VisitanteDatos datosVisitante;
+
+    private GestorVisitantesSimple gestor;
 
     void Awake()
     {
         escalaOriginal = transform.localScale;
     }
 
-    void Start()
+    public void ConfigurarVisitante(
+        VisitanteDatos datos,
+        Transform entrada,
+        Transform centro,
+        Transform entradaEdificio,
+        GestorVisitantesSimple gestorVisitantes
+    )
     {
+        datosVisitante = datos;
+
+        puntoEntrada = entrada;
+        puntoCentro = centro;
+        puntoEntradaEdificio = entradaEdificio;
+        gestor = gestorVisitantes;
+
+        yaAtendido = false;
+        enCentro = false;
+        camuflajeRevelado = false;
+        enMovimiento = true;
+
         transform.localScale = escalaOriginal;
         transform.position = puntoEntrada.position;
+
         destinoActual = puntoCentro.position;
         posicionOriginal = puntoEntrada.position;
-        enMovimiento = true;
-        yaAtendido = false;
-        Debug.Log("Visitante aparece desde la entrada");
+
+        if (spriteVisitante != null && datosVisitante != null)
+        {
+            spriteVisitante.sprite = datosVisitante.spriteNormal;
+        }
+
+        Debug.Log("Aparece visitante: " + datosVisitante.nombreVisitante);
     }
 
     void Update()
@@ -52,32 +77,51 @@ public class VisitanteSimple : MonoBehaviour
 
         if (distancia > 0.05f)
         {
-            nuevaPos.x = Mathf.MoveTowards(nuevaPos.x, destinoActual.x, velocidadMovimiento * Time.deltaTime);
+            nuevaPos.x = Mathf.MoveTowards(
+                nuevaPos.x,
+                destinoActual.x,
+                velocidadMovimiento * Time.deltaTime
+            );
+
             tiempoRebote += Time.deltaTime * frecuenciaRebote;
             float offsetY = Mathf.Abs(Mathf.Sin(tiempoRebote)) * alturaRebote;
+
             nuevaPos.y = posicionOriginal.y + offsetY;
             transform.position = nuevaPos;
         }
         else
         {
             enMovimiento = false;
-            enCentro = true;
             transform.position = new Vector3(destinoActual.x, posicionOriginal.y, transform.position.z);
-            Debug.Log("Visitante llegó al centro - Esperando decisión");
+
+            if (!yaAtendido)
+            {
+                enCentro = true;
+                Debug.Log("Visitante llegó al centro - Esperando decisión");
+            }
         }
     }
+
     public void RevelarCamuflado()
     {
         if (camuflajeRevelado) return;
 
-        camuflajeRevelado = true;
+        if (datosVisitante == null) return;
 
-        if (spriteVisitante != null && spriteRevelado != null)
+        if (!datosVisitante.esDoble)
         {
-            spriteVisitante.sprite = spriteRevelado;
+            Debug.Log("Este visitante no es un doble.");
+            return;
         }
 
-        Debug.Log("El visitante ha sido revelado: estaba camuflado");
+        camuflajeRevelado = true;
+
+        if (spriteVisitante != null && datosVisitante.spriteRevelado != null)
+        {
+            spriteVisitante.sprite = datosVisitante.spriteRevelado;
+        }
+
+        Debug.Log("El visitante ha sido revelado: era un doble");
     }
 
     public void Aceptar()
@@ -87,17 +131,12 @@ public class VisitanteSimple : MonoBehaviour
         yaAtendido = true;
         enCentro = false;
 
-        GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
-        if (gestion != null)
-            gestion.RegistrarVisitanteAceptado();
-
-        Debug.Log("Visitante aceptado - Saliendo por la derecha");
+        Debug.Log("Visitante aceptado");
 
         destinoActual = puntoEntradaEdificio.position;
         posicionOriginal = transform.position;
         enMovimiento = true;
 
-        // Cuando termine de moverse, notificar fin de movimiento
         StartCoroutine(EsperarFinMovimiento());
     }
 
@@ -108,57 +147,46 @@ public class VisitanteSimple : MonoBehaviour
         yaAtendido = true;
         enCentro = false;
 
-        GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
-        if (gestion != null)
-            gestion.RegistrarVisitanteRechazado();
-
-        Debug.Log("Visitante rechazado - Saliendo por la izquierda");
+        Debug.Log("Visitante rechazado");
 
         destinoActual = puntoEntrada.position;
         posicionOriginal = transform.position;
         enMovimiento = true;
 
-        // Cuando termine de moverse, notificar fin de movimiento
         StartCoroutine(EsperarFinMovimiento());
     }
 
     IEnumerator EsperarFinMovimiento()
     {
-        // Esperar mientras se mueve
         while (enMovimiento)
         {
             yield return null;
         }
 
-        // Un pequeño retraso después de llegar al destino
         yield return new WaitForSeconds(0.5f);
 
-        Debug.Log("Visitante terminó de salir - Fin de la noche");
-
-        // Notificar al gestor que el visitante terminó
-        GestorVisitantesSimple gestor = FindFirstObjectByType<GestorVisitantesSimple>();
         if (gestor != null)
+        {
             gestor.VisitanteTerminoSalir();
-    }
+        }
 
+        Destroy(gameObject);
+    }
     public void ReiniciarParaNuevaNoche()
     {
         yaAtendido = false;
         enCentro = false;
-        enMovimiento = true;
-        transform.position = puntoEntrada.position;
-        destinoActual = puntoCentro.position;
-        posicionOriginal = puntoEntrada.position;
-        transform.localScale = escalaOriginal;
-
         camuflajeRevelado = false;
+        enMovimiento = false;
 
-        if (spriteVisitante != null && spriteNormal != null)
+        if (puntoEntrada != null)
         {
-            spriteVisitante.sprite = spriteNormal;
+            transform.position = puntoEntrada.position;
         }
 
-        Debug.Log("Visitante reiniciado para nueva noche");
+        if (datosVisitante != null && spriteVisitante != null)
+        {
+            spriteVisitante.sprite = datosVisitante.spriteNormal;
+        }
     }
 }
-
