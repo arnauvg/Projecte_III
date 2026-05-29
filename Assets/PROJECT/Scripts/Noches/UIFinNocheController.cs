@@ -1,10 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UIElements;
 using System;
 
 public class UIFinNocheController : MonoBehaviour
 {
-    [Header("Refer�ncies UI Document")]
+    [Header("UI Document")]
     [SerializeField] private UIDocument uiDocument;
 
     private Label labelNoche;
@@ -25,11 +25,13 @@ public class UIFinNocheController : MonoBehaviour
 
         if (uiDocument == null)
         {
-            Debug.LogError("UIFinNocheController: No s'ha trobat cap UIDocument al GameObject.");
+            Debug.LogError("UIFinNocheController: No se encontró UIDocument");
             return;
         }
 
         VisualElement root = uiDocument.rootVisualElement;
+
+        // Buscar todos los elementos por nombre
         labelNoche = root.Q<Label>("noche");
         labelEstado = root.Q<Label>("estado");
         labelNumVisitantes = root.Q<Label>("num-visitantes");
@@ -39,21 +41,21 @@ public class UIFinNocheController : MonoBehaviour
         labelSueldo = root.Q<Label>("sueldo");
         botonContinuar = root.Q<Button>("boton-siguiente");
 
-        if (labelNoche == null) Debug.LogWarning("No s'ha trobat l'element 'noche'.");
-        if (labelEstado == null) Debug.LogWarning("No s'ha trobat l'element 'estado'.");
-
-        // Ocultar al principi
+        // Ocultar al inicio
         if (root != null)
             root.style.display = DisplayStyle.None;
     }
 
     public void MostrarResultados(
         int noche,
-        bool visitanteCorrecto,
-        int penalizacionVisitante,
-        bool tareaCompletada,
-        int penalizacionTarea,
+        int visitantesAcertados,
+        int totalVisitantes,
+        int dineroPerdidoVisitantes,
+        int tareasCompletadas,
+        int totalTareas,
+        int dineroPerdidoTareas,
         int sueldoActual,
+        bool gameOver,
         Action onContinue)
     {
         VisualElement root = uiDocument?.rootVisualElement;
@@ -61,36 +63,54 @@ public class UIFinNocheController : MonoBehaviour
 
         root.style.display = DisplayStyle.Flex;
 
-        if (labelNoche != null) labelNoche.text = $"NOCHE {noche}";
+        // NOCHE
+        if (labelNoche != null)
+            labelNoche.text = $"NOCHE {noche}";
 
-        string estat = "COMPLETADA";
-        if (penalizacionVisitante > 0) estat = "INCORRECTE";
-        if (labelEstado != null) labelEstado.text = estat;
+        // ESTADO (Completada / Game Over)
+        if (labelEstado != null)
+        {
+            if (gameOver)
+                labelEstado.text = "GAME OVER";
+            else
+                labelEstado.text = "COMPLETADA";
+        }
 
-        if (labelNumVisitantes != null) labelNumVisitantes.text = visitanteCorrecto ? "1/1" : "0/1";
+        // VISITANTES ACERTADOS
+        if (labelNumVisitantes != null)
+            labelNumVisitantes.text = $"{visitantesAcertados}/{totalVisitantes}";
+
+        // DINERO PERDIDO POR VISITANTES
         if (labelDineroVisitantes != null)
         {
-            labelDineroVisitantes.text = $"-{penalizacionVisitante}�";
-            labelDineroVisitantes.style.color = penalizacionVisitante > 0 ? Color.red : Color.green;
+            labelDineroVisitantes.text = $"-{dineroPerdidoVisitantes}€";
+            labelDineroVisitantes.style.color = dineroPerdidoVisitantes > 0 ? Color.red : Color.green;
         }
 
-        if (labelNumTareas != null) labelNumTareas.text = tareaCompletada ? "1/1" : "0/1";
+        // TAREAS COMPLETADAS
+        if (labelNumTareas != null)
+            labelNumTareas.text = $"{tareasCompletadas}/{totalTareas}";
+
+        // DINERO PERDIDO POR TAREAS
         if (labelDineroTareas != null)
         {
-            labelDineroTareas.text = $"-{penalizacionTarea}�";
-            labelDineroTareas.style.color = penalizacionTarea > 0 ? Color.red : Color.green;
+            labelDineroTareas.text = $"-{dineroPerdidoTareas}€";
+            labelDineroTareas.style.color = dineroPerdidoTareas > 0 ? Color.red : Color.green;
         }
 
-        if (labelSueldo != null) labelSueldo.text = $"{sueldoActual}�";
+        // SUELDO TOTAL
+        if (labelSueldo != null)
+            labelSueldo.text = $"{sueldoActual}€";
 
-        // Netejar listeners anteriors
-        if (botonContinuar != null && onContinueAction != null)
-            botonContinuar.clicked -= onContinueAction;
-
+        // Guardar acción para el botón
         onContinueAction = onContinue;
 
+        // Configurar botón
         if (botonContinuar != null)
-            botonContinuar.clicked += ExecutarContinuar;
+        {
+            botonContinuar.clicked -= EjecutarContinuar;
+            botonContinuar.clicked += EjecutarContinuar;
+        }
     }
 
     public void Ocultar()
@@ -99,7 +119,7 @@ public class UIFinNocheController : MonoBehaviour
             uiDocument.rootVisualElement.style.display = DisplayStyle.None;
     }
 
-    private void ExecutarContinuar()
+    private void EjecutarContinuar()
     {
         Ocultar();
         onContinueAction?.Invoke();

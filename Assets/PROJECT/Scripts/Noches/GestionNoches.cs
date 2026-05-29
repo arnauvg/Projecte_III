@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
+using System;
 
 public class GestionNoches : MonoBehaviour
 {
@@ -10,135 +9,171 @@ public class GestionNoches : MonoBehaviour
 
     [Header("Penalizaciones")]
     public int penalizacionVisitanteIncorrecto = 50;
+    public int penalizacionTareaPendiente = 100;
 
-    [Header("UI (UI Toolkit)")]
-    public UIFinNocheController uiFinNocheController;   // ← NUEVO: controlador de la UI con UI Toolkit
-
-    [Header("Referencias (opcional, solo si usas Canvas antiguo)")]
-    public GestorVisitantesSimple gestorVisitantes;
+    [Header("Referencias")]
+    public UIFinNocheController uiFinNocheController;
+    public CronometroNoche cronometro;
 
     // Variables internas
     private int sueldoActual;
     private int nocheActual = 1;
-    private bool visitanteCorrecto = false;
+    private bool yaNocheTerminada = false;
+
+    // Estadísticas de la noche
+    private int visitantesAcertados = 0;
+    private int totalVisitantes = 0;
+    private int dineroPerdidoVisitantes = 0;
+    private int tareasCompletadas = 0;
+    private int totalTareas = 1; // Por ahora 1 tarea por noche
+    private int dineroPerdidoTareas = 0;
     private bool tareaCompletada = false;
-    private int penalizacionVisitante = 0;
 
     void Start()
     {
         sueldoActual = sueldoBase;
-        Debug.Log($"NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
+
+        if (cronometro == null)
+            cronometro = FindFirstObjectByType<CronometroNoche>();
+
+        // Contar visitantes totales de esta noche
+        ContarTotalVisitantes();
+
+        Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
-    // Llamado desde VisitanteSimple cuando pulsan VERDE (INCORRECTO)
-    public void RegistrarVisitanteAceptado()
+    void ContarTotalVisitantes()
     {
-        penalizacionVisitante = penalizacionVisitanteIncorrecto;
-        visitanteCorrecto = false;
-        sueldoActual -= penalizacionVisitante;
-        Debug.Log($"Visitante INCORRECTO! -{penalizacionVisitante}€");
+        if (EstadoVisitantes.Instancia != null)
+        {
+            // Esto depende de cómo tengas configurado EstadoVisitantes
+            // Si usas lista plana:
+            // totalVisitantes = 3; // o calcula según la noche
 
-        if (gestorVisitantes != null)
-            gestorVisitantes.RegistrarRespuestaVisitante();
+            // Por ahora manual:
+            switch (nocheActual)
+            {
+                case 1: totalVisitantes = 3; break;
+                case 2: totalVisitantes = 3; break;
+                case 3: totalVisitantes = 2; break;
+                default: totalVisitantes = 3; break;
+            }
+        }
     }
 
-    // Llamado desde VisitanteSimple cuando pulsan ROJO (CORRECTO)
-    public void RegistrarVisitanteRechazado()
+    // Llamado cuando el jugador acierta (deja pasar bueno O rechaza malo)
+    public void RegistrarAcierto()
     {
-        penalizacionVisitante = 0;
-        visitanteCorrecto = true;
-        Debug.Log($"Visitante CORRECTO! Sin penalización");
-
-        if (gestorVisitantes != null)
-            gestorVisitantes.RegistrarRespuestaVisitante();
+        visitantesAcertados++;
+        Debug.Log($"✅ Visitante acertado ({visitantesAcertados}/{totalVisitantes})");
     }
 
-    // Llamado desde el minijuego de velas al completarlo
+    // Llamado cuando el jugador falla (rechaza bueno O acepta malo)
+    public void RegistrarFallo()
+    {
+        dineroPerdidoVisitantes += penalizacionVisitanteIncorrecto;
+        sueldoActual -= penalizacionVisitanteIncorrecto;
+        Debug.Log($"❌ Visitante fallado! -{penalizacionVisitanteIncorrecto}€");
+    }
+
+    // Llamado desde el minijuego al completar la tarea
     public void CompletarTarea()
     {
         tareaCompletada = true;
-        Debug.Log("Tarea completada!");
+        tareasCompletadas = 1;
+        Debug.Log("✅ Tarea completada!");
     }
 
-    // Llamado por GestorVisitantes cuando el visitante termina de salir
-    public void TerminarNoche()
+    // La noche termina SOLO por el reloj (06:00 AM)
+    public void TerminarNochePorTiempo()
     {
-        Debug.Log("=== FIN DE LA NOCHE ===");
+        if (yaNocheTerminada) return;
+        yaNocheTerminada = true;
 
-        int penalizacionTarea = tareaCompletada ? 0 : 100;
-        if (penalizacionTarea > 0)
+        Debug.Log("=== FIN DE LA NOCHE (06:00 AM) ===");
+
+        // Calcular penalización por tarea pendiente
+        dineroPerdidoTareas = tareaCompletada ? 0 : penalizacionTareaPendiente;
+        if (dineroPerdidoTareas > 0)
         {
-            sueldoActual -= penalizacionTarea;
-            Debug.Log($"Tarea pendiente! -{penalizacionTarea}€");
+            sueldoActual -= dineroPerdidoTareas;
+            Debug.Log($"⚠️ Tarea pendiente! -{dineroPerdidoTareas}€");
         }
 
-        MostrarPantallaFinNoche(penalizacionTarea);
+        // Mostrar pantalla de resultados
+        MostrarPantallaFinNoche();
     }
 
-    // Aquí se muestra la pantalla usando UI Toolkit (ya no usa Canvas)
-    private void MostrarPantallaFinNoche(int penalizacionTarea)
+    private void MostrarPantallaFinNoche()
     {
-        bool despedido = sueldoActual < umbralDespido;
-        bool victoria = !despedido && nocheActual >= 5;
+        bool gameOver = sueldoActual < umbralDespido;
+        bool victoria = !gameOver && nocheActual >= 5;
 
-        // Acción que se ejecutará cuando el usuario pulse el botón
-        System.Action onContinue = () =>
+        Action onContinue = () =>
         {
-            if (despedido || victoria)
+            if (gameOver || victoria)
                 ReiniciarJuego();
             else
                 SiguienteNoche();
         };
 
-        // Mostrar la pantalla con el controlador de UI Toolkit
-        uiFinNocheController.MostrarResultados(
-            noche: nocheActual,
-            visitanteCorrecto: visitanteCorrecto,
-            penalizacionVisitante: penalizacionVisitante,
-            tareaCompletada: tareaCompletada,
-            penalizacionTarea: penalizacionTarea,
-            sueldoActual: sueldoActual,
-            onContinue: onContinue
-        );
+        if (uiFinNocheController != null)
+        {
+            uiFinNocheController.MostrarResultados(
+                noche: nocheActual,
+                visitantesAcertados: visitantesAcertados,
+                totalVisitantes: totalVisitantes,
+                dineroPerdidoVisitantes: dineroPerdidoVisitantes,
+                tareasCompletadas: tareasCompletadas,
+                totalTareas: totalTareas,
+                dineroPerdidoTareas: dineroPerdidoTareas,
+                sueldoActual: sueldoActual,
+                gameOver: gameOver,
+                onContinue: onContinue
+            );
+        }
     }
 
     private void SiguienteNoche()
     {
         nocheActual++;
-        visitanteCorrecto = false;
-        tareaCompletada = false;
-        penalizacionVisitante = 0;
+        ReiniciarVariablesNoche();
 
-        // Ocultamos la pantalla
-        uiFinNocheController.Ocultar();
+        if (uiFinNocheController != null)
+            uiFinNocheController.Ocultar();
 
-        // Reanudar el tiempo (por si estaba pausado)
-        Time.timeScale = 1f;
+        if (cronometro != null)
+            cronometro.ReiniciarCronometro();
 
-        // Reiniciar el visitante para que vuelva a aparecer
-        VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
-        if (visitante != null)
-            visitante.ReiniciarParaNuevaNoche();
+        ContarTotalVisitantes();
 
-        Debug.Log($"NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
+        Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
     private void ReiniciarJuego()
     {
         nocheActual = 1;
         sueldoActual = sueldoBase;
-        visitanteCorrecto = false;
+        ReiniciarVariablesNoche();
+
+        if (uiFinNocheController != null)
+            uiFinNocheController.Ocultar();
+
+        if (cronometro != null)
+            cronometro.ReiniciarCronometro();
+
+        ContarTotalVisitantes();
+
+        Debug.Log("🔄 JUEGO REINICIADO");
+    }
+
+    private void ReiniciarVariablesNoche()
+    {
+        yaNocheTerminada = false;
+        visitantesAcertados = 0;
+        dineroPerdidoVisitantes = 0;
+        tareasCompletadas = 0;
+        dineroPerdidoTareas = 0;
         tareaCompletada = false;
-        penalizacionVisitante = 0;
-
-        uiFinNocheController.Ocultar();
-
-        Time.timeScale = 1f;
-
-        VisitanteSimple visitante = FindFirstObjectByType<VisitanteSimple>();
-        if (visitante != null)
-            visitante.ReiniciarParaNuevaNoche();
-
-        Debug.Log("JUEGO REINICIADO");
     }
 }

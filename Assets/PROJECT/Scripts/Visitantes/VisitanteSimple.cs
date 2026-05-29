@@ -26,8 +26,10 @@ public class VisitanteSimple : MonoBehaviour
 
     private bool camuflajeRevelado = false;
     private VisitanteDatos datosVisitante;
-
     private GestorVisitantesSimple gestor;
+
+    // ✅ NUEVA VARIABLE
+    private bool esBueno = true;
 
     void Awake()
     {
@@ -43,6 +45,11 @@ public class VisitanteSimple : MonoBehaviour
     )
     {
         datosVisitante = datos;
+
+        // ✅ CONFIGURAR SI ES BUENO O MALO
+        // Si esDoble == true → es MALO (false)
+        // Si esDoble == false → es BUENO (true)
+        esBueno = !datos.esDoble;
 
         puntoEntrada = entrada;
         puntoCentro = centro;
@@ -65,7 +72,7 @@ public class VisitanteSimple : MonoBehaviour
             spriteVisitante.sprite = datosVisitante.spriteNormal;
         }
 
-        Debug.Log("Aparece visitante: " + datosVisitante.nombreVisitante);
+        Debug.Log($"Aparece visitante: {datosVisitante.nombreVisitante} - {(esBueno ? "BUENO" : "MALO")}");
     }
 
     void Update()
@@ -105,7 +112,6 @@ public class VisitanteSimple : MonoBehaviour
     public void RevelarCamuflado()
     {
         if (camuflajeRevelado) return;
-
         if (datosVisitante == null) return;
 
         if (!datosVisitante.esDoble)
@@ -131,7 +137,15 @@ public class VisitanteSimple : MonoBehaviour
         yaAtendido = true;
         enCentro = false;
 
-        Debug.Log("Visitante aceptado");
+        GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
+
+        if (gestion != null)
+        {
+            if (esBueno)
+                gestion.RegistrarAcierto();  // Bueno aceptado = acierto
+            else
+                gestion.RegistrarFallo();    // Malo aceptado = fallo
+        }
 
         destinoActual = puntoEntradaEdificio.position;
         posicionOriginal = transform.position;
@@ -147,7 +161,15 @@ public class VisitanteSimple : MonoBehaviour
         yaAtendido = true;
         enCentro = false;
 
-        Debug.Log("Visitante rechazado");
+        GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
+
+        if (gestion != null)
+        {
+            if (!esBueno)
+                gestion.RegistrarAcierto();  // Malo rechazado = acierto
+            else
+                gestion.RegistrarFallo();    // Bueno rechazado = fallo
+        }
 
         destinoActual = puntoEntrada.position;
         posicionOriginal = transform.position;
@@ -172,6 +194,7 @@ public class VisitanteSimple : MonoBehaviour
 
         Destroy(gameObject);
     }
+
     public void ReiniciarParaNuevaNoche()
     {
         yaAtendido = false;

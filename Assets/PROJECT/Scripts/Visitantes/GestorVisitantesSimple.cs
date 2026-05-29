@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class GestorVisitantesSimple : MonoBehaviour
@@ -34,15 +34,17 @@ public class GestorVisitantesSimple : MonoBehaviour
 
         if (datos == null)
         {
-            Debug.Log("No quedan visitantes. Aqu� puedes terminar la noche.");
+            Debug.Log("No quedan visitantes.");
 
-            GestionNoches gestionNoches = FindFirstObjectByType<GestionNoches>();
+            // ❌ ELIMINA O COMENTA ESTAS LÍNEAS:
+            // GestionNoches gestionNoches = FindFirstObjectByType<GestionNoches>();
+            // if (gestionNoches != null)
+            // {
+            //     gestionNoches.TerminarNoche();  // ← Esto ya no existe
+            // }
 
-            if (gestionNoches != null)
-            {
-                gestionNoches.TerminarNoche();
-            }
-
+            // ✅ La noche ya NO termina aquí, solo por el reloj
+            Debug.Log("Esperando a que termine la noche por el reloj (06:00 AM)");
             return;
         }
 
@@ -87,21 +89,24 @@ public class GestorVisitantesSimple : MonoBehaviour
         esperandoVisitante = false;
         CrearVisitanteActual();
     }
-    public void RegistrarRespuestaVisitante(bool aceptado)
-    {
-        if (visitanteActual == null) return;
 
-        if (aceptado)
-        {
-            visitanteActual.Aceptar();
-        }
-        else
-        {
-            visitanteActual.Rechazar();
-        }
-    }
-    public void RegistrarRespuestaVisitante()
+    public void ReiniciarNoche()
     {
-        Debug.Log("RegistrarRespuestaVisitante() llamado sin par�metro. No se hace nada porque ahora decide el bot�n verde o rojo.");
+        // Limpiar visitante actual si existe
+        if (visitanteActual != null)
+            Destroy(visitanteActual.gameObject);
+
+        esperandoVisitante = false;
+
+        // Reiniciar el índice de visitantes
+        if (EstadoVisitantes.Instancia != null)
+            EstadoVisitantes.Instancia.indiceVisitanteActual = 0;
+
+        CrearVisitanteActual();
+    }
+
+    public void ReiniciarJuegoCompleto()
+    {
+        ReiniciarNoche();
     }
 }
