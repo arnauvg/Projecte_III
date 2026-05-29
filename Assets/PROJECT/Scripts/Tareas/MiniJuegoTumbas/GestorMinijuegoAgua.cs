@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class GestorMinijuegoAgua : MonoBehaviour
@@ -22,6 +22,9 @@ public class GestorMinijuegoAgua : MonoBehaviour
     [Header("Tiempo")]
     public float tiempoLlenado = 2f;
 
+    [Header("Cierre automático")]
+    public CerrarMinijuego cerrarMinijuego;
+
     private bool grifoAbiertoEstado = false;
     private bool regaderaEstaLlena = false;
     private bool tareaCompletada = false;
@@ -30,6 +33,11 @@ public class GestorMinijuegoAgua : MonoBehaviour
     void Start()
     {
         ReiniciarMinijuego();
+
+        if (cerrarMinijuego == null)
+            cerrarMinijuego = FindFirstObjectByType<CerrarMinijuego>();
+
+        Debug.Log("GestorMinijuegoAgua iniciado. cerrarMinijuego = " + (cerrarMinijuego != null ? "ASIGNADO" : "NULL"));
     }
 
     public void ClickGrifo()
@@ -132,21 +140,46 @@ public class GestorMinijuegoAgua : MonoBehaviour
 
     void CompletarTarea()
     {
-        Debug.Log("Tumba regada. Tarea completada.");
+        if (tareaCompletada) return;
+
+        Debug.Log("Tumba regada. Mostrando flores...");
 
         tareaCompletada = true;
 
+        // Mostrar la tumba con flores
         tumbaNormal.SetActive(false);
         tumbaFlores.SetActive(true);
 
-        // La regadera vuelve a su estado normal/vac�a
+        // Resetear regadera
         regaderaNormal.SetActive(true);
         regaderaLlena.SetActive(false);
         regaderaAguaSale.SetActive(false);
 
-        // El grifo queda cerrado
+        // Resetear grifo
         grifoNormal.SetActive(true);
         grifoAbierto.SetActive(false);
+
+        grifoAbiertoEstado = false;
+        regaderaEstaLlena = false;
+
+        // Cerrar el minijuego después de 1 segundo (para que se vean las flores)
+        StartCoroutine(CerrarConDelay());
+    }
+
+    IEnumerator CerrarConDelay()
+    {
+        Debug.Log("Esperando 1 segundo antes de cerrar...");
+        yield return new WaitForSecondsRealtime(1f);
+
+        if (cerrarMinijuego != null)
+        {
+            Debug.Log("Cerrando minijuego...");
+            cerrarMinijuego.CompletarYCerrar();
+        }
+        else
+        {
+            Debug.LogError("cerrarMinijuego es NULL");
+        }
     }
 
     public void ReiniciarMinijuego()

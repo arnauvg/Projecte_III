@@ -1,4 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
 public class CerrarMinijuego : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class CerrarMinijuego : MonoBehaviour
 
     private AudioSource audioSource;
     private TareaManager tareaManager;
+    private bool completado = false;
 
     void Start()
     {
@@ -14,14 +16,26 @@ public class CerrarMinijuego : MonoBehaviour
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
+        audioSource.playOnAwake = false;
+        audioSource.volume = 1f;
+
         tareaManager = FindFirstObjectByType<TareaManager>();
+    }
+
+    public void Cerrar()
+    {
+        Debug.Log("Cerrando minijuego");
+        CerrarCanvas();
     }
 
     public void CompletarYCerrar()
     {
-        if (sonidoCompletado != null && audioSource != null)
-            audioSource.PlayOneShot(sonidoCompletado);
+        if (completado) return;
+        completado = true;
 
+        Debug.Log("Completando tarea");
+
+        // Notificar a TareaManager
         if (tareaManager != null)
             tareaManager.CompletarTareaActual();
 
@@ -29,13 +43,39 @@ public class CerrarMinijuego : MonoBehaviour
         if (uiManager != null)
             uiManager.MarcarTareaCompletada();
 
-        Invoke(nameof(Cerrar), 0.3f);
+        // Reproducir sonido y esperar antes de cerrar
+        StartCoroutine(ReproducirSonidoYCerrar());
     }
 
-    void Cerrar()
+    IEnumerator ReproducirSonidoYCerrar()
     {
+        // Reproducir sonido
+        if (sonidoCompletado != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(sonidoCompletado, 1f);
+            Debug.Log("🔊 Reproduciendo sonido de completado");
+
+            // Esperar la duración del sonido
+            yield return new WaitForSecondsRealtime(sonidoCompletado.length);
+        }
+        else
+        {
+            Debug.LogWarning("No hay sonido asignado, esperando 0.5 segundos");
+            yield return new WaitForSecondsRealtime(0.5f);
+        }
+
+        // Cerrar después del sonido
+        CerrarCanvas();
+    }
+
+    void CerrarCanvas()
+    {
+        Debug.Log("Cerrando canvas...");
+
         if (canvasMinijuego != null)
+        {
             canvasMinijuego.SetActive(false);
+        }
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
