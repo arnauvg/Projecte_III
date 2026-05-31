@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2184721069507c48a7e41f5d9c1c535, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelMapa: {fileID: 442318075}
+  panelMapa: {fileID: 2117207482}
 --- !u!1 &280149040
 GameObject:
   m_ObjectHideFlags: 0

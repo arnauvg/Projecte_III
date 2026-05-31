@@ -6561,7 +6561,7 @@ GameObject:
   - component: {fileID: 7040430232578799658}
   m_Layer: 0
   m_Name: blackberry
-  m_TagString: ObjetoRevelador
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11653,7 +11653,7 @@ GameObject:
   - component: {fileID: 8632055956929053012}
   m_Layer: 0
   m_Name: garlic
-  m_TagString: Untagged
+  m_TagString: ObjetoRevelador
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
