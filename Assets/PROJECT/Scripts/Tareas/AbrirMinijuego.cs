@@ -8,6 +8,7 @@ public class AbrirMinijuego : MonoBehaviour
     private Outline outlineComponent;
     private TareaManager tareaManager;
     private bool puedeInteractuar = false;
+    private bool buscando = false;
 
     void Start()
     {
@@ -16,22 +17,25 @@ public class AbrirMinijuego : MonoBehaviour
             outlineComponent = gameObject.AddComponent<Outline>();
         outlineComponent.enabled = false;
 
-        // Buscar TareaManager
-        tareaManager = FindFirstObjectByType<TareaManager>();
-
-        if (tareaManager == null)
-        {
-            Debug.LogWarning($"No se encontró TareaManager, buscando de nuevo...");
-            Invoke("BuscarTareaManager", 0.5f);
-        }
+        BuscarTareaManager();
     }
 
     void BuscarTareaManager()
     {
-        tareaManager = FindFirstObjectByType<TareaManager>();
+        tareaManager = FindObjectOfType<TareaManager>();
         if (tareaManager != null)
         {
-            Debug.Log($"TareaManager encontrado en {gameObject.name}");
+            Debug.Log($"AbrirMinijuego en {gameObject.name}: TareaManager encontrado.");
+            buscando = false;
+        }
+        else
+        {
+            Debug.LogWarning($"AbrirMinijuego en {gameObject.name}: No se encontró TareaManager, reintentando en 0.5s...");
+            if (!buscando)
+            {
+                buscando = true;
+                Invoke(nameof(BuscarTareaManager), 0.5f);
+            }
         }
     }
 

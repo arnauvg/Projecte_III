@@ -1,9 +1,10 @@
 using UnityEngine;
+using System.Collections;
 
 public class MinijuegoAguaBendita : MonoBehaviour
 {
-    [Header("Canvas")]
-    public GameObject canvasMinijuego;
+    [Header("Referencias UI")]
+    public CerrarMinijuego cerrarMinijuego;   // arrastra el botón Salir
 
     [Header("Estados visuales de la pila")]
     public GameObject pilaMuySucia;
@@ -11,100 +12,98 @@ public class MinijuegoAguaBendita : MonoBehaviour
     public GameObject pilaVacia;
     public GameObject pilaLlenaAguaLimpia;
 
-    private int estadoPila = 0;
-    private bool minijuegoCompletado = false;
+    private int estadoPila = 0;      // 0=muy sucia, 1=agua sucia, 2=vacia, 3=llena
+    private bool completado = false;
 
     void Start()
     {
-        if (canvasMinijuego != null)
-            canvasMinijuego.SetActive(false);
-
         MostrarEstadoInicial();
+        if (cerrarMinijuego == null)
+            cerrarMinijuego = FindObjectOfType<CerrarMinijuego>();
     }
 
     void MostrarEstadoInicial()
     {
         estadoPila = 0;
-        minijuegoCompletado = false;
-
         pilaMuySucia.SetActive(true);
         pilaAguaSucia.SetActive(false);
         pilaVacia.SetActive(false);
         pilaLlenaAguaLimpia.SetActive(false);
     }
 
-    public void AbrirMinijuego()
-    {
-        canvasMinijuego.SetActive(true);
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
-
-    public void CerrarMinijuego()
-    {
-        canvasMinijuego.SetActive(false);
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
-
+    // Método llamado desde ZonaPilaDrop cuando usan el trapo
     public void UsarTrapo()
     {
-        if (minijuegoCompletado) return;
+        if (completado) return;
 
         if (estadoPila == 0)
         {
-            // De pila muy sucia a pila con agua sucia
+            // De muy sucia a agua sucia
             pilaMuySucia.SetActive(false);
             pilaAguaSucia.SetActive(true);
-            pilaVacia.SetActive(false);
-            pilaLlenaAguaLimpia.SetActive(false);
-
             estadoPila = 1;
-
             Debug.Log("Primer paso: has limpiado la suciedad exterior.");
         }
         else if (estadoPila == 1)
         {
-            // De pila con agua sucia a pila vacía
-            pilaMuySucia.SetActive(false);
+            // De agua sucia a vacía
             pilaAguaSucia.SetActive(false);
             pilaVacia.SetActive(true);
-            pilaLlenaAguaLimpia.SetActive(false);
-
             estadoPila = 2;
-
             Debug.Log("Segundo paso: has quitado el agua sucia. Ahora falta rellenar.");
         }
-        else if (estadoPila == 2)
+        else
         {
-            Debug.Log("La pila ya está limpia. Ahora usa la botella de agua bendita.");
+            Debug.Log("No puedes usar el trapo ahora.");
         }
     }
 
+    // Método llamado desde ZonaPilaDrop cuando usan el agua bendita
     public void UsarAguaBendita()
     {
-        if (minijuegoCompletado) return;
-
-        if (estadoPila < 2)
-        {
-            Debug.Log("Primero tienes que limpiar la pila con el trapo.");
-            return;
-        }
+        if (completado) return;
 
         if (estadoPila == 2)
         {
-            // De pila vacía a pila llena con agua limpia
-            pilaMuySucia.SetActive(false);
-            pilaAguaSucia.SetActive(false);
+            // De vacía a llena
             pilaVacia.SetActive(false);
             pilaLlenaAguaLimpia.SetActive(true);
-
             estadoPila = 3;
-            minijuegoCompletado = true;
-
-            Debug.Log("Minijuego completado: pila limpia y llena de agua bendita.");
+            Completar();
         }
+        else
+        {
+            Debug.Log("Primero limpia la pila con el trapo hasta dejarla vacía.");
+        }
+    }
+
+    void Completar()
+    {
+        if (completado) return;
+        completado = true;
+
+        Debug.Log("Minijuego de agua bendita completado.");
+
+        // Notificar a GestionNoches
+        GestionNoches gestion = FindObjectOfType<GestionNoches>();
+        if (gestion != null)
+            gestion.CompletarTarea();
+
+        // Cerrar con delay y sonido
+        if (cerrarMinijuego != null)
+            StartCoroutine(CerrarConDelay());
+    }
+
+    IEnumerator CerrarConDelay()
+    {
+        yield return new WaitForSecondsRealtime(0.8f);
+        cerrarMinijuego.CompletarYCerrar();
+    }
+
+    // Opcional: reiniciar el minijuego si se reutiliza
+    public void Reiniciar()
+    {
+        completado = false;
+        MostrarEstadoInicial();
     }
 }

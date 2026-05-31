@@ -11,6 +11,8 @@ TagManager:
   - Cajon
   - Tareatumbas
   - Tareaafueras
+  - Tareavelas
+  - Tareapila
   layers:
   - Default
   - TransparentFX
