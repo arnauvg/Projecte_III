@@ -75,6 +75,7 @@ public class VisitanteSimple : MonoBehaviour
         Debug.Log($"Aparece visitante: {datosVisitante.nombreVisitante} - {(esBueno ? "BUENO" : "MALO")}");
     }
 
+    // En Update(), asegura que cuando llega al centro se establece bien:
     void Update()
     {
         if (!enMovimiento) return;
@@ -84,15 +85,9 @@ public class VisitanteSimple : MonoBehaviour
 
         if (distancia > 0.05f)
         {
-            nuevaPos.x = Mathf.MoveTowards(
-                nuevaPos.x,
-                destinoActual.x,
-                velocidadMovimiento * Time.deltaTime
-            );
-
+            nuevaPos.x = Mathf.MoveTowards(nuevaPos.x, destinoActual.x, velocidadMovimiento * Time.deltaTime);
             tiempoRebote += Time.deltaTime * frecuenciaRebote;
             float offsetY = Mathf.Abs(Mathf.Sin(tiempoRebote)) * alturaRebote;
-
             nuevaPos.y = posicionOriginal.y + offsetY;
             transform.position = nuevaPos;
         }
