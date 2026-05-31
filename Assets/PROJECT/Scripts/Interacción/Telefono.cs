@@ -101,4 +101,5 @@ public class Telefono : Interactuable
             Debug.Log("[Cheat] Teléfono desactivado (ya no sonará ni activará diálogo).");
         }
     }
+
 }
