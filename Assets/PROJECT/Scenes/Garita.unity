@@ -976,6 +976,7 @@ MonoBehaviour:
   puntoCentro: {fileID: 1457676209}
   puntoEntradaEdificio: {fileID: 513487837}
   tiempoEntreVisitantes: 3
+  maxVisitantesPorNoche: 3
 --- !u!1 &513487836
 GameObject:
   m_ObjectHideFlags: 0
@@ -4619,8 +4620,6 @@ GameObject:
   - component: {fileID: 1953106209003111187}
   - component: {fileID: 3652509739019617642}
   - component: {fileID: 9179986520295402920}
-  - component: {fileID: 9179986520295402922}
-  - component: {fileID: 9179986520295402921}
   m_Layer: 0
   m_Name: flashlight-switch
   m_TagString: Untagged
@@ -10090,8 +10089,6 @@ GameObject:
   - component: {fileID: 3171063204994287793}
   - component: {fileID: 6198220514443737465}
   - component: {fileID: 8102075962138691836}
-  - component: {fileID: 8102075962138691838}
-  - component: {fileID: 8102075962138691837}
   m_Layer: 0
   m_Name: flashlight-bulb
   m_TagString: Untagged
@@ -10864,43 +10861,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8102075962138691837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7360958893060094731}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef7b4b290f051a24f8f2a86780cc2d30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  posicionEnMano: {x: 0, y: 0, z: 0.6}
-  radioDeteccion: 0.5
-  posicionLocalEnCajon: {x: 0, y: 0, z: 0}
-  rotacionLocalEnCajon: {x: 0, y: 0, z: 0}
---- !u!65 &8102075962138691838
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7360958893060094731}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.0005609644, y: 0.000580331, z: 0.0006462186}
-  m_Center: {x: -0.000029395018, y: 0.00005635558, z: 0.0000147105875}
 --- !u!4 &8148063077952875323
 Transform:
   m_ObjectHideFlags: 0
@@ -12441,43 +12401,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &9179986520295402921
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1219064139256111506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef7b4b290f051a24f8f2a86780cc2d30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  posicionEnMano: {x: 0, y: 0, z: 0.6}
-  radioDeteccion: 0.5
-  posicionLocalEnCajon: {x: 0, y: 0, z: 0}
-  rotacionLocalEnCajon: {x: 0, y: 0, z: 0}
---- !u!65 &9179986520295402922
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1219064139256111506}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.00022522453, y: 0.00020010467, z: 0.00016346037}
-  m_Center: {x: 0.0000022690185, y: -0.000006695026, z: -0.000002453289}
 --- !u!33 &9203870079137295182
 MeshFilter:
   m_ObjectHideFlags: 0
