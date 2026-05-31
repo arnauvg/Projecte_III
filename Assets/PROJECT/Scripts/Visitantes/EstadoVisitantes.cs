@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EstadoVisitantes : MonoBehaviour
 {
@@ -32,7 +32,7 @@ public class EstadoVisitantes : MonoBehaviour
 
         if (indiceVisitanteActual >= visitantes.Length)
         {
-            Debug.Log("Ya no quedan m�s visitantes.");
+            Debug.Log("Ya no quedan más visitantes.");
             return null;
         }
 

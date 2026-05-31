@@ -14,16 +14,30 @@ public class GestorVisitantesSimple : MonoBehaviour
     [Header("Tiempo")]
     public float tiempoEntreVisitantes = 3f;
 
+    [Header("Límite de visitantes por noche")]
+    public int maxVisitantesPorNoche = 3;
+
     private VisitanteSimple visitanteActual;
     private bool esperandoVisitante = false;
+    private int visitantesAtendidosEnNoche = 0;
+    private bool nocheTerminada = false;
 
     void Start()
     {
+        visitantesAtendidosEnNoche = 0;
+        nocheTerminada = false;
         CrearVisitanteActual();
     }
 
     void CrearVisitanteActual()
     {
+        // Si ya hemos atendido el máximo, no crear más visitantes
+        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
+        {
+            Debug.Log($"Límite de {maxVisitantesPorNoche} visitantes alcanzado. Esperando fin de noche.");
+            return;
+        }
+
         if (EstadoVisitantes.Instancia == null)
         {
             Debug.LogError("No existe EstadoVisitantes en la escena.");
@@ -34,17 +48,7 @@ public class GestorVisitantesSimple : MonoBehaviour
 
         if (datos == null)
         {
-            Debug.Log("No quedan visitantes.");
-
-            // ❌ ELIMINA O COMENTA ESTAS LÍNEAS:
-            // GestionNoches gestionNoches = FindFirstObjectByType<GestionNoches>();
-            // if (gestionNoches != null)
-            // {
-            //     gestionNoches.TerminarNoche();  // ← Esto ya no existe
-            // }
-
-            // ✅ La noche ya NO termina aquí, solo por el reloj
-            Debug.Log("Esperando a que termine la noche por el reloj (06:00 AM)");
+            Debug.Log("No quedan más visitantes en la lista.");
             return;
         }
 
@@ -73,8 +77,18 @@ public class GestorVisitantesSimple : MonoBehaviour
 
     public void VisitanteTerminoSalir()
     {
-        if (esperandoVisitante) return;
+        if (nocheTerminada) return;
 
+        visitantesAtendidosEnNoche++;
+        Debug.Log($"Visitante atendido. Total en la noche: {visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
+
+        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
+        {
+            Debug.Log("Máximo de visitantes alcanzado. No se crearán más.");
+            return;
+        }
+
+        if (esperandoVisitante) return;
         esperandoVisitante = true;
 
         EstadoVisitantes.Instancia.PasarAlSiguienteVisitante();
@@ -85,9 +99,13 @@ public class GestorVisitantesSimple : MonoBehaviour
     IEnumerator EsperarYCrearSiguiente()
     {
         yield return new WaitForSeconds(tiempoEntreVisitantes);
-
         esperandoVisitante = false;
-        CrearVisitanteActual();
+
+        // Solo crear si no hemos llegado al límite y la noche no ha terminado
+        if (visitantesAtendidosEnNoche < maxVisitantesPorNoche && !nocheTerminada)
+        {
+            CrearVisitanteActual();
+        }
     }
 
     public void ReiniciarNoche()
@@ -97,6 +115,8 @@ public class GestorVisitantesSimple : MonoBehaviour
             Destroy(visitanteActual.gameObject);
 
         esperandoVisitante = false;
+        visitantesAtendidosEnNoche = 0;
+        nocheTerminada = false;
 
         // Reiniciar el índice de visitantes
         if (EstadoVisitantes.Instancia != null)
@@ -108,5 +128,15 @@ public class GestorVisitantesSimple : MonoBehaviour
     public void ReiniciarJuegoCompleto()
     {
         ReiniciarNoche();
+    }
+
+    // Método llamado desde GestionNoches cuando termina la noche por tiempo
+    public void TerminarNoche()
+    {
+        nocheTerminada = true;
+        if (visitanteActual != null)
+        {
+            Destroy(visitanteActual.gameObject);
+        }
     }
 }
