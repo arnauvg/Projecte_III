@@ -1428,7 +1428,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01a8198dfceefd845907ddaee828ebd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skipKey: 282
+  skipTutorialKey: 282
+  forceNextNightKey: 283
+  forceGameOverKey: 284
 --- !u!1 &959373507
 GameObject:
   m_ObjectHideFlags: 0
