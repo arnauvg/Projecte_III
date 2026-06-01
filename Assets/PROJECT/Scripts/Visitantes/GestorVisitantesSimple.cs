@@ -54,7 +54,7 @@ public class GestorVisitantesSimple : MonoBehaviour
         visitanteActual = nuevoVisitante.GetComponent<VisitanteSimple>();
         if (visitanteActual == null)
         {
-            Debug.LogError("El prefab no tiene VisitanteSimple.");
+            Debug.LogError("El prefab no tiene el script VisitanteSimple.");
             return;
         }
 
@@ -74,11 +74,11 @@ public class GestorVisitantesSimple : MonoBehaviour
         if (nocheTerminada) return;
 
         visitantesAtendidosEnNoche++;
-        Debug.Log($"Visitante atendido. Total: {visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
+        Debug.Log($"Visitante atendido. Total en la noche: {visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
 
         if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
         {
-            Debug.Log("Máximo alcanzado. No se crearán más.");
+            Debug.Log("Máximo de visitantes alcanzado. No se crearán más.");
             return;
         }
 
@@ -86,6 +86,7 @@ public class GestorVisitantesSimple : MonoBehaviour
         esperandoVisitante = true;
 
         EstadoVisitantes.Instancia.PasarAlSiguienteVisitante();
+
         StartCoroutine(EsperarYCrearSiguiente());
     }
 
@@ -98,6 +99,7 @@ public class GestorVisitantesSimple : MonoBehaviour
             CrearVisitanteActual();
     }
 
+    // Reinicia la noche SIN reiniciar el índice global de visitantes
     public void ReiniciarNoche()
     {
         if (visitanteActual != null)
@@ -107,14 +109,15 @@ public class GestorVisitantesSimple : MonoBehaviour
         visitantesAtendidosEnNoche = 0;
         nocheTerminada = false;
 
-        if (EstadoVisitantes.Instancia != null)
-            EstadoVisitantes.Instancia.indiceVisitanteActual = 0;
-
+        // 🔥 NO resetear el índice de visitantes (se mantiene el orden entre noches)
         CrearVisitanteActual();
     }
 
+    // Reinicio completo del juego (sí resetea el índice)
     public void ReiniciarJuegoCompleto()
     {
+        if (EstadoVisitantes.Instancia != null)
+            EstadoVisitantes.Instancia.indiceVisitanteActual = 0;
         ReiniciarNoche();
     }
 

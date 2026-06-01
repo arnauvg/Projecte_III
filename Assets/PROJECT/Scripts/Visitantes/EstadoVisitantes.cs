@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class EstadoVisitantes : MonoBehaviour
 {
     public static EstadoVisitantes Instancia;
 
-    [Header("Lista de visitantes en orden")]
-    public VisitanteDatos[] visitantes;
+    [Header("Visitantes en orden (global)")]
+    public List<VisitanteDatos> visitantes;
 
     [Header("Estado actual")]
     public int indiceVisitanteActual = 0;
@@ -17,39 +18,26 @@ public class EstadoVisitantes : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
         Instancia = this;
-        DontDestroyOnLoad(gameObject);
+        if (transform.parent == null)
+            DontDestroyOnLoad(gameObject);
     }
 
     public VisitanteDatos ObtenerVisitanteActual()
     {
-        if (visitantes == null || visitantes.Length == 0)
+        if (visitantes == null || visitantes.Count == 0)
         {
-            Debug.LogError("No hay visitantes asignados en EstadoVisitantes.");
+            Debug.LogError("No hay visitantes asignados.");
             return null;
         }
-
-        if (indiceVisitanteActual >= visitantes.Length)
-        {
-            Debug.Log("Ya no quedan más visitantes.");
+        if (indiceVisitanteActual >= visitantes.Count)
             return null;
-        }
-
         return visitantes[indiceVisitanteActual];
     }
 
     public void PasarAlSiguienteVisitante()
     {
         indiceVisitanteActual++;
-
-        if (indiceVisitanteActual >= visitantes.Length)
-        {
-            Debug.Log("Se han acabado todos los visitantes.");
-        }
-        else
-        {
-            Debug.Log("Siguiente visitante: " + indiceVisitanteActual);
-        }
+        Debug.Log($"Siguiente visitante índice: {indiceVisitanteActual}");
     }
 }

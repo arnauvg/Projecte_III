@@ -2,42 +2,65 @@ using UnityEngine;
 
 public class DevCheats : MonoBehaviour
 {
-    [Header("Tecla para saltar tutorial")]
-    public KeyCode skipKey = KeyCode.F1;
+    [Header("Trucos - Teclas editables")]
+    public KeyCode skipTutorialKey = KeyCode.F1;
+    public KeyCode forceNextNightKey = KeyCode.F2;
+    public KeyCode forceGameOverKey = KeyCode.F3;
 
     private DialogueManager dialogueManager;
     private Telefono telefono;
+    private GestionNoches gestionNoches;
 
     void Start()
     {
-        // Buscar automáticamente los componentes en la escena
-        dialogueManager = FindObjectOfType<DialogueManager>();
-        telefono = FindObjectOfType<Telefono>();
+        dialogueManager = FindFirstObjectByType<DialogueManager>();
+        telefono = FindFirstObjectByType<Telefono>();
+        gestionNoches = FindFirstObjectByType<GestionNoches>();
 
         if (dialogueManager == null)
-            Debug.LogWarning("DevCheats: No se encontró DialogueManager en la escena.");
+            Debug.LogWarning("DevCheats: No se encontró DialogueManager.");
         if (telefono == null)
-            Debug.LogWarning("DevCheats: No se encontró Telefono en la escena.");
+            Debug.LogWarning("DevCheats: No se encontró Telefono.");
+        if (gestionNoches == null)
+            Debug.LogWarning("DevCheats: No se encontró GestionNoches.");
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(skipKey))
-        {
+        if (Input.GetKeyDown(skipTutorialKey))
             SkipTutorial();
-        }
+
+        if (Input.GetKeyDown(forceNextNightKey))
+            ForceNextNight();
+
+        if (Input.GetKeyDown(forceGameOverKey))
+            ForceGameOver();
     }
 
     private void SkipTutorial()
     {
         Debug.Log("DevCheats: Saltando tutorial (teléfono + diálogo).");
-
-        // 1. Silenciar y marcar teléfono como ya activado
         if (telefono != null)
             telefono.SkipPhone();
-
-        // 2. Forzar fin del diálogo si está activo
         if (dialogueManager != null)
             dialogueManager.ForceEndDialogue();
+    }
+
+    private void ForceNextNight()
+    {
+        Debug.Log("DevCheats: Forzando fin de noche con éxito (siguiente noche).");
+        if (gestionNoches != null)
+            gestionNoches.ForceNightComplete();
+        else
+            Debug.LogWarning("DevCheats: GestionNoches no encontrado.");
+    }
+
+    private void ForceGameOver()
+    {
+        Debug.Log("DevCheats: Forzando Game Over.");
+        if (gestionNoches != null)
+            gestionNoches.ForceGameOver();
+        else
+            Debug.LogWarning("DevCheats: GestionNoches no encontrado.");
     }
 }

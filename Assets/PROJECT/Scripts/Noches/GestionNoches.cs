@@ -15,14 +15,12 @@ public class GestionNoches : MonoBehaviour
     [Header("Referencias")]
     public UIFinNocheController uiFinNocheController;
     public CronometroNoche cronometro;
-    public GestorVisitantesSimple gestorVisitantes; // ← Añadido
+    public GestorVisitantesSimple gestorVisitantes;
 
-    // Variables internas
     private int sueldoActual;
     private int nocheActual = 1;
     private bool yaNocheTerminada = false;
 
-    // Estadísticas de la noche
     private int visitantesAcertados = 0;
     private int totalVisitantes = 0;
     private int dineroPerdidoVisitantes = 0;
@@ -34,22 +32,15 @@ public class GestionNoches : MonoBehaviour
     void Start()
     {
         sueldoActual = sueldoBase;
-
-        if (cronometro == null)
-            cronometro = FindFirstObjectByType<CronometroNoche>();
-        if (gestorVisitantes == null)
-            gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
-
+        if (cronometro == null) cronometro = FindFirstObjectByType<CronometroNoche>();
+        if (gestorVisitantes == null) gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
         ContarTotalVisitantes();
         Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
     void ContarTotalVisitantes()
     {
-        if (gestorVisitantes != null)
-            totalVisitantes = gestorVisitantes.maxVisitantesPorNoche;
-        else
-            totalVisitantes = 3;
+        totalVisitantes = (gestorVisitantes != null) ? gestorVisitantes.maxVisitantesPorNoche : 3;
     }
 
     public void RegistrarAcierto()
@@ -78,97 +69,67 @@ public class GestionNoches : MonoBehaviour
         yaNocheTerminada = true;
 
         Debug.Log("=== FIN DE LA NOCHE (06:00 AM) ===");
-
-        // Penalización por tarea pendiente
         dineroPerdidoTareas = tareaCompletada ? 0 : penalizacionTareaPendiente;
         if (dineroPerdidoTareas > 0)
         {
             sueldoActual -= dineroPerdidoTareas;
             Debug.Log($"⚠️ Tarea pendiente! -{dineroPerdidoTareas}€");
         }
-
         MostrarPantallaFinNoche();
     }
 
     private void MostrarPantallaFinNoche()
     {
         bool gameOver = sueldoActual < umbralDespido;
-        bool victoria = !gameOver && nocheActual >= 3; // ← 3 noches superadas
-
+        bool victoria = !gameOver && nocheActual >= 3;
         string mensajeEstado;
-        if (gameOver)
-            mensajeEstado = "GAME OVER";
-        else if (victoria)
-            mensajeEstado = "¡CONTRATO SUPERADO!";
-        else
-            mensajeEstado = "COMPLETADA";
+        if (gameOver) mensajeEstado = "GAME OVER";
+        else if (victoria) mensajeEstado = "¡CONTRATO SUPERADO!";
+        else mensajeEstado = "COMPLETADA";
 
         Action onContinue = () =>
         {
-            if (gameOver)
-                ReiniciarJuego();
-            else if (victoria)
-                VolverAlMenuPrincipal();
-            else
-                SiguienteNoche();
+            if (gameOver) ReiniciarJuego();
+            else if (victoria) VolverAlMenuPrincipal();
+            else SiguienteNoche();
         };
 
-        if (uiFinNocheController != null)
-        {
-            uiFinNocheController.MostrarResultados(
-                noche: nocheActual,
-                visitantesAcertados: visitantesAcertados,
-                totalVisitantes: totalVisitantes,
-                dineroPerdidoVisitantes: dineroPerdidoVisitantes,
-                tareasCompletadas: tareasCompletadas,
-                totalTareas: totalTareas,
-                dineroPerdidoTareas: dineroPerdidoTareas,
-                sueldoActual: sueldoActual,
-                gameOver: gameOver,
-                victoria: victoria,
-                mensajeEstado: mensajeEstado,
-                onContinue: onContinue
-            );
-        }
+        uiFinNocheController?.MostrarResultados(
+            noche: nocheActual,
+            visitantesAcertados: visitantesAcertados,
+            totalVisitantes: totalVisitantes,
+            dineroPerdidoVisitantes: dineroPerdidoVisitantes,
+            tareasCompletadas: tareasCompletadas,
+            totalTareas: totalTareas,
+            dineroPerdidoTareas: dineroPerdidoTareas,
+            sueldoActual: sueldoActual,
+            gameOver: gameOver,
+            victoria: victoria,
+            mensajeEstado: mensajeEstado,
+            onContinue: onContinue
+        );
     }
 
     private void SiguienteNoche()
     {
         nocheActual++;
         ReiniciarVariablesNoche();
-
-        // Reiniciar el sistema de visitantes
-        if (gestorVisitantes != null)
-            gestorVisitantes.ReiniciarNoche();
-
-        if (uiFinNocheController != null)
-            uiFinNocheController.Ocultar();
-
-        if (cronometro != null)
-            cronometro.ReiniciarCronometro();
-
+        if (gestorVisitantes != null) gestorVisitantes.ReiniciarNoche();
+        uiFinNocheController?.Ocultar();
+        cronometro?.ReiniciarCronometro();
         ContarTotalVisitantes();
         Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
     private void ReiniciarJuego()
     {
-        // Resetear teléfono para nueva partida
         Telefono.Resetear();
-
         nocheActual = 1;
         sueldoActual = sueldoBase;
         ReiniciarVariablesNoche();
-
-        if (gestorVisitantes != null)
-            gestorVisitantes.ReiniciarJuegoCompleto();
-
-        if (uiFinNocheController != null)
-            uiFinNocheController.Ocultar();
-
-        if (cronometro != null)
-            cronometro.ReiniciarCronometro();
-
+        if (gestorVisitantes != null) gestorVisitantes.ReiniciarJuegoCompleto();
+        uiFinNocheController?.Ocultar();
+        cronometro?.ReiniciarCronometro();
         ContarTotalVisitantes();
         Debug.Log("🔄 JUEGO REINICIADO");
     }
@@ -185,12 +146,24 @@ public class GestionNoches : MonoBehaviour
 
     private void VolverAlMenuPrincipal()
     {
-        // Limpiar estáticos si es necesario
-        if (CronometroNoche.Instance != null)
-            CronometroNoche.Instance.ReiniciarCronometro();
-        // Cargar la escena del menú principal
+        if (CronometroNoche.Instance != null) CronometroNoche.Instance.ReiniciarCronometro();
         SceneManager.LoadScene("MainMenu");
     }
 
     public int GetNocheActual() => nocheActual;
+
+    // 🆕 Métodos para DevCheats
+    public void ForceNightComplete()
+    {
+        if (yaNocheTerminada) return;
+        if (sueldoActual < umbralDespido) sueldoActual = umbralDespido + 1;
+        TerminarNochePorTiempo();
+    }
+
+    public void ForceGameOver()
+    {
+        if (yaNocheTerminada) return;
+        sueldoActual = umbralDespido - 1;
+        TerminarNochePorTiempo();
+    }
 }

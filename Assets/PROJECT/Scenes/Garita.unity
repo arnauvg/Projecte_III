@@ -3922,6 +3922,7 @@ MonoBehaviour:
   penalizacionTareaPendiente: 100
   uiFinNocheController: {fileID: 1846807986}
   cronometro: {fileID: 1253324997}
+  gestorVisitantes: {fileID: 471620197}
 --- !u!114 &1846807986
 MonoBehaviour:
   m_ObjectHideFlags: 0
