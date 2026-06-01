@@ -104,7 +104,7 @@ public class VisitanteSimple : MonoBehaviour
         }
     }
 
-    public void RevelarCamuflado()
+    public void RevelarCamuflado(TipoRevelador reveladorUsado)
     {
         if (camuflajeRevelado) return;
         if (datosVisitante == null) return;
@@ -115,6 +115,12 @@ public class VisitanteSimple : MonoBehaviour
             return;
         }
 
+        if (reveladorUsado != datosVisitante.reveladorNecesario)
+        {
+            Debug.Log($"Objeto incorrecto. Este visitante no se revela con {reveladorUsado}");
+            return;
+        }
+
         camuflajeRevelado = true;
 
         if (spriteVisitante != null && datosVisitante.spriteRevelado != null)
@@ -122,7 +128,7 @@ public class VisitanteSimple : MonoBehaviour
             spriteVisitante.sprite = datosVisitante.spriteRevelado;
         }
 
-        Debug.Log("El visitante ha sido revelado: era un doble");
+        Debug.Log($"El visitante ha sido revelado con {reveladorUsado}: era un doble");
     }
 
     public void Aceptar()

@@ -8799,6 +8799,7 @@ MonoBehaviour:
   radioDeteccion: 0.5
   posicionLocalEnCajon: {x: 0, y: 0, z: 0}
   rotacionLocalEnCajon: {x: 0, y: 0, z: 0}
+  tipoRevelador: 3
 --- !u!65 &5613005947973295310
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10297,6 +10298,7 @@ MonoBehaviour:
   radioDeteccion: 0.18
   posicionLocalEnCajon: {x: 0, y: 0, z: 0}
   rotacionLocalEnCajon: {x: 0, y: 0, z: 0}
+  tipoRevelador: 0
 --- !u!65 &7040430232578799659
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12195,6 +12197,7 @@ MonoBehaviour:
   radioDeteccion: 0.36
   posicionLocalEnCajon: {x: 0, y: 0, z: 0}
   rotacionLocalEnCajon: {x: 0, y: 0, z: 0}
+  tipoRevelador: 1
 --- !u!65 &8632055956929053013
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12331,6 +12334,7 @@ MonoBehaviour:
   radioDeteccion: 0.5
   posicionLocalEnCajon: {x: 0, y: 0, z: 0}
   rotacionLocalEnCajon: {x: 0, y: 0, z: 0}
+  tipoRevelador: 2
 --- !u!65 &8694414922860708600
 BoxCollider:
   m_ObjectHideFlags: 0

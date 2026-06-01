@@ -13,14 +13,27 @@ public class Recogible : Interactuable
     public Vector3 posicionLocalEnCajon = new Vector3(0f, 0f, 0f);
     public Vector3 rotacionLocalEnCajon = new Vector3(0f, 0f, 0f);
 
+    [Header("Tipo de revelador")]
+    public TipoRevelador tipoRevelador = TipoRevelador.Ninguno;
+
+    public static Recogible objetoEnMano;
+
     private bool estaRecogido = false;
     private Rigidbody rb;
     private Transform puntoMano;
     private Collider miCollider;
     private Transform cajonPadre;
 
+    private Vector3 posicionInicial;
+    private Quaternion rotacionInicial;
+    private Transform padreInicial;
+
     void Start()
     {
+        posicionInicial = transform.position;
+        rotacionInicial = transform.rotation;
+        padreInicial = transform.parent;
+
         // Guardar el cajón padre (si tiene)
         cajonPadre = transform.parent;
 
@@ -52,6 +65,7 @@ public class Recogible : Interactuable
         if (!estaRecogido)
         {
             estaRecogido = true;
+            objetoEnMano = this;
             transform.SetParent(null); // Desemparentar
             miCollider.enabled = false; // Desactivar collider
             rb.isKinematic = false;
@@ -67,12 +81,24 @@ public class Recogible : Interactuable
         {
             estaRecogido = false;
 
+            if (objetoEnMano == this)
+                objetoEnMano = null;
+
             // Lanzar rayo para soltar
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             if (Physics.Raycast(ray, out RaycastHit hit, 10f))
                 transform.position = hit.point;
             else
                 transform.position = Camera.main.transform.position + Camera.main.transform.forward * 2f;
+
+            estaRecogido = false;
+
+            // Volver a su padre original
+            transform.SetParent(padreInicial);
+
+            // Volver a su posición y rotación inicial
+            transform.position = posicionInicial;
+            transform.rotation = rotacionInicial;
 
             miCollider.enabled = true; // Reactivar collider
             rb.useGravity = true;

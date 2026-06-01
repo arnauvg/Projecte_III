@@ -16,3 +16,4 @@ MonoBehaviour:
   spriteNormal: {fileID: 21300000, guid: f99b2fdc61f64eb4a885632de4d557df, type: 3}
   spriteRevelado: {fileID: 21300000, guid: 8b8151ceac62e4b45aa16209fb32d6cb, type: 3}
   esDoble: 1
+  reveladorNecesario: 3
