@@ -55,7 +55,7 @@ public class DialogueManager : MonoBehaviour
         if (audioSource == null && typingSound != null)
             audioSource = gameObject.AddComponent<AudioSource>();
     }
-
+    
     void Start()
     {
         if (dialogueContainer != null && dialogueContainer.style.display != DisplayStyle.None)

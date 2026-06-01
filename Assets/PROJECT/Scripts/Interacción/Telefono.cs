@@ -11,7 +11,7 @@ public class Telefono : Interactuable
     public int dialogueIndex = 0;
 
     private bool enMano = false;
-    private bool yaActivado = false; // 🔒 Control para que solo se active una vez
+    private static bool yaActivado = false; // 🔒 Control para que solo se active una vez
     private Vector3 posOriginal;
     private Quaternion rotOriginal;
     private Transform puntoMano;
