@@ -17,3 +17,6 @@ MonoBehaviour:
   spriteRevelado: {fileID: 21300000, guid: 2c560d46b98315a43a0c5756bf7d3090, type: 3}
   esDoble: 1
   reveladorNecesario: 1
+  dialogoBienvenida: "\xA1Hola! Qu\xE9 bonita est\xE1 la noche, \xBFverdad? Vengo
+    a visitar la tumba de mi abuela. Me encanta el olor a tierra mojada. \xBFA ti
+    no? \xBFMe dejas pasar? "

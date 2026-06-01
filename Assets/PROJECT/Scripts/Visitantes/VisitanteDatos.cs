@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public enum TipoRevelador
 {
@@ -21,6 +21,10 @@ public class VisitanteDatos : ScriptableObject
     [Header("Tipo")]
     public bool esDoble;
 
-    [Header("Revelaci�n")]
+    [Header("Revelación")]
     public TipoRevelador reveladorNecesario = TipoRevelador.Ninguno;
+
+    [Header("Diálogo")]
+    [TextArea(2, 4)]
+    public string dialogoBienvenida;  // ← NUEVO: texto que dice al entrar
 }

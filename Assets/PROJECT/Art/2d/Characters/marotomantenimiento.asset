@@ -16,3 +16,7 @@ MonoBehaviour:
   spriteNormal: {fileID: 21300000, guid: d66f4839c5dab5a47a0acc9fb400f77e, type: 3}
   spriteRevelado: {fileID: 0}
   esDoble: 0
+  reveladorNecesario: 0
+  dialogoBienvenida: "Buenas noches joven, soy del servicio de mantenimiento. Vengo
+    a revisar las tuber\xEDas del sistema de riego. He o\xEDdo que hay fugas en la
+    zona norte. \xBFPuedo pasar?"

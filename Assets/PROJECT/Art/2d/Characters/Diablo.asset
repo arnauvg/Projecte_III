@@ -16,3 +16,6 @@ MonoBehaviour:
   spriteNormal: {fileID: 21300000, guid: 2a762a4a304bff243ab90e0e96c77e59, type: 3}
   spriteRevelado: {fileID: 0}
   esDoble: 0
+  reveladorNecesario: 0
+  dialogoBienvenida: "Buenas noches. Vengo a hacer un tr\xE1mite. He heredado un
+    nicho familiar y necesito verlo. \xBFPuedo pasar? No llevo mucho tiempo."

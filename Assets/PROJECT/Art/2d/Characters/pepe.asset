@@ -16,3 +16,7 @@ MonoBehaviour:
   spriteNormal: {fileID: 21300000, guid: 606dc61bd31116142999af025d6d4f06, type: 3}
   spriteRevelado: {fileID: 0}
   esDoble: 0
+  reveladorNecesario: 0
+  dialogoBienvenida: "Mira, no quiero dar el rollo. Vengo a poner una vela en la
+    tumba de mi colega y me largo. No te voy a robar ni nada, \xBFvale? Solo d\xE9jame
+    pasar cinco minutos y no jodo m\xE1s."

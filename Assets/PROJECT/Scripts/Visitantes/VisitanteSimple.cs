@@ -29,9 +29,14 @@ public class VisitanteSimple : MonoBehaviour
     private GestorVisitantesSimple gestor;
     private bool esBueno = true;
 
+    // Referencia al DialogueManager
+    private DialogueManager dialogueManager;
+    private bool dialogoMostrado = false;
+
     void Awake()
     {
         escalaOriginal = transform.localScale;
+        dialogueManager = FindFirstObjectByType<DialogueManager>();
     }
 
     public void ConfigurarVisitante(
@@ -43,6 +48,7 @@ public class VisitanteSimple : MonoBehaviour
     {
         datosVisitante = datos;
         esBueno = !datos.esDoble;
+        dialogoMostrado = false;
 
         puntoEntrada = entrada;
         puntoCentro = centro;
@@ -115,8 +121,33 @@ public class VisitanteSimple : MonoBehaviour
             {
                 enCentro = true;
                 Debug.Log("Visitante llegó al centro");
+
+                // Mostrar diálogo de bienvenida
+                MostrarDialogoBienvenida();
+
                 EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
             }
+        }
+    }
+
+    void MostrarDialogoBienvenida()
+    {
+        if (dialogoMostrado) return;
+        if (dialogueManager == null)
+        {
+            dialogueManager = FindFirstObjectByType<DialogueManager>();
+            if (dialogueManager == null)
+            {
+                Debug.LogWarning("DialogueManager no encontrado");
+                return;
+            }
+        }
+
+        if (!string.IsNullOrEmpty(datosVisitante.dialogoBienvenida))
+        {
+            dialogoMostrado = true;
+            dialogueManager.MostrarDialogoSimple(datosVisitante.nombreVisitante, datosVisitante.dialogoBienvenida);
+            Debug.Log($"📢 {datosVisitante.nombreVisitante}: {datosVisitante.dialogoBienvenida}");
         }
     }
 
@@ -169,11 +200,6 @@ public class VisitanteSimple : MonoBehaviour
         {
             StartCoroutine(MoverHacia(puntoEntradaEdificio.position));
         }
-        else
-        {
-            Debug.LogError("puntoEntradaEdificio es NULL");
-            StartCoroutine(DestruirDespuesDelay());
-        }
 
         EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
     }
@@ -200,11 +226,6 @@ public class VisitanteSimple : MonoBehaviour
         {
             StartCoroutine(MoverHacia(puntoEntrada.position));
         }
-        else
-        {
-            Debug.LogError("puntoEntrada es NULL");
-            StartCoroutine(DestruirDespuesDelay());
-        }
 
         EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
     }
@@ -213,16 +234,13 @@ public class VisitanteSimple : MonoBehaviour
     {
         Debug.Log($"🚶 Visitante moviéndose desde {transform.position} hacia {destino}");
 
-        // Guardar posición Y original para el rebote
         float yBase = transform.position.y;
         float tiempoReboteLocal = 0f;
 
         while (Vector3.Distance(transform.position, destino) > 0.05f)
         {
-            // Movimiento hacia el destino
             transform.position = Vector3.MoveTowards(transform.position, destino, velocidadMovimiento * Time.deltaTime);
 
-            // Rebote
             tiempoReboteLocal += Time.deltaTime * frecuenciaRebote;
             float offsetY = Mathf.Abs(Mathf.Sin(tiempoReboteLocal)) * alturaRebote;
             Vector3 pos = transform.position;
@@ -245,24 +263,13 @@ public class VisitanteSimple : MonoBehaviour
         Destroy(gameObject);
     }
 
-    IEnumerator DestruirDespuesDelay()
-    {
-        yield return new WaitForSeconds(0.5f);
-
-        if (gestor != null)
-        {
-            gestor.VisitanteTerminoSalir();
-        }
-
-        Destroy(gameObject);
-    }
-
     public void ReiniciarParaNuevaNoche()
     {
         yaAtendido = false;
         enCentro = false;
         camuflajeRevelado = false;
         enMovimiento = false;
+        dialogoMostrado = false;
 
         if (puntoEntrada != null)
         {

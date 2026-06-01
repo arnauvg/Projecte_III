@@ -182,4 +182,28 @@ public class DialogueManager : MonoBehaviour
         if (isActive) EndDialogue();
         else if (dialogueContainer != null) dialogueContainer.style.display = DisplayStyle.None;
     }
+
+    public void MostrarDialogoSimple(string nombre, string mensaje)
+    {
+        // Crear una entrada temporal de diálogo
+        DialogueEntry entry = new DialogueEntry();
+        entry.speakerName = nombre;
+        entry.sentences = new System.Collections.Generic.List<string>();
+        entry.sentences.Add(mensaje);
+
+        // Guardar temporalmente y mostrar
+        DialogueEntry[] tempDialogues = dialogues;
+        dialogues = new DialogueEntry[] { entry };
+
+        StartDialogue(0);
+
+        // Restaurar diálogos originales después de un tiempo
+        StartCoroutine(RestaurarDialogos(tempDialogues, entry.sentences[0].Length * charDelay + 1f));
+    }
+
+    IEnumerator RestaurarDialogos(DialogueEntry[] original, float tiempo)
+    {
+        yield return new WaitForSeconds(tiempo);
+        dialogues = original;
+    }
 }

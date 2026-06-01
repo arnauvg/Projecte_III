@@ -16,3 +16,6 @@ MonoBehaviour:
   spriteNormal: {fileID: 21300000, guid: 3c840a9fdc1506847a7df8ba56b3306c, type: 3}
   spriteRevelado: {fileID: 0}
   esDoble: 0
+  reveladorNecesario: 0
+  dialogoBienvenida: "Eh... hola... vengo a... a dejar unas flores. No s\xE9 bien
+    d\xF3nde es, pero... creo que era por aqu\xED. \xBFMe dejas pasar?"

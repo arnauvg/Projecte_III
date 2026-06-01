@@ -17,3 +17,6 @@ MonoBehaviour:
   spriteRevelado: {fileID: 21300000, guid: 15b12ad7db6c7f945b1c987f45d97ddb, type: 3}
   esDoble: 1
   reveladorNecesario: 2
+  dialogoBienvenida: "Buenas noches. Soy agente funerario. Vengo a revisar un nicho
+    que ha sido vendido hace a\xF1os. Necesito verlo para papeleo. Nada m\xE1s. \xBFPuedo
+    pasar?"
