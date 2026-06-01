@@ -17,7 +17,7 @@ public class CronometroNoche : MonoBehaviour
     [Header("Sistema de tareas")]
     public TareaManager tareaManager;
 
-    // 🔒 Datos estáticos para que persistan aunque se destruya el objeto
+    // Datos estáticos para persistencia
     private static float tiempoRestanteStatic;
     private static bool nocheActivaStatic = true;
     private static int ultimoIntervaloMostradoStatic = -1;
@@ -39,14 +39,13 @@ public class CronometroNoche : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        // No hacer DontDestroyOnLoad aquí porque el padre ya lo tiene
     }
 
     void Start()
     {
         if (!inicializadoStatic)
         {
-            // Primera vez: valores iniciales
             tiempoRestanteStatic = tiempoTotalSegundos;
             nocheActivaStatic = true;
             ultimoIntervaloMostradoStatic = -1;
@@ -56,19 +55,23 @@ public class CronometroNoche : MonoBehaviour
             Debug.Log("⏰ Cronómetro: primera inicialización");
         }
 
-        // Cargar desde estáticos
         tiempoRestante = tiempoRestanteStatic;
         nocheActiva = nocheActivaStatic;
         ultimoIntervaloMostrado = ultimoIntervaloMostradoStatic;
         nocheTerminada = nocheTerminadaStatic;
         tareasSpawned = tareasSpawnedStatic;
 
-        ActualizarTexto();
+        // Buscar referencias si no están asignadas
+        if (textoReloj == null)
+            textoReloj = FindFirstObjectByType<TextMeshProUGUI>();
 
         if (gestionNoches == null)
             gestionNoches = FindFirstObjectByType<GestionNoches>();
+
         if (tareaManager == null)
             tareaManager = FindFirstObjectByType<TareaManager>();
+
+        ActualizarTexto();
     }
 
     void Update()
@@ -90,7 +93,6 @@ public class CronometroNoche : MonoBehaviour
             SpawnearTareas();
         }
 
-        // Guardar en estáticos cada frame
         tiempoRestanteStatic = tiempoRestante;
         nocheActivaStatic = nocheActiva;
         ultimoIntervaloMostradoStatic = ultimoIntervaloMostrado;
@@ -100,6 +102,8 @@ public class CronometroNoche : MonoBehaviour
 
     void ActualizarTexto()
     {
+        if (textoReloj == null) return;
+
         float progreso = 1f - (tiempoRestante / tiempoTotalSegundos);
         float horasFloat = progreso * 6f;
         int horasEnteras = Mathf.FloorToInt(horasFloat);
@@ -134,7 +138,7 @@ public class CronometroNoche : MonoBehaviour
         nocheTerminada = true;
         nocheActiva = false;
         Debug.Log("🌙 NOCHE TERMINADA - 06:00 AM");
-        textoReloj.text = "06:00 AM";
+        if (textoReloj != null) textoReloj.text = "06:00 AM";
         if (gestionNoches != null)
             gestionNoches.TerminarNochePorTiempo();
     }
@@ -146,7 +150,7 @@ public class CronometroNoche : MonoBehaviour
         nocheTerminadaStatic = false;
         tareasSpawnedStatic = false;
         ultimoIntervaloMostradoStatic = -1;
-        // Recargar en instancia
+
         tiempoRestante = tiempoRestanteStatic;
         nocheActiva = nocheActivaStatic;
         nocheTerminada = nocheTerminadaStatic;

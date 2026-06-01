@@ -4,12 +4,14 @@ using UnityEngine.SceneManagement;
 public class MapaToggle : MonoBehaviour
 {
     public GameObject panelMapa;
-
     private bool mapaAbierto = false;
 
     void Start()
     {
-        panelMapa.SetActive(false); // empieza cerrado
+        if (panelMapa == null)
+            panelMapa = GameObject.Find("PanelMapa");
+
+        if (panelMapa != null) panelMapa.SetActive(false);
     }
 
     void Update()
@@ -25,29 +27,35 @@ public class MapaToggle : MonoBehaviour
 
     void AbrirMapa()
     {
-        panelMapa.SetActive(true);
-        mapaAbierto = true;
+        if (panelMapa != null)
+            panelMapa.SetActive(true);
 
+        mapaAbierto = true;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        
-
-        Time.timeScale = 0f; // pausa el juego
+        Time.timeScale = 0f;
     }
 
     void CerrarMapa()
     {
-        panelMapa.SetActive(false);
-        mapaAbierto = false;
+        if (panelMapa != null)
+            panelMapa.SetActive(false);
 
+        mapaAbierto = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        Time.timeScale = 1f; // reanuda el juego
+        Time.timeScale = 1f;
     }
+
     public void IrAEscena(string nombreEscena)
     {
-        Time.timeScale = 1f; // por si el juego estaba pausado
+        // Cerrar el mapa si está abierto
+        if (mapaAbierto)
+        {
+            CerrarMapa();
+        }
+
+        Time.timeScale = 1f;
         SceneManager.LoadScene(nombreEscena);
     }
 }

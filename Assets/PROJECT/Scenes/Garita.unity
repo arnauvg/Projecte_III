@@ -497,37 +497,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 157641325}
   m_CullTransparentMesh: 1
---- !u!1 &188123851
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 188123852}
-  m_Layer: 0
-  m_Name: CAMERA
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &188123852
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 188123851}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.19, y: 0.060000002, z: 5.81}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &202750996
 GameObject:
   m_ObjectHideFlags: 0
@@ -882,74 +851,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 543450653412429795}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!1 &372897237
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 372897238}
-  - component: {fileID: 372897239}
-  m_Layer: 0
-  m_Name: GameSystems
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &372897238
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 372897237}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.19, y: 0.060000002, z: 5.81}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &372897239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 372897237}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abdd745786f961744b42bda67316f3dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tareasPosibles:
-  - id: tumbas
-    nombre: Regar flores
-    escenaDestino: Tumbas
-    completada: 0
-    objetoEnEscena: {fileID: 0}
-  - id: afueras
-    nombre: Reparar farolillos
-    escenaDestino: Afueras
-    completada: 0
-    objetoEnEscena: {fileID: 0}
-  - id: velas
-    nombre: Reponer velas
-    escenaDestino: Cripta
-    completada: 0
-    objetoEnEscena: {fileID: 0}
-  - id: pila
-    nombre: Limpiar pila de agua bendita
-    escenaDestino: Cripta
-    completada: 0
-    objetoEnEscena: {fileID: 0}
-  minTareasPorNoche: 1
-  maxTareasPorNoche: 2
-  uiManager: {fileID: 1138592137}
 --- !u!1 &403294486
 GameObject:
   m_ObjectHideFlags: 0
@@ -974,8 +875,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403294486}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.2611337, y: -0.6766555, z: 0.44254312}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -983,7 +884,7 @@ Transform:
   - {fileID: 138075578}
   - {fileID: 1698414941}
   - {fileID: 1138592136}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1823520552}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &411868008
 GameObject:
@@ -1141,60 +1042,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 202750997}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &550291204
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 550291205}
-  - component: {fileID: 550291206}
-  m_Layer: 0
-  m_Name: EstadoVIsitantes
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &550291205
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 550291204}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1187500558}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &550291206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 550291204}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0d28bdca5efa9743b6eec38d6fcd4f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visitantes:
-  - {fileID: 11400000, guid: c715ca7b5a8fd154c8e2a4b789293030, type: 2}
-  - {fileID: 11400000, guid: 75fe9c13e9f7971408ba8c9ecdbcfba3, type: 2}
-  - {fileID: 11400000, guid: 43222d5ce05b7a54dac889930f19d7a3, type: 2}
-  - {fileID: 11400000, guid: 74a67f0c2612e6a45938805ee65a11b6, type: 2}
-  - {fileID: 11400000, guid: a50a7a562869adc4fbb3b91848c61fa7, type: 2}
-  - {fileID: 11400000, guid: cb25851f4d99f5040ad29688d9475794, type: 2}
-  - {fileID: 11400000, guid: 6c710fd0a3e0f164aaa063f14e059eba, type: 2}
-  - {fileID: 11400000, guid: ac80de20d32f2b94cbea14d08ad8d13f, type: 2}
-  indiceVisitanteActual: 0
 --- !u!1 &676407888
 GameObject:
   m_ObjectHideFlags: 0
@@ -1384,53 +1231,6 @@ Transform:
   - {fileID: 4129377015739593468}
   m_Father: {fileID: 543450651729850462}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &771070010
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 771070011}
-  - component: {fileID: 771070012}
-  m_Layer: 0
-  m_Name: DevCheats
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &771070011
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771070010}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.1408935, y: -1.2827022, z: -3.2454948}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1442760443}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &771070012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771070010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01a8198dfceefd845907ddaee828ebd9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skipTutorialKey: 282
-  forceNextNightKey: 283
-  forceGameOverKey: 284
 --- !u!1 &959373507
 GameObject:
   m_ObjectHideFlags: 0
@@ -2477,7 +2277,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 202750997}
-  - {fileID: 550291205}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1208851297
@@ -2609,10 +2408,9 @@ GameObject:
   - component: {fileID: 1253324996}
   - component: {fileID: 1253324999}
   - component: {fileID: 1253324998}
-  - component: {fileID: 1253324997}
   m_Layer: 5
   m_Name: RelojNoche
-  m_TagString: Untagged
+  m_TagString: Reloj
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2636,22 +2434,6 @@ RectTransform:
   m_AnchoredPosition: {x: -272, y: -180}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1253324997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253324995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a9319d2c0a69e4aa1b20e1a634d4ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tiempoTotalSegundos: 120
-  textoReloj: {fileID: 1253324998}
-  gestionNoches: {fileID: 1846807985}
-  tareaManager: {fileID: 372897239}
 --- !u!114 &1253324998
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3085,7 +2867,6 @@ Transform:
   - {fileID: 232485568}
   - {fileID: 471620196}
   - {fileID: 1846807983}
-  - {fileID: 771070011}
   - {fileID: 1828898099}
   - {fileID: 1444707061}
   m_Father: {fileID: 0}
@@ -3386,7 +3167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1698414938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3457,7 +3238,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1698414937}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
@@ -3765,7 +3546,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &1828898096
+--- !u!1 &1823520542
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3773,23 +3554,31 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1828898099}
-  - component: {fileID: 1828898098}
-  - component: {fileID: 1828898097}
+  - component: {fileID: 1823520552}
+  - component: {fileID: 1823520551}
+  - component: {fileID: 1823520550}
+  - component: {fileID: 1823520549}
+  - component: {fileID: 1823520548}
+  - component: {fileID: 1823520547}
+  - component: {fileID: 1823520546}
+  - component: {fileID: 1823520545}
+  - component: {fileID: 1823520555}
+  - component: {fileID: 1823520554}
+  - component: {fileID: 1823520556}
   m_Layer: 0
-  m_Name: UI_Dialogue
+  m_Name: PersistentGameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1828898097
+--- !u!114 &1823520545
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1828898096}
+  m_GameObject: {fileID: 1823520542}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a386dd74a8d94df4f8b4221cd5164ef7, type: 3}
@@ -3819,6 +3608,214 @@ MonoBehaviour:
   charDelay: 0.015
   typingSound: {fileID: 8300000, guid: 17be527c9e0ba964ea842b843bd4b89a, type: 3}
   audioSource: {fileID: 0}
+--- !u!114 &1823520546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01a8198dfceefd845907ddaee828ebd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skipTutorialKey: 282
+  forceNextNightKey: 283
+  forceGameOverKey: 284
+--- !u!114 &1823520547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8a9319d2c0a69e4aa1b20e1a634d4ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tiempoTotalSegundos: 120
+  textoReloj: {fileID: 1253324998}
+  gestionNoches: {fileID: 1823520548}
+  tareaManager: {fileID: 1823520550}
+--- !u!114 &1823520548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e320d3aa3e26bb44f886ab1bd6964237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sueldoBase: 1500
+  umbralDespido: 300
+  penalizacionVisitanteIncorrecto: 50
+  penalizacionTareaPendiente: 100
+  uiFinNocheController: {fileID: 1823520555}
+  cronometro: {fileID: 1823520547}
+  gestorVisitantes: {fileID: 471620197}
+--- !u!114 &1823520549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0d28bdca5efa9743b6eec38d6fcd4f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visitantes:
+  - {fileID: 11400000, guid: c715ca7b5a8fd154c8e2a4b789293030, type: 2}
+  - {fileID: 11400000, guid: 75fe9c13e9f7971408ba8c9ecdbcfba3, type: 2}
+  - {fileID: 11400000, guid: 43222d5ce05b7a54dac889930f19d7a3, type: 2}
+  - {fileID: 11400000, guid: 74a67f0c2612e6a45938805ee65a11b6, type: 2}
+  - {fileID: 11400000, guid: a50a7a562869adc4fbb3b91848c61fa7, type: 2}
+  - {fileID: 11400000, guid: cb25851f4d99f5040ad29688d9475794, type: 2}
+  - {fileID: 11400000, guid: 6c710fd0a3e0f164aaa063f14e059eba, type: 2}
+  - {fileID: 11400000, guid: ac80de20d32f2b94cbea14d08ad8d13f, type: 2}
+  indiceVisitanteActual: 0
+--- !u!114 &1823520550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abdd745786f961744b42bda67316f3dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tareasPosibles:
+  - id: tumbas
+    nombre: Regar flores
+    escenaDestino: Tumbas
+    completada: 0
+    objetoEnEscena: {fileID: 0}
+  - id: afueras
+    nombre: Reparar farolillos
+    escenaDestino: Afueras
+    completada: 0
+    objetoEnEscena: {fileID: 0}
+  - id: velas
+    nombre: Reponer velas
+    escenaDestino: Cripta
+    completada: 0
+    objetoEnEscena: {fileID: 0}
+  - id: pila
+    nombre: Limpiar pila de agua bendita
+    escenaDestino: Cripta
+    completada: 0
+    objetoEnEscena: {fileID: 0}
+  minTareasPorNoche: 1
+  maxTareasPorNoche: 2
+  uiManager: {fileID: 1138592137}
+--- !u!114 &1823520551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4efee38af88c6244a568497f6cdc597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1823520552
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.2611337, y: 0.6766555, z: -0.44254312}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 403294487}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1823520554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a272b45934fd7e4e9184058da39ce6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapaLogo: {fileID: 411868009}
+  mapaNormal: {fileID: 21300000, guid: 9e107692a0dc70c4789ae5a26386b0cf, type: 3}
+  mapaNotificacion: {fileID: 21300000, guid: 4d6230023ae44f9408b6ce555c0f4bf9, type: 3}
+  panelMapa: {fileID: 1698414937}
+  botonGarita: {fileID: 1167526839}
+  botonAfueras: {fileID: 1789470420}
+  botonCripta: {fileID: 1010698556}
+  botonTumbas: {fileID: 1395400770}
+  garitaNormal: {fileID: 21300000, guid: 5c56340a35c1cde48b1faa52bdd29edc, type: 3}
+  afuerasNormal: {fileID: 21300000, guid: e0b4b1beb4ad3764d9cbd0473f67a409, type: 3}
+  criptaNormal: {fileID: 21300000, guid: f27ba3178ef1d0040919dcd4812877fe, type: 3}
+  tumbasNormal: {fileID: 21300000, guid: f2398d73508188c4b8f60b2cd8e93808, type: 3}
+  garitaNotificacion: {fileID: 21300000, guid: 3f7553eaf65f6004ea8997f365158ac0, type: 3}
+  afuerasNotificacion: {fileID: 21300000, guid: 138a63fe6534f484ea21ae5ff2740bac, type: 3}
+  criptaNotificacion: {fileID: 21300000, guid: bf60db570db6000448781bea364e582d, type: 3}
+  tumbasNotificacion: {fileID: 21300000, guid: e93dbe548b93ba4488b27ffd399aecf2, type: 3}
+  textoVisitantes: {fileID: 0}
+--- !u!114 &1823520555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64f5a61beeb68dc458f642302e188a9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1846807984}
+--- !u!114 &1823520556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2184721069507c48a7e41f5d9c1c535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelMapa: {fileID: 1698414937}
+--- !u!1 &1828898096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1828898099}
+  - component: {fileID: 1828898098}
+  m_Layer: 0
+  m_Name: UI_Dialogue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!114 &1828898098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3863,8 +3860,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1846807983}
   - component: {fileID: 1846807984}
-  - component: {fileID: 1846807986}
-  - component: {fileID: 1846807985}
   m_Layer: 0
   m_Name: SistemaNoches
   m_TagString: Untagged
@@ -3906,38 +3901,6 @@ MonoBehaviour:
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
   m_WorldSpaceHeight: 1080
---- !u!114 &1846807985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846807981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e320d3aa3e26bb44f886ab1bd6964237, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sueldoBase: 1500
-  umbralDespido: 300
-  penalizacionVisitanteIncorrecto: 50
-  penalizacionTareaPendiente: 100
-  uiFinNocheController: {fileID: 1846807986}
-  cronometro: {fileID: 1253324997}
-  gestorVisitantes: {fileID: 471620197}
---- !u!114 &1846807986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846807981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64f5a61beeb68dc458f642302e188a9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiDocument: {fileID: 1846807984}
 --- !u!1 &1926769090
 GameObject:
   m_ObjectHideFlags: 0
@@ -9156,7 +9119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ringtone: {fileID: 8300000, guid: 4e195d83b6fbddc4faeede6525793d0a, type: 3}
   audioSource: {fileID: 0}
-  dialogueManager: {fileID: 1828898097}
+  dialogueManager: {fileID: 1823520545}
   dialogueIndex: 0
 --- !u!64 &5828900217997871743
 MeshCollider:
@@ -13143,10 +13106,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 959373510}
   - {fileID: 676407889}
-  - {fileID: 188123852}
   - {fileID: 1442760443}
   - {fileID: 1187500558}
   - {fileID: 543450653412429795}
   - {fileID: 543450651729850462}
-  - {fileID: 372897238}
-  - {fileID: 403294487}
+  - {fileID: 1823520552}

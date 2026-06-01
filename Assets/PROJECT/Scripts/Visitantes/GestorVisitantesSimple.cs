@@ -26,7 +26,17 @@ public class GestorVisitantesSimple : MonoBehaviour
     {
         visitantesAtendidosEnNoche = 0;
         nocheTerminada = false;
-        CrearVisitanteActual();
+
+        // Verificar si ya hay un visitante del estado guardado
+        if (EstadoVisitantes.Instancia != null && EstadoVisitantes.Instancia.HayEstadoGuardado())
+        {
+            Debug.Log("Hay estado guardado, no crear nuevo visitante aún");
+            CrearVisitanteActual();
+        }
+        else
+        {
+            CrearVisitanteActual();
+        }
     }
 
     void CrearVisitanteActual()
@@ -41,6 +51,14 @@ public class GestorVisitantesSimple : MonoBehaviour
         {
             Debug.LogError("No existe EstadoVisitantes en la escena.");
             return;
+        }
+
+        // Si el visitante ya fue atendido (estado guardado), avanzar al siguiente
+        if (EstadoVisitantes.Instancia.VisitanteYaAtendido())
+        {
+            Debug.Log("Visitante ya fue atendido, pasando al siguiente");
+            EstadoVisitantes.Instancia.PasarAlSiguienteVisitante();
+            EstadoVisitantes.Instancia.LimpiarEstadoGuardado();
         }
 
         VisitanteDatos datos = EstadoVisitantes.Instancia.ObtenerVisitanteActual();
@@ -86,6 +104,7 @@ public class GestorVisitantesSimple : MonoBehaviour
         esperandoVisitante = true;
 
         EstadoVisitantes.Instancia.PasarAlSiguienteVisitante();
+        EstadoVisitantes.Instancia.LimpiarEstadoGuardado();
 
         StartCoroutine(EsperarYCrearSiguiente());
     }
@@ -99,7 +118,6 @@ public class GestorVisitantesSimple : MonoBehaviour
             CrearVisitanteActual();
     }
 
-    // Reinicia la noche SIN reiniciar el índice global de visitantes
     public void ReiniciarNoche()
     {
         if (visitanteActual != null)
@@ -109,15 +127,14 @@ public class GestorVisitantesSimple : MonoBehaviour
         visitantesAtendidosEnNoche = 0;
         nocheTerminada = false;
 
-        // 🔥 NO resetear el índice de visitantes (se mantiene el orden entre noches)
+        EstadoVisitantes.Instancia?.LimpiarEstadoGuardado();
         CrearVisitanteActual();
     }
 
-    // Reinicio completo del juego (sí resetea el índice)
     public void ReiniciarJuegoCompleto()
     {
         if (EstadoVisitantes.Instancia != null)
-            EstadoVisitantes.Instancia.indiceVisitanteActual = 0;
+            EstadoVisitantes.Instancia.ReiniciarEstado();
         ReiniciarNoche();
     }
 

@@ -13,22 +13,20 @@ public class VisitanteSimple : MonoBehaviour
 
     [Header("Estado")]
     public bool enCentro = false;
+    public bool yaAtendido = false;
+    public VisitanteDatos datosVisitante;
 
     private Vector3 destinoActual;
     private Vector3 posicionOriginal;
     private float tiempoRebote = 0f;
     private bool enMovimiento = false;
-    private bool yaAtendido = false;
     private Vector3 escalaOriginal;
 
     [Header("Camuflaje")]
     public SpriteRenderer spriteVisitante;
 
     private bool camuflajeRevelado = false;
-    private VisitanteDatos datosVisitante;
     private GestorVisitantesSimple gestor;
-
-    // ✅ NUEVA VARIABLE
     private bool esBueno = true;
 
     void Awake()
@@ -41,14 +39,9 @@ public class VisitanteSimple : MonoBehaviour
         Transform entrada,
         Transform centro,
         Transform entradaEdificio,
-        GestorVisitantesSimple gestorVisitantes
-    )
+        GestorVisitantesSimple gestorVisitantes)
     {
         datosVisitante = datos;
-
-        // ✅ CONFIGURAR SI ES BUENO O MALO
-        // Si esDoble == true → es MALO (false)
-        // Si esDoble == false → es BUENO (true)
         esBueno = !datos.esDoble;
 
         puntoEntrada = entrada;
@@ -56,29 +49,51 @@ public class VisitanteSimple : MonoBehaviour
         puntoEntradaEdificio = entradaEdificio;
         gestor = gestorVisitantes;
 
-        yaAtendido = false;
-        enCentro = false;
-        camuflajeRevelado = false;
-        enMovimiento = true;
+        if (EstadoVisitantes.Instancia != null && EstadoVisitantes.Instancia.HayEstadoGuardado())
+        {
+            enCentro = EstadoVisitantes.Instancia.visitanteEnCentro;
+            yaAtendido = EstadoVisitantes.Instancia.visitanteYaAtendido;
+
+            if (enCentro && !yaAtendido)
+            {
+                transform.position = puntoCentro.position;
+                enMovimiento = false;
+                destinoActual = puntoCentro.position;
+                posicionOriginal = puntoCentro.position;
+            }
+            else
+            {
+                transform.position = puntoEntrada.position;
+                enMovimiento = true;
+                destinoActual = puntoCentro.position;
+                posicionOriginal = puntoEntrada.position;
+                enCentro = false;
+            }
+        }
+        else
+        {
+            enCentro = false;
+            yaAtendido = false;
+            enMovimiento = true;
+            transform.position = puntoEntrada.position;
+            destinoActual = puntoCentro.position;
+            posicionOriginal = puntoEntrada.position;
+        }
 
         transform.localScale = escalaOriginal;
-        transform.position = puntoEntrada.position;
-
-        destinoActual = puntoCentro.position;
-        posicionOriginal = puntoEntrada.position;
 
         if (spriteVisitante != null && datosVisitante != null)
         {
             spriteVisitante.sprite = datosVisitante.spriteNormal;
         }
 
-        Debug.Log($"Aparece visitante: {datosVisitante.nombreVisitante} - {(esBueno ? "BUENO" : "MALO")}");
+        Debug.Log($"Visitante: {datosVisitante.nombreVisitante} - {(esBueno ? "BUENO" : "MALO")}");
     }
 
-    // En Update(), asegura que cuando llega al centro se establece bien:
     void Update()
     {
         if (!enMovimiento) return;
+        if (yaAtendido) return;
 
         Vector3 nuevaPos = transform.position;
         float distancia = Mathf.Abs(nuevaPos.x - destinoActual.x);
@@ -96,10 +111,11 @@ public class VisitanteSimple : MonoBehaviour
             enMovimiento = false;
             transform.position = new Vector3(destinoActual.x, posicionOriginal.y, transform.position.z);
 
-            if (!yaAtendido)
+            if (!yaAtendido && !enCentro)
             {
                 enCentro = true;
-                Debug.Log("Visitante llegó al centro - Esperando decisión");
+                Debug.Log("Visitante llegó al centro");
+                EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
             }
         }
     }
@@ -128,64 +144,109 @@ public class VisitanteSimple : MonoBehaviour
             spriteVisitante.sprite = datosVisitante.spriteRevelado;
         }
 
-        Debug.Log($"El visitante ha sido revelado con {reveladorUsado}: era un doble");
+        Debug.Log($"Visitante revelado con {reveladorUsado}: era un doble");
     }
 
     public void Aceptar()
     {
         if (!enCentro || yaAtendido) return;
 
+        Debug.Log("=== ACEPTAR VISITANTE ===");
+
         yaAtendido = true;
         enCentro = false;
 
         GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
-
         if (gestion != null)
         {
             if (esBueno)
-                gestion.RegistrarAcierto();  // Bueno aceptado = acierto
+                gestion.RegistrarAcierto();
             else
-                gestion.RegistrarFallo();    // Malo aceptado = fallo
+                gestion.RegistrarFallo();
         }
 
-        destinoActual = puntoEntradaEdificio.position;
-        posicionOriginal = transform.position;
-        enMovimiento = true;
+        if (puntoEntradaEdificio != null)
+        {
+            StartCoroutine(MoverHacia(puntoEntradaEdificio.position));
+        }
+        else
+        {
+            Debug.LogError("puntoEntradaEdificio es NULL");
+            StartCoroutine(DestruirDespuesDelay());
+        }
 
-        StartCoroutine(EsperarFinMovimiento());
+        EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
     }
 
     public void Rechazar()
     {
         if (!enCentro || yaAtendido) return;
 
+        Debug.Log("=== RECHAZAR VISITANTE ===");
+
         yaAtendido = true;
         enCentro = false;
 
         GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
-
         if (gestion != null)
         {
             if (!esBueno)
-                gestion.RegistrarAcierto();  // Malo rechazado = acierto
+                gestion.RegistrarAcierto();
             else
-                gestion.RegistrarFallo();    // Bueno rechazado = fallo
+                gestion.RegistrarFallo();
         }
 
-        destinoActual = puntoEntrada.position;
-        posicionOriginal = transform.position;
-        enMovimiento = true;
+        if (puntoEntrada != null)
+        {
+            StartCoroutine(MoverHacia(puntoEntrada.position));
+        }
+        else
+        {
+            Debug.LogError("puntoEntrada es NULL");
+            StartCoroutine(DestruirDespuesDelay());
+        }
 
-        StartCoroutine(EsperarFinMovimiento());
+        EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
     }
 
-    IEnumerator EsperarFinMovimiento()
+    IEnumerator MoverHacia(Vector3 destino)
     {
-        while (enMovimiento)
+        Debug.Log($"🚶 Visitante moviéndose desde {transform.position} hacia {destino}");
+
+        // Guardar posición Y original para el rebote
+        float yBase = transform.position.y;
+        float tiempoReboteLocal = 0f;
+
+        while (Vector3.Distance(transform.position, destino) > 0.05f)
         {
+            // Movimiento hacia el destino
+            transform.position = Vector3.MoveTowards(transform.position, destino, velocidadMovimiento * Time.deltaTime);
+
+            // Rebote
+            tiempoReboteLocal += Time.deltaTime * frecuenciaRebote;
+            float offsetY = Mathf.Abs(Mathf.Sin(tiempoReboteLocal)) * alturaRebote;
+            Vector3 pos = transform.position;
+            pos.y = yBase + offsetY;
+            transform.position = pos;
+
             yield return null;
         }
 
+        transform.position = destino;
+        Debug.Log("✅ Visitante llegó al destino");
+
+        yield return new WaitForSeconds(0.5f);
+
+        if (gestor != null)
+        {
+            gestor.VisitanteTerminoSalir();
+        }
+
+        Destroy(gameObject);
+    }
+
+    IEnumerator DestruirDespuesDelay()
+    {
         yield return new WaitForSeconds(0.5f);
 
         if (gestor != null)

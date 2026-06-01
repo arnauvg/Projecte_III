@@ -38,6 +38,38 @@ public class UIManager : MonoBehaviour
 
     void Start()
     {
+        // Buscar referencias automáticamente si no están asignadas
+        if (mapaLogo == null)
+            mapaLogo = GetComponentInChildren<Image>();
+
+        if (panelMapa == null)
+            panelMapa = GameObject.Find("PanelMapa");
+
+        // Buscar los botones dentro del PanelMapa
+        if (panelMapa != null)
+        {
+            if (botonGarita == null)
+            {
+                Transform garita = panelMapa.transform.Find("garita");
+                if (garita != null) botonGarita = garita.GetComponent<Image>();
+            }
+            if (botonAfueras == null)
+            {
+                Transform afueras = panelMapa.transform.Find("afueras");
+                if (afueras != null) botonAfueras = afueras.GetComponent<Image>();
+            }
+            if (botonCripta == null)
+            {
+                Transform cripta = panelMapa.transform.Find("cripta");
+                if (cripta != null) botonCripta = cripta.GetComponent<Image>();
+            }
+            if (botonTumbas == null)
+            {
+                Transform tumbas = panelMapa.transform.Find("tumbas");
+                if (tumbas != null) botonTumbas = tumbas.GetComponent<Image>();
+            }
+        }
+
         if (mapaLogo != null) mapaLogo.sprite = mapaNormal;
         if (panelMapa != null) panelMapa.SetActive(false);
         ResetearBotonesMapa();
@@ -47,14 +79,11 @@ public class UIManager : MonoBehaviour
     {
         tareaPendiente = mostrar;
         tareaUbicacion = ubicacion;
-
         Debug.Log($"📢 UIManager: tarea={(mostrar ? ubicacion : "ninguna")}");
 
-        // Cambiar ícono del mapa en HUD
         if (mapaLogo != null)
             mapaLogo.sprite = mostrar ? mapaNotificacion : mapaNormal;
 
-        // Siempre actualizar botones (aunque el mapa esté cerrado)
         ActualizarBotonesMapa();
     }
 
@@ -62,7 +91,7 @@ public class UIManager : MonoBehaviour
     {
         if (panelMapa != null)
         {
-            ActualizarBotonesMapa(); // por si acaso
+            ActualizarBotonesMapa();
             panelMapa.SetActive(true);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -89,7 +118,6 @@ public class UIManager : MonoBehaviour
         {
             string ub = tareaUbicacion.ToLower();
 
-            // Mapear "velas" o "pila" a Cripta
             if (ub == "velas" || ub == "pila")
             {
                 if (botonCripta != null && criptaNotificacion != null)
