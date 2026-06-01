@@ -8,35 +8,24 @@ public class AbrirMinijuego : MonoBehaviour
     private Outline outlineComponent;
     private TareaManager tareaManager;
     private bool puedeInteractuar = false;
-    private bool buscando = false;
 
     void Start()
     {
         outlineComponent = GetComponent<Outline>();
         if (outlineComponent == null)
             outlineComponent = gameObject.AddComponent<Outline>();
+
+        // Desactivar outline al inicio
         outlineComponent.enabled = false;
 
-        BuscarTareaManager();
+        tareaManager = FindObjectOfType<TareaManager>();
+        if (tareaManager == null)
+            Invoke("BuscarTareaManager", 0.5f);
     }
 
     void BuscarTareaManager()
     {
         tareaManager = FindObjectOfType<TareaManager>();
-        if (tareaManager != null)
-        {
-            Debug.Log($"AbrirMinijuego en {gameObject.name}: TareaManager encontrado.");
-            buscando = false;
-        }
-        else
-        {
-            Debug.LogWarning($"AbrirMinijuego en {gameObject.name}: No se encontró TareaManager, reintentando en 0.5s...");
-            if (!buscando)
-            {
-                buscando = true;
-                Invoke(nameof(BuscarTareaManager), 0.5f);
-            }
-        }
     }
 
     void Update()
@@ -49,12 +38,14 @@ public class AbrirMinijuego : MonoBehaviour
 
     void OnMouseEnter()
     {
+        // Solo mostrar outline si se puede interactuar
         if (puedeInteractuar && outlineComponent != null)
             outlineComponent.enabled = true;
     }
 
     void OnMouseExit()
     {
+        // Ocultar outline siempre al salir
         if (outlineComponent != null)
             outlineComponent.enabled = false;
     }
@@ -73,5 +64,8 @@ public class AbrirMinijuego : MonoBehaviour
     public void SetPuedeInteractuar(bool puede)
     {
         puedeInteractuar = puede;
+        // Si no puede interactuar, asegurar que el outline se oculta
+        if (!puedeInteractuar && outlineComponent != null)
+            outlineComponent.enabled = false;
     }
 }

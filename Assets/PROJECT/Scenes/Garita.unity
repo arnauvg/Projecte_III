@@ -1878,13 +1878,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvasManual: {fileID: 1092846879}
-  controladorJugador: {fileID: 0}
   imagenPagina: {fileID: 1632406383}
   paginas:
   - {fileID: 21300000, guid: 455d3577b928d7144a4eb84bb6c496c1, type: 3}
   - {fileID: 21300000, guid: f03e2ad42e4ba8641ac61e485420e1dd, type: 3}
   - {fileID: 21300000, guid: be9272a713c297c4f9fa4abf5c1ac464, type: 3}
   - {fileID: 21300000, guid: 7d5a7f7757b57664a89fc2b41fc9a16b, type: 3}
+  botonAnterior: {fileID: 1788584749}
+  botonSiguiente: {fileID: 157641327}
+  objetoConScripts: {fileID: 959373507}
 --- !u!114 &1092846882
 MonoBehaviour:
   m_ObjectHideFlags: 0
