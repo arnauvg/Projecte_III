@@ -11,7 +11,7 @@ public class Telefono : Interactuable
     public int dialogueIndex = 0;
 
     private bool enMano = false;
-    private static bool yaActivado = false; // 🔒 Control para que solo se active una vez
+    private static bool yaActivado = false;
     private Vector3 posOriginal;
     private Quaternion rotOriginal;
     private Transform puntoMano;
@@ -35,7 +35,6 @@ public class Telefono : Interactuable
         audioSource.playOnAwake = false;
         audioSource.loop = true;
 
-        // Solo reproducir ringtone si aún no se ha activado el diálogo
         if (!yaActivado && ringtone != null)
         {
             audioSource.clip = ringtone;
@@ -54,14 +53,13 @@ public class Telefono : Interactuable
             rb.isKinematic = true;
             rb.useGravity = false;
 
-            // Si es la primera vez que se recoge, activar diálogo
             if (!yaActivado)
             {
                 if (audioSource.isPlaying) audioSource.Stop();
                 if (dialogueManager != null)
                 {
                     dialogueManager.StartDialogue(dialogueIndex);
-                    yaActivado = true; // 🚫 No se volverá a activar
+                    yaActivado = true;
                 }
             }
             return true;
@@ -98,8 +96,13 @@ public class Telefono : Interactuable
             if (audioSource != null && audioSource.isPlaying)
                 audioSource.Stop();
             yaActivado = true;
-            Debug.Log("[Cheat] Teléfono desactivado (ya no sonará ni activará diálogo).");
+            Debug.Log("[Cheat] Teléfono desactivado.");
         }
     }
 
+    public static void Resetear()
+    {
+        yaActivado = false;
+        Debug.Log("Teléfono reseteado para nueva partida.");
+    }
 }

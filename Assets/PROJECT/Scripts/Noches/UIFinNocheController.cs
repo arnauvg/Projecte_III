@@ -30,8 +30,6 @@ public class UIFinNocheController : MonoBehaviour
         }
 
         VisualElement root = uiDocument.rootVisualElement;
-
-        // Buscar todos los elementos por nombre
         labelNoche = root.Q<Label>("noche");
         labelEstado = root.Q<Label>("estado");
         labelNumVisitantes = root.Q<Label>("num-visitantes");
@@ -41,7 +39,6 @@ public class UIFinNocheController : MonoBehaviour
         labelSueldo = root.Q<Label>("sueldo");
         botonContinuar = root.Q<Button>("boton-siguiente");
 
-        // Ocultar al inicio
         if (root != null)
             root.style.display = DisplayStyle.None;
     }
@@ -56,6 +53,8 @@ public class UIFinNocheController : MonoBehaviour
         int dineroPerdidoTareas,
         int sueldoActual,
         bool gameOver,
+        bool victoria,
+        string mensajeEstado,
         Action onContinue)
     {
         VisualElement root = uiDocument?.rootVisualElement;
@@ -63,54 +62,35 @@ public class UIFinNocheController : MonoBehaviour
 
         root.style.display = DisplayStyle.Flex;
 
-        // NOCHE
-        if (labelNoche != null)
-            labelNoche.text = $"NOCHE {noche}";
-
-        // ESTADO (Completada / Game Over)
-        if (labelEstado != null)
-        {
-            if (gameOver)
-                labelEstado.text = "GAME OVER";
-            else
-                labelEstado.text = "COMPLETADA";
-        }
-
-        // VISITANTES ACERTADOS
-        if (labelNumVisitantes != null)
-            labelNumVisitantes.text = $"{visitantesAcertados}/{totalVisitantes}";
-
-        // DINERO PERDIDO POR VISITANTES
+        if (labelNoche != null) labelNoche.text = $"NOCHE {noche}";
+        if (labelEstado != null) labelEstado.text = mensajeEstado;
+        if (labelNumVisitantes != null) labelNumVisitantes.text = $"{visitantesAcertados}/{totalVisitantes}";
         if (labelDineroVisitantes != null)
         {
             labelDineroVisitantes.text = $"-{dineroPerdidoVisitantes}€";
             labelDineroVisitantes.style.color = dineroPerdidoVisitantes > 0 ? Color.red : Color.green;
         }
-
-        // TAREAS COMPLETADAS
-        if (labelNumTareas != null)
-            labelNumTareas.text = $"{tareasCompletadas}/{totalTareas}";
-
-        // DINERO PERDIDO POR TAREAS
+        if (labelNumTareas != null) labelNumTareas.text = $"{tareasCompletadas}/{totalTareas}";
         if (labelDineroTareas != null)
         {
             labelDineroTareas.text = $"-{dineroPerdidoTareas}€";
             labelDineroTareas.style.color = dineroPerdidoTareas > 0 ? Color.red : Color.green;
         }
+        if (labelSueldo != null) labelSueldo.text = $"{sueldoActual}€";
 
-        // SUELDO TOTAL
-        if (labelSueldo != null)
-            labelSueldo.text = $"{sueldoActual}€";
-
-        // Guardar acción para el botón
         onContinueAction = onContinue;
 
-        // Configurar botón
         if (botonContinuar != null)
         {
+            botonContinuar.text = victoria ? "VOLVER AL MENÚ" : "SIGUIENTE NOCHE";
             botonContinuar.clicked -= EjecutarContinuar;
             botonContinuar.clicked += EjecutarContinuar;
         }
+
+        // 🔥 Usar UnityEngine.Cursor explícitamente
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
+        Time.timeScale = 1f;
     }
 
     public void Ocultar()
@@ -121,6 +101,8 @@ public class UIFinNocheController : MonoBehaviour
 
     private void EjecutarContinuar()
     {
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
         Ocultar();
         onContinueAction?.Invoke();
     }

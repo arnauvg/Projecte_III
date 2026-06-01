@@ -14,9 +14,7 @@ public class AbrirMinijuego : MonoBehaviour
         outlineComponent = GetComponent<Outline>();
         if (outlineComponent == null)
             outlineComponent = gameObject.AddComponent<Outline>();
-
-        // Desactivar outline al inicio
-        outlineComponent.enabled = false;
+        outlineComponent.enabled = false; // ← desactivado por defecto
 
         tareaManager = FindObjectOfType<TareaManager>();
         if (tareaManager == null)
@@ -31,21 +29,17 @@ public class AbrirMinijuego : MonoBehaviour
     void Update()
     {
         if (tareaManager != null)
-        {
             puedeInteractuar = tareaManager.PuedeInteractuarConObjeto(gameObject);
-        }
     }
 
     void OnMouseEnter()
     {
-        // Solo mostrar outline si se puede interactuar
         if (puedeInteractuar && outlineComponent != null)
             outlineComponent.enabled = true;
     }
 
     void OnMouseExit()
     {
-        // Ocultar outline siempre al salir
         if (outlineComponent != null)
             outlineComponent.enabled = false;
     }
@@ -64,8 +58,7 @@ public class AbrirMinijuego : MonoBehaviour
     public void SetPuedeInteractuar(bool puede)
     {
         puedeInteractuar = puede;
-        // Si no puede interactuar, asegurar que el outline se oculta
-        if (!puedeInteractuar && outlineComponent != null)
+        if (!puede && outlineComponent != null)
             outlineComponent.enabled = false;
     }
 }

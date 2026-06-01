@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public class GestionNoches : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class GestionNoches : MonoBehaviour
     [Header("Referencias")]
     public UIFinNocheController uiFinNocheController;
     public CronometroNoche cronometro;
+    public GestorVisitantesSimple gestorVisitantes; // ← Añadido
 
     // Variables internas
     private int sueldoActual;
@@ -35,24 +37,19 @@ public class GestionNoches : MonoBehaviour
 
         if (cronometro == null)
             cronometro = FindFirstObjectByType<CronometroNoche>();
+        if (gestorVisitantes == null)
+            gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
 
         ContarTotalVisitantes();
-
         Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
     void ContarTotalVisitantes()
     {
-        if (EstadoVisitantes.Instancia != null)
-        {
-            switch (nocheActual)
-            {
-                case 1: totalVisitantes = 3; break;
-                case 2: totalVisitantes = 3; break;
-                case 3: totalVisitantes = 2; break;
-                default: totalVisitantes = 3; break;
-            }
-        }
+        if (gestorVisitantes != null)
+            totalVisitantes = gestorVisitantes.maxVisitantesPorNoche;
+        else
+            totalVisitantes = 3;
     }
 
     public void RegistrarAcierto()
@@ -82,6 +79,7 @@ public class GestionNoches : MonoBehaviour
 
         Debug.Log("=== FIN DE LA NOCHE (06:00 AM) ===");
 
+        // Penalización por tarea pendiente
         dineroPerdidoTareas = tareaCompletada ? 0 : penalizacionTareaPendiente;
         if (dineroPerdidoTareas > 0)
         {
@@ -95,12 +93,22 @@ public class GestionNoches : MonoBehaviour
     private void MostrarPantallaFinNoche()
     {
         bool gameOver = sueldoActual < umbralDespido;
-        bool victoria = !gameOver && nocheActual >= 5;
+        bool victoria = !gameOver && nocheActual >= 3; // ← 3 noches superadas
+
+        string mensajeEstado;
+        if (gameOver)
+            mensajeEstado = "GAME OVER";
+        else if (victoria)
+            mensajeEstado = "¡CONTRATO SUPERADO!";
+        else
+            mensajeEstado = "COMPLETADA";
 
         Action onContinue = () =>
         {
-            if (gameOver || victoria)
+            if (gameOver)
                 ReiniciarJuego();
+            else if (victoria)
+                VolverAlMenuPrincipal();
             else
                 SiguienteNoche();
         };
@@ -117,6 +125,8 @@ public class GestionNoches : MonoBehaviour
                 dineroPerdidoTareas: dineroPerdidoTareas,
                 sueldoActual: sueldoActual,
                 gameOver: gameOver,
+                victoria: victoria,
+                mensajeEstado: mensajeEstado,
                 onContinue: onContinue
             );
         }
@@ -127,6 +137,10 @@ public class GestionNoches : MonoBehaviour
         nocheActual++;
         ReiniciarVariablesNoche();
 
+        // Reiniciar el sistema de visitantes
+        if (gestorVisitantes != null)
+            gestorVisitantes.ReiniciarNoche();
+
         if (uiFinNocheController != null)
             uiFinNocheController.Ocultar();
 
@@ -134,15 +148,20 @@ public class GestionNoches : MonoBehaviour
             cronometro.ReiniciarCronometro();
 
         ContarTotalVisitantes();
-
         Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
     private void ReiniciarJuego()
     {
+        // Resetear teléfono para nueva partida
+        Telefono.Resetear();
+
         nocheActual = 1;
         sueldoActual = sueldoBase;
         ReiniciarVariablesNoche();
+
+        if (gestorVisitantes != null)
+            gestorVisitantes.ReiniciarJuegoCompleto();
 
         if (uiFinNocheController != null)
             uiFinNocheController.Ocultar();
@@ -151,7 +170,6 @@ public class GestionNoches : MonoBehaviour
             cronometro.ReiniciarCronometro();
 
         ContarTotalVisitantes();
-
         Debug.Log("🔄 JUEGO REINICIADO");
     }
 
@@ -165,9 +183,14 @@ public class GestionNoches : MonoBehaviour
         tareaCompletada = false;
     }
 
-    // 👇 ESTE ES EL MÉTODO QUE FALTABA 👇
-    public int GetNocheActual()
+    private void VolverAlMenuPrincipal()
     {
-        return nocheActual;
+        // Limpiar estáticos si es necesario
+        if (CronometroNoche.Instance != null)
+            CronometroNoche.Instance.ReiniciarCronometro();
+        // Cargar la escena del menú principal
+        SceneManager.LoadScene("MainMenu");
     }
+
+    public int GetNocheActual() => nocheActual;
 }
