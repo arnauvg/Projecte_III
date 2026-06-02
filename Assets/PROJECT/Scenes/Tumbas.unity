@@ -931,9 +931,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 89647c87616747c489c373c07e94a1f6, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1413475969}
     - targetCorrespondingSourceObject: {fileID: -8551654070373378105, guid: 89647c87616747c489c373c07e94a1f6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1723625928}
@@ -2339,25 +2336,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1 &1413475967 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 89647c87616747c489c373c07e94a1f6, type: 3}
-  m_PrefabInstance: {fileID: 19876380}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1413475969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1413475967}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afb091580ebff204397706fd563fa57f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvasMinijuego: {fileID: 0}
-  sonidoCompletado: {fileID: 0}
 --- !u!1 &1414419138
 GameObject:
   m_ObjectHideFlags: 0
