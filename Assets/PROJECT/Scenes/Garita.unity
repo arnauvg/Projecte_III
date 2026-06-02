@@ -5223,23 +5223,35 @@ MonoBehaviour:
   dialogues:
   - speakerName: Jefe
     sentences:
-    - "\xA1Eh, Johnny! Por fin coges el tel\xE9fono. Soy Don Ernesto, tu jefe."
-    - "El anterior vigilante\u2026 desapareci\xF3. Pero no te rayes, \xBFvale? Bueno,
-      un poco s\xED."
-    - Abre el manual de criaturas que tienes en la mesa. Es el libro amarillo.
-    - "Ah\xED ver\xE1s seres m\xE1gicos que vienen a hacer el mal: vampiros, brujas,
-      diablos\u2026"
-    - "Cada criatura tiene sus caracter\xEDsticas. Est\xFAdiatelas bien o la liar\xE1s."
-    - Cuando aparezca alguien en la ventanilla de la garita, usa el manual para identificar.
-    - "Si es malo, pulsa el bot\xF3n ROJO: no pasa. Si es inofensivo, pulsa VERDE
-      y que entre."
-    - "Pero si dejas pasar a un vampiro o a una bruja\u2026 te aseguro que te quedas
-      sin sueldo."
-    - El cementerio es sagrado, no podemos permitir magia negra ni vandalismo.
-    - "\xBFQueda claro? Me juego el prestigio contigo. A la m\xEDnima, est\xE1s despedido."
-    - "Tambi\xE9n tendr\xE1s tareas extras que hacer antes de que acabe la noche."
-    - "Pero de eso ya te hablar\xE9 cuando surjan. Por ahora, centrate en la entrada."
-    - "En fin\u2026 empieza ya. No me falles, que el que falla se va al paro."
+    - "Bienvenido Jhonny, \xBFemocionado por ser el nuevo vigilante del cementerio
+      municipal de Villa Chatarra? \xA1Seguro que s\xED!"
+    - "Mira, te cuento... El anterior vigilante... bueno, mejor no hablemos de lo
+      que le pas\xF3. No te preocupes! Bueno, solo un poco."
+    - "\xA1Vamos al l\xEDo! Tu tarea principal es vigilar la entrada del cementerio.
+      Ya sabes que en Villa Chatarra hay criaturas mal\xE9volas, brujas y esas cosas."
+    - "Pues ahora les da por venir aqu\xED a hacer sus cosas estas de exorcismos
+      y robar sangre de los cad\xE1veres... \xA1Y sin pagar! Qu\xE9 caradura..."
+    - "Bueno, pues tu tarea es evitar que pasen. \xBFVes ese manual encima de la
+      mesa? El rojo. Si lo abres encontrar\xE1s descripciones y otras cosas que te
+      ayudar\xE1n a identificar si son criaturas mal\xE9volas o personas normales."
+    - "Hay objetos que te ayudar\xE1n a identificar si son o no criaturas mal\xE9volas.
+      Eso tambi\xE9n est\xE1 en el manual."
+    - 'En fin, cuando sepas si son o no, tienes dos botones encima de la mesa: el
+      rojo para denegarles la entrada, el verde para dejarlos pasar.'
+    - "Recuerda que te juegas el sueldo y el trabajo... \xA1pero sin presi\xF3n!"
+    - "Ah, y m\xE1s adelante te ense\xF1ar\xE9 c\xF3mo van las tareas extras. Ya
+      te llamar\xE9. \xA1Suerte!"
+  - speakerName: Jefe
+    sentences:
+    - "\xA1Felicidades! Tienes tu primera tarea pendiente. Lo puedes ver en el icono
+      del mapa: ha salido una exclamaci\xF3n."
+    - "Si entras en el mapa d\xE1ndole a la tecla M, ver\xE1s las diferentes partes
+      del cementerio de Villa Chatarra."
+    - "No te preocupes, no te vas a perder. Te saldr\xE1 en el icono de cada parte
+      la exclamaci\xF3n para que sepas d\xF3nde est\xE1n las tareas."
+    - "Cuando llegues al sitio ser\xE1 f\xE1cil de ver la tarea. Son tareas muy simples:
+      limpiar el agua bendita de la pila, reponer velas, limpiar tumbas..."
+    - "Esto lo tienes que hacer antes de que se acabe la noche. \xA1Mucha suerte!"
   charDelay: 0.015
   typingSound: {fileID: 8300000, guid: 17be527c9e0ba964ea842b843bd4b89a, type: 3}
   audioSource: {fileID: 0}
@@ -11139,7 +11151,8 @@ MonoBehaviour:
   ringtone: {fileID: 8300000, guid: 4e195d83b6fbddc4faeede6525793d0a, type: 3}
   audioSource: {fileID: 0}
   dialogueManager: {fileID: 1823520545}
-  dialogueIndex: 0
+  dialogoTutorialIndex: 0
+  dialogoJefeIndex: 1
 --- !u!64 &5828900217997871743
 MeshCollider:
   m_ObjectHideFlags: 0
