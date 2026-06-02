@@ -19,6 +19,8 @@ public class Telefono : Interactuable
     private Transform puntoMano;
     private Rigidbody rb;
     private bool dialogoEnProgreso = false;
+    private bool colgarAutomaticamente = false;
+    private bool esperandoColgar = false; // 🔥 Evita colgar inmediatamente después de recoger
 
     void Start()
     {
@@ -62,7 +64,6 @@ public class Telefono : Interactuable
         if (segundaLLamadaPendiente) return;
         if (tutorialCompletado == false) return;
 
-        // 🔥 Cerrar cualquier diálogo de visitante activo
         if (dialogueManager != null)
         {
             dialogueManager.CerrarDialogoVisitante();
@@ -85,55 +86,89 @@ public class Telefono : Interactuable
 
     void OnMouseDown()
     {
-        Debug.Log("🖱️ OnMouseDown detectado en teléfono");
-        Recoger();
+        Debug.Log($"🖱️ OnMouseDown - enMano={enMano}, dialogoEnProgreso={dialogoEnProgreso}");
+
+        if (enMano)
+        {
+            Soltar();
+        }
+        else
+        {
+            Recoger();
+        }
     }
 
     public override bool Recoger()
     {
-        Debug.Log($"📞 Recogiendo teléfono - enMano={enMano}, dialogoEnProgreso={dialogoEnProgreso}, tutorialCompletado={tutorialCompletado}, segundaLLamadaPendiente={segundaLLamadaPendiente}");
-
-        if (!enMano && !dialogoEnProgreso)
+        if (enMano)
         {
-            enMano = true;
-            rb.isKinematic = true;
-            rb.useGravity = false;
-
-            if (audioSource.isPlaying) audioSource.Stop();
-            audioSource.loop = false;
-
-            if (dialogueManager != null)
-            {
-                dialogoEnProgreso = true;
-
-                if (!tutorialCompletado)
-                {
-                    Debug.Log("📞 Iniciando diálogo del tutorial");
-                    dialogueManager.StartDialogue(dialogoTutorialIndex, false);
-                    tutorialCompletado = true;
-                }
-                else if (segundaLLamadaPendiente)
-                {
-                    Debug.Log("📞 Iniciando diálogo del jefe (tareas)");
-                    dialogueManager.StartDialogue(dialogoJefeIndex, false);
-                    segundaLLamadaPendiente = false;
-                }
-            }
-            return true;
+            Debug.Log("📞 Ya tienes el teléfono en la mano");
+            return false;
         }
-        return false;
+
+        enMano = true;
+        rb.isKinematic = true;
+        rb.useGravity = false;
+
+        // 🔥 Evitar que se cuelgue inmediatamente
+        esperandoColgar = true;
+        Invoke(nameof(ResetEsperandoColgar), 0.2f);
+
+        if (audioSource.isPlaying) audioSource.Stop();
+        audioSource.loop = false;
+
+        if (dialogueManager != null && !dialogoEnProgreso)
+        {
+            if (!tutorialCompletado)
+            {
+                Debug.Log("📞 Iniciando diálogo del tutorial");
+                dialogueManager.StartDialogue(dialogoTutorialIndex, false);
+                tutorialCompletado = true;
+                colgarAutomaticamente = true;
+                dialogoEnProgreso = true;
+            }
+            else if (segundaLLamadaPendiente)
+            {
+                Debug.Log("📞 Iniciando diálogo del jefe");
+                dialogueManager.StartDialogue(dialogoJefeIndex, false);
+                segundaLLamadaPendiente = false;
+                colgarAutomaticamente = true;
+                dialogoEnProgreso = true;
+            }
+            else
+            {
+                Debug.Log("📞 Cogiste el teléfono sin motivo (no hay diálogo)");
+                colgarAutomaticamente = false;
+            }
+        }
+        else
+        {
+            colgarAutomaticamente = false;
+        }
+
+        return true;
+    }
+
+    void ResetEsperandoColgar()
+    {
+        esperandoColgar = false;
     }
 
     public override void Soltar()
     {
-        if (enMano)
-        {
-            transform.position = posOriginal;
-            transform.rotation = rotOriginal;
-            enMano = false;
-            rb.isKinematic = true;
-            rb.useGravity = false;
-        }
+        if (!enMano) return;
+
+        transform.position = posOriginal;
+        transform.rotation = rotOriginal;
+        enMano = false;
+        rb.isKinematic = true;
+        rb.useGravity = false;
+
+        dialogoEnProgreso = false;
+        colgarAutomaticamente = false;
+        esperandoColgar = false;
+
+        Debug.Log("📞 Teléfono colgado");
     }
 
     void Update()
@@ -143,15 +178,34 @@ public class Telefono : Interactuable
             transform.position = Vector3.Lerp(transform.position, puntoMano.position, Time.deltaTime * 15f);
             transform.rotation = Quaternion.Lerp(transform.rotation, puntoMano.rotation, Time.deltaTime * 15f);
         }
+
+        // 🔥 Solo colgar si NO estamos esperando (evita colgar justo después de recoger)
+        if (Input.GetMouseButtonDown(0) && enMano && !esperandoColgar)
+        {
+            Debug.Log("📞 Colgando por clic izquierdo");
+            Soltar();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && enMano)
+        {
+            Debug.Log("📞 Colgando manualmente (tecla R)");
+            Soltar();
+        }
     }
 
     public void OnDialogoTerminado()
     {
         dialogoEnProgreso = false;
-        enMano = false;
-        transform.position = posOriginal;
-        transform.rotation = rotOriginal;
-        Debug.Log("📞 Diálogo terminado - Teléfono listo");
+
+        if (colgarAutomaticamente)
+        {
+            Debug.Log("📞 Diálogo terminado - Colgando automáticamente");
+            Soltar();
+        }
+        else
+        {
+            Debug.Log("📞 Diálogo terminado - Teléfono en mano, haz clic para colgar");
+        }
     }
 
     public void SkipPhone()

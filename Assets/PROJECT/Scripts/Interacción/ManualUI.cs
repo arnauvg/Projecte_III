@@ -11,7 +11,7 @@ public class ManualUI : MonoBehaviour
     public Button botonSiguiente;
 
     [Header("Objeto con los scripts a desactivar")]
-    public GameObject objetoConScripts; // ← arrastra aquí la Main Camera
+    public GameObject objetoConScripts;
 
     private int paginaActual = 0;
     private bool abierto = false;
@@ -19,10 +19,10 @@ public class ManualUI : MonoBehaviour
 
     void Start()
     {
-        canvasManual.SetActive(false);
+        if (canvasManual != null)
+            canvasManual.SetActive(false);
         MostrarPagina();
 
-        // Buscar los scripts en el objeto asignado
         if (objetoConScripts != null)
         {
             var lista = new System.Collections.Generic.List<MonoBehaviour>();
@@ -41,7 +41,9 @@ public class ManualUI : MonoBehaviour
         if (abierto) return;
         abierto = true;
 
-        canvasManual.SetActive(true);
+        if (canvasManual != null)
+            canvasManual.SetActive(true);
+
         paginaActual = 0;
         MostrarPagina();
 
@@ -51,6 +53,8 @@ public class ManualUI : MonoBehaviour
 
         foreach (var script in scriptsADesactivar)
             if (script != null) script.enabled = false;
+
+        Debug.Log("📖 Manual abierto");
     }
 
     public void Cerrar()
@@ -58,13 +62,17 @@ public class ManualUI : MonoBehaviour
         if (!abierto) return;
         abierto = false;
 
-        canvasManual.SetActive(false);
+        if (canvasManual != null)
+            canvasManual.SetActive(false);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Time.timeScale = 1f;
 
         foreach (var script in scriptsADesactivar)
             if (script != null) script.enabled = true;
+
+        Debug.Log("📖 Manual cerrado");
     }
 
     public void SiguientePagina()

@@ -11,6 +11,12 @@ public class CronometroNoche : MonoBehaviour
     [Header("Referencias UI")]
     public TextMeshProUGUI textoReloj;
 
+    [Header("Referencias del sistema de noches")]
+    public GestionNoches gestionNoches;
+
+    [Header("Sistema de tareas")]
+    public TareaManager tareaManager;
+
     private float tiempoRestante;
     private bool nocheActiva = true;
     private int ultimoIntervaloMostrado = -1;
@@ -25,7 +31,6 @@ public class CronometroNoche : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
@@ -98,9 +103,10 @@ public class CronometroNoche : MonoBehaviour
         tiempoRestante = tiempoTotalSegundos;
         nocheActiva = true;
         nocheTerminada = false;
-        tareasSpawned = false;
+        tareasSpawned = false;  // 🔥 CLAVE: Reiniciar para que nuevas tareas aparezcan
         ultimoIntervaloMostrado = -1;
         ActualizarTexto();
+        Debug.Log("🔄 Cronómetro reiniciado (nueva noche)");
     }
 
     public void DetenerCronometro() => nocheActiva = false;

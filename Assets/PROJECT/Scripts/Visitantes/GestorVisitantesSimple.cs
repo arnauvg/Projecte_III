@@ -24,6 +24,7 @@ public class GestorVisitantesSimple : MonoBehaviour
     private bool generacionVisitantesPausada = true;
     private bool tutorialCompletado = false;
     private bool pendingVisitante = false;
+    private bool creandoVisitante = false; // 🔥 Evita creación duplicada
 
     void Start()
     {
@@ -32,6 +33,7 @@ public class GestorVisitantesSimple : MonoBehaviour
         generacionVisitantesPausada = true;
         tutorialCompletado = false;
         pendingVisitante = false;
+        creandoVisitante = false;
 
         DialogueManager.OnTutorialEnded += TutorialCompletado;
 
@@ -56,13 +58,26 @@ public class GestorVisitantesSimple : MonoBehaviour
 
     IEnumerator CrearVisitanteConDelay()
     {
+        // 🔥 Evitar múltiples llamadas simultáneas
+        if (creandoVisitante) yield break;
+        creandoVisitante = true;
+
         yield return new WaitForSeconds(0.5f);
         CrearVisitanteActual();
+
+        creandoVisitante = false;
     }
 
     void CrearVisitanteActual()
     {
-        Debug.Log($"CrearVisitanteActual - pausada={generacionVisitantesPausada}, atendidos={visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
+        Debug.Log($"CrearVisitanteActual - pausada={generacionVisitantesPausada}, atendidos={visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}, visitanteActual={(visitanteActual != null ? "existe" : "null")}");
+
+        // 🔥 No crear si ya hay un visitante activo
+        if (visitanteActual != null)
+        {
+            Debug.Log("⚠️ Ya hay un visitante activo, no se crea otro");
+            return;
+        }
 
         if (generacionVisitantesPausada)
         {
@@ -113,6 +128,9 @@ public class GestorVisitantesSimple : MonoBehaviour
     {
         if (nocheTerminada) return;
 
+        // 🔥 Limpiar referencia antes de incrementar contador
+        visitanteActual = null;
+
         visitantesAtendidosEnNoche++;
         Debug.Log($"Visitante atendido. Total: {visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
 
@@ -149,10 +167,12 @@ public class GestorVisitantesSimple : MonoBehaviour
     public void ReiniciarNoche()
     {
         if (visitanteActual != null) Destroy(visitanteActual.gameObject);
+        visitanteActual = null;
         esperandoVisitante = false;
         visitantesAtendidosEnNoche = 0;
         nocheTerminada = false;
         pendingVisitante = false;
+        creandoVisitante = false;
         EstadoVisitantes.Instancia?.LimpiarEstadoGuardado();
         if (!generacionVisitantesPausada && tutorialCompletado) CrearVisitanteActual();
     }
@@ -164,13 +184,16 @@ public class GestorVisitantesSimple : MonoBehaviour
         generacionVisitantesPausada = true;
         visitantesAtendidosEnNoche = 0;
         pendingVisitante = false;
+        creandoVisitante = false;
         if (visitanteActual != null) Destroy(visitanteActual.gameObject);
+        visitanteActual = null;
     }
 
     public void TerminarNoche()
     {
         nocheTerminada = true;
         if (visitanteActual != null) Destroy(visitanteActual.gameObject);
+        visitanteActual = null;
     }
 
     public void PausarGeneracionVisitantes(bool pausar)
@@ -178,11 +201,15 @@ public class GestorVisitantesSimple : MonoBehaviour
         generacionVisitantesPausada = pausar;
         Debug.Log($"Generación visitantes {(pausar ? "pausada" : "reanudada")}");
 
-        if (!pausar && pendingVisitante && !nocheTerminada && visitantesAtendidosEnNoche < maxVisitantesPorNoche)
+        // 🔥 Solo crear si no hay visitante activo y hay pendiente
+        if (!pausar && !nocheTerminada && visitantesAtendidosEnNoche < maxVisitantesPorNoche)
         {
-            Debug.Log("📌 Reanudando con visitante pendiente");
-            pendingVisitante = false;
-            StartCoroutine(CrearVisitanteConDelay());
+            if (visitanteActual == null && pendingVisitante)
+            {
+                pendingVisitante = false;
+                Debug.Log("📌 Reanudando: creando visitante pendiente");
+                StartCoroutine(CrearVisitanteConDelay());
+            }
         }
     }
 }

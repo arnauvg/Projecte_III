@@ -14,23 +14,22 @@ public class GameManager : MonoBehaviour
     [Header("Escenas")]
     public string mainMenuSceneName = "MainMenu";
 
-    [Header("Escenas de juego (todas las que tengan menú de pausa)")]
+    [Header("Escenas de juego")]
     public List<string> gameSceneNames = new List<string> { "Garita", "Cementerio", "Afueras" };
 
     [Header("Sonido Hover")]
     public AudioClip sonidoHover;
 
     [Header("Cursor personalizado")]
-    public Color colorCursor = Color.white;
-    public int tamañoCursor = 32;
-    public float radioCursor = 14f;
+    public Texture2D cursorSprite;        // ← Arrastra tu sprite aquí
+    public Vector2 hotspot = new Vector2(0, 0);  // ← Punto de clic (0,0 = esquina superior izquierda)
+    public CursorMode cursorMode = CursorMode.Auto;
 
     private MouseLook360 mouseLook;
     private ReproductorSonidoHover reproductorHover;
     private VisualElement pauseRoot;
     private VisualElement mainRoot;
     private bool isGameScene = false;
-    private Texture2D cursorPersonalizado;
 
     private void Awake()
     {
@@ -42,66 +41,37 @@ public class GameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Crear cursor personalizado
-        CrearCursorCircularBlanco();
-
-        // Configurar el reproductor de hover UNA SOLA VEZ
+        // Configurar el reproductor de hover
         ConfigurarAudioHover();
-    }
-
-    void CrearCursorCircularBlanco()
-    {
-        // Crear textura circular
-        cursorPersonalizado = new Texture2D(tamañoCursor, tamañoCursor, TextureFormat.RGBA32, false);
-
-        for (int y = 0; y < tamañoCursor; y++)
-        {
-            for (int x = 0; x < tamañoCursor; x++)
-            {
-                float dist = Vector2.Distance(new Vector2(tamañoCursor / 2, tamañoCursor / 2), new Vector2(x, y));
-
-                if (dist < radioCursor)
-                {
-                    cursorPersonalizado.SetPixel(x, y, colorCursor);
-                }
-                else
-                {
-                    cursorPersonalizado.SetPixel(x, y, Color.clear);
-                }
-            }
-        }
-
-        cursorPersonalizado.Apply();
-        Debug.Log("Cursor circular blanco creado");
     }
 
     void AplicarCursorPersonalizado()
     {
-        if (cursorPersonalizado != null)
+        if (cursorSprite != null)
         {
-            Vector2 hotspot = new Vector2(tamañoCursor / 2, tamañoCursor / 2);
-            Cursor.SetCursor(cursorPersonalizado, hotspot, CursorMode.Auto);
-            Debug.Log("Cursor personalizado aplicado");
+            Cursor.SetCursor(cursorSprite, hotspot, cursorMode);
+            Debug.Log($"Cursor personalizado aplicado: {cursorSprite.name}");
+        }
+        else
+        {
+            Debug.LogWarning("No hay sprite asignado para el cursor");
         }
     }
+
+    // ... el resto del script igual (OnEnable, OnDisable, OnSceneLoaded, etc.)
 
     private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
     private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Limpiar referencias anteriores
         pauseRoot = null;
         mainRoot = null;
-
-        // Verificar si es una escena de juego
         isGameScene = gameSceneNames.Contains(scene.name);
 
-        // Buscar MouseLook en la cámara (solo en escenas de juego)
         Camera mainCam = Camera.main;
         if (mainCam != null) mouseLook = mainCam.GetComponent<MouseLook360>();
 
-        // Configurar según la escena cargada
         if (scene.name == mainMenuSceneName)
         {
             BuscarYConfigurarMainMenu();
@@ -110,14 +80,12 @@ public class GameManager : MonoBehaviour
         else if (isGameScene)
         {
             BuscarYConfigurarPauseMenu();
-            // IMPORTANTE: Al cargar una nueva escena de juego, volvemos a estado Playing
             SetState(GameState.Playing);
         }
     }
 
     void ConfigurarAudioHover()
     {
-        // Crear el reproductor de hover en el GameManager
         reproductorHover = GetComponent<ReproductorSonidoHover>();
         if (reproductorHover == null)
             reproductorHover = gameObject.AddComponent<ReproductorSonidoHover>();
@@ -126,7 +94,6 @@ public class GameManager : MonoBehaviour
 
     void BuscarYConfigurarMainMenu()
     {
-        // Buscar el UIDocument del menú principal
         var documentos = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
         foreach (var doc in documentos)
         {
@@ -137,14 +104,9 @@ public class GameManager : MonoBehaviour
             if (jugar != null && salir != null)
             {
                 mainRoot = root;
-
-                // Configurar hover y clicks
                 ConfigurarBotonConHover(jugar, StartGame);
                 ConfigurarBotonConHover(salir, QuitGame);
-
-                // Asegurar que se vea
                 mainRoot.style.display = DisplayStyle.Flex;
-
                 Debug.Log("Menú principal configurado correctamente");
                 break;
             }
@@ -153,7 +115,6 @@ public class GameManager : MonoBehaviour
 
     void BuscarYConfigurarPauseMenu()
     {
-        // Buscar el UIDocument del menú de pausa en la escena actual
         var documentos = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
         foreach (var doc in documentos)
         {
@@ -164,35 +125,25 @@ public class GameManager : MonoBehaviour
             if (continuar != null && salirMenu != null)
             {
                 pauseRoot = root;
-
-                // Configurar hover y clicks
                 ConfigurarBotonConHover(continuar, ResumeGame);
                 ConfigurarBotonConHover(salirMenu, BackToMainMenu);
-
-                // Ocultar al inicio (cuando se está jugando)
                 pauseRoot.style.display = DisplayStyle.None;
-
                 Debug.Log($"Menú de pausa configurado en escena: {SceneManager.GetActiveScene().name}");
                 break;
             }
         }
 
-        // Si no se encontró el menú de pausa, mostrar advertencia
         if (pauseRoot == null)
         {
-            Debug.LogWarning($"No se encontró menú de pausa en la escena {SceneManager.GetActiveScene().name}. Asegúrate de que haya un UIDocument con botones 'BotonContinuar' y 'BotonSalirMenu'");
+            Debug.LogWarning($"No se encontró menú de pausa en la escena {SceneManager.GetActiveScene().name}");
         }
     }
 
     void ConfigurarBotonConHover(Button boton, System.Action accion)
     {
         if (boton == null) return;
-
-        // Limpiar eventos anteriores para evitar duplicados
         boton.clicked -= accion;
         boton.clicked += accion;
-
-        // Limpiar hover anterior
         boton.UnregisterCallback<MouseEnterEvent>(OnMouseEnter);
         boton.RegisterCallback<MouseEnterEvent>(OnMouseEnter);
     }
@@ -205,7 +156,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        // Detectar Escape SOLO en escenas de juego y cuando está jugando
         if (isGameScene && currentState == GameState.Playing)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
@@ -225,7 +175,7 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 1f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                AplicarCursorPersonalizado(); // 👈 Cursor blanco circular
+                AplicarCursorPersonalizado();
                 if (mouseLook) mouseLook.enabled = false;
                 if (pauseRoot != null) pauseRoot.style.display = DisplayStyle.None;
                 if (mainRoot != null) mainRoot.style.display = DisplayStyle.Flex;
@@ -234,7 +184,7 @@ public class GameManager : MonoBehaviour
             case GameState.Playing:
                 Time.timeScale = 1f;
                 Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false; // Cursor invisible mientras juegas (FPS)
+                Cursor.visible = false;
                 if (mouseLook) mouseLook.enabled = true;
                 if (pauseRoot != null) pauseRoot.style.display = DisplayStyle.None;
                 if (mainRoot != null) mainRoot.style.display = DisplayStyle.None;
@@ -244,7 +194,7 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                AplicarCursorPersonalizado(); // 👈 Cursor blanco circular
+                AplicarCursorPersonalizado();
                 if (mouseLook) mouseLook.enabled = false;
                 if (pauseRoot != null) pauseRoot.style.display = DisplayStyle.Flex;
                 if (mainRoot != null) mainRoot.style.display = DisplayStyle.None;
@@ -254,11 +204,9 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Estado cambiado a: {newState}");
     }
 
-    // ============ MÉTODOS PÚBLICOS PARA LOS BOTONES ============
-
     public void StartGame()
     {
-        SceneManager.LoadScene(gameSceneNames[0]); // Carga la primera escena de juego (Garita)
+        SceneManager.LoadScene(gameSceneNames[0]);
     }
 
     public void ResumeGame()

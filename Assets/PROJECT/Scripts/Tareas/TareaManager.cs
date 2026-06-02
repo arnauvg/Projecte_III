@@ -21,13 +21,12 @@ public class TareaManager : MonoBehaviour
     public int maxTareasPorNoche = 2;
     public UIManager uiManager;
 
-    // 🔥 Evento para cuando se activa la primera tarea
     public static System.Action OnPrimeraTareaActivada;
 
     private Tarea tareaActual;
     private int nocheActual = 1;
     private bool generacionTareasPausada = false;
-    private bool primeraTareaYaNotificada = false; // Para que solo suene una vez
+    private bool primeraTareaYaNotificada = false;
 
     void Awake()
     {
@@ -80,7 +79,11 @@ public class TareaManager : MonoBehaviour
 
     public void IniciarNoche(int noche)
     {
-        if (generacionTareasPausada) return;
+        if (generacionTareasPausada)
+        {
+            Debug.Log("Generación de tareas pausada");
+            return;
+        }
 
         nocheActual = noche;
         int numTareas = Random.Range(minTareasPorNoche, maxTareasPorNoche + 1);
@@ -98,6 +101,7 @@ public class TareaManager : MonoBehaviour
         }
 
         if (seleccionadas.Count > 0) ActivarTarea(seleccionadas[0]);
+        else Debug.Log("No hay tareas disponibles");
     }
 
     void ActivarTarea(Tarea tarea)
@@ -110,7 +114,6 @@ public class TareaManager : MonoBehaviour
         if (tarea.objetoEnEscena != null)
             ActivarInteractuabilidadEnObjeto(tarea.objetoEnEscena);
 
-        // 🔥 Si es la primera tarea de la partida y aún no se ha notificado, activar llamada del jefe
         if (!primeraTareaYaNotificada && nocheActual == 1)
         {
             primeraTareaYaNotificada = true;
@@ -154,6 +157,7 @@ public class TareaManager : MonoBehaviour
         {
             tareaActual = null;
             if (uiManager != null) uiManager.MostrarAvisoTarea(false, "");
+            Debug.Log("✅ Todas las tareas de la noche completadas");
         }
     }
 
