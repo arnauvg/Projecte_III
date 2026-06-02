@@ -89,6 +89,7 @@ public class ClickCentro : MonoBehaviour
                         BotonPresionAnimacion botonAnim = actual.GetComponent<BotonPresionAnimacion>();
                         if (botonAnim != null) botonAnim.Presionar();
 
+                        gestorVisitantes.RegistrarVisitanteAtendido();
                         visitante.Aceptar();
                         return;
                     }
@@ -105,6 +106,7 @@ public class ClickCentro : MonoBehaviour
                         BotonPresionAnimacion botonAnim = actual.GetComponent<BotonPresionAnimacion>();
                         if (botonAnim != null) botonAnim.Presionar();
 
+                        gestorVisitantes.RegistrarVisitanteAtendido();
                         visitante.Rechazar();
                         return;
                     }

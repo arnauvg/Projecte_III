@@ -1086,11 +1086,11 @@ Transform:
   m_GameObject: {fileID: 471620195}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.187571, y: -1.8680396, z: -8.5805855}
+  m_LocalPosition: {x: 0.0024290085, y: -1.8080397, z: -2.7705855}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1442760443}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &471620197
 MonoBehaviour:
@@ -1135,7 +1135,7 @@ Transform:
   m_GameObject: {fileID: 513487836}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.48, y: 0.5899999, z: 7}
+  m_LocalPosition: {x: -4.02, y: 0.5899999, z: 7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1166,12 +1166,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550291204}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.19, y: 0.060000002, z: 5.81}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1187500558}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &550291206
 MonoBehaviour:
@@ -1195,6 +1195,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6c710fd0a3e0f164aaa063f14e059eba, type: 2}
   - {fileID: 11400000, guid: ac80de20d32f2b94cbea14d08ad8d13f, type: 2}
   indiceVisitanteActual: 0
+  visitantesAtendidosEstaNoche: 0
+  nocheTerminada: 0
 --- !u!1 &676407888
 GameObject:
   m_ObjectHideFlags: 0
@@ -2477,7 +2479,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 202750997}
-  - {fileID: 550291205}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1208851297
@@ -3083,7 +3084,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 232485568}
-  - {fileID: 471620196}
   - {fileID: 1846807983}
   - {fileID: 771070011}
   - {fileID: 1828898099}
@@ -13144,6 +13144,8 @@ SceneRoots:
   - {fileID: 959373510}
   - {fileID: 676407889}
   - {fileID: 188123852}
+  - {fileID: 471620196}
+  - {fileID: 550291205}
   - {fileID: 1442760443}
   - {fileID: 1187500558}
   - {fileID: 543450653412429795}

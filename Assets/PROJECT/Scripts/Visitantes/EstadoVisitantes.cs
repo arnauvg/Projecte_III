@@ -11,6 +11,10 @@ public class EstadoVisitantes : MonoBehaviour
     [Header("Estado actual")]
     public int indiceVisitanteActual = 0;
 
+    [Header("Estado de la noche")]
+    public int visitantesAtendidosEstaNoche = 0;
+    public bool nocheTerminada = false;
+
     void Awake()
     {
         if (Instancia != null && Instancia != this)
@@ -18,9 +22,13 @@ public class EstadoVisitantes : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
         Instancia = this;
-        if (transform.parent == null)
-            DontDestroyOnLoad(gameObject);
+
+        // Lo sacamos del padre para que Unity permita DontDestroyOnLoad
+        transform.SetParent(null);
+
+        DontDestroyOnLoad(gameObject);
     }
 
     public VisitanteDatos ObtenerVisitanteActual()
@@ -39,5 +47,17 @@ public class EstadoVisitantes : MonoBehaviour
     {
         indiceVisitanteActual++;
         Debug.Log($"Siguiente visitante índice: {indiceVisitanteActual}");
+    }
+
+    public void RegistrarVisitanteAtendido()
+    {
+        visitantesAtendidosEstaNoche++;
+        indiceVisitanteActual++;
+
+        Debug.Log($"Visitante guardado en EstadoVisitantes. Atendidos: {visitantesAtendidosEstaNoche}, índice actual: {indiceVisitanteActual}");
+    }
+    public void ReiniciarVisitantes()
+    {
+        indiceVisitanteActual = 0;
     }
 }
