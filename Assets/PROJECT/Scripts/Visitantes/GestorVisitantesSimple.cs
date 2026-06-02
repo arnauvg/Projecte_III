@@ -21,68 +21,57 @@ public class GestorVisitantesSimple : MonoBehaviour
     private bool esperandoVisitante = false;
     private int visitantesAtendidosEnNoche = 0;
     private bool nocheTerminada = false;
+    private bool generacionVisitantesPausada = true; // Comienza pausado
+    private bool tutorialCompletado = false;
 
     void Start()
     {
         visitantesAtendidosEnNoche = 0;
         nocheTerminada = false;
+        generacionVisitantesPausada = true;
+        tutorialCompletado = false;
 
-        // Verificar si ya hay un visitante del estado guardado
-        if (EstadoVisitantes.Instancia != null && EstadoVisitantes.Instancia.HayEstadoGuardado())
-        {
-            Debug.Log("Hay estado guardado, no crear nuevo visitante aún");
-            CrearVisitanteActual();
-        }
-        else
-        {
-            CrearVisitanteActual();
-        }
+        // Suscribirse al evento de fin de diálogo
+        DialogueManager.OnDialogueEnded += TutorialCompletado;
+
+        Debug.Log("GestorVisitantesSimple: Esperando fin del tutorial...");
+    }
+
+    void OnDestroy()
+    {
+        // Limpiar suscripción
+        DialogueManager.OnDialogueEnded -= TutorialCompletado;
+    }
+
+    void TutorialCompletado()
+    {
+        if (tutorialCompletado) return;
+
+        tutorialCompletado = true;
+        generacionVisitantesPausada = false;
+        Debug.Log("📞 Tutorial completado - Comienzan a llegar visitantes");
+
+        CrearVisitanteActual();
     }
 
     void CrearVisitanteActual()
     {
-        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
-        {
-            Debug.Log($"Límite de {maxVisitantesPorNoche} visitantes alcanzado.");
-            return;
-        }
+        if (generacionVisitantesPausada) return;
+        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche) return;
+        if (EstadoVisitantes.Instancia == null) return;
 
-        if (EstadoVisitantes.Instancia == null)
-        {
-            Debug.LogError("No existe EstadoVisitantes en la escena.");
-            return;
-        }
-
-        // Si el visitante ya fue atendido (estado guardado), avanzar al siguiente
         if (EstadoVisitantes.Instancia.VisitanteYaAtendido())
         {
-            Debug.Log("Visitante ya fue atendido, pasando al siguiente");
             EstadoVisitantes.Instancia.PasarAlSiguienteVisitante();
             EstadoVisitantes.Instancia.LimpiarEstadoGuardado();
         }
 
         VisitanteDatos datos = EstadoVisitantes.Instancia.ObtenerVisitanteActual();
-        if (datos == null)
-        {
-            Debug.Log("No quedan más visitantes en la lista.");
-            return;
-        }
+        if (datos == null) return;
 
         GameObject nuevoVisitante = Instantiate(prefabVisitante);
         visitanteActual = nuevoVisitante.GetComponent<VisitanteSimple>();
-        if (visitanteActual == null)
-        {
-            Debug.LogError("El prefab no tiene el script VisitanteSimple.");
-            return;
-        }
-
-        visitanteActual.ConfigurarVisitante(
-            datos,
-            puntoEntrada,
-            puntoCentro,
-            puntoEntradaEdificio,
-            this
-        );
+        visitanteActual.ConfigurarVisitante(datos, puntoEntrada, puntoCentro, puntoEntradaEdificio, this);
     }
 
     public VisitanteSimple ObtenerVisitanteActual() => visitanteActual;
@@ -90,22 +79,14 @@ public class GestorVisitantesSimple : MonoBehaviour
     public void VisitanteTerminoSalir()
     {
         if (nocheTerminada) return;
-
         visitantesAtendidosEnNoche++;
-        Debug.Log($"Visitante atendido. Total en la noche: {visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
 
-        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
-        {
-            Debug.Log("Máximo de visitantes alcanzado. No se crearán más.");
-            return;
-        }
-
+        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche) return;
         if (esperandoVisitante) return;
         esperandoVisitante = true;
 
         EstadoVisitantes.Instancia.PasarAlSiguienteVisitante();
         EstadoVisitantes.Instancia.LimpiarEstadoGuardado();
-
         StartCoroutine(EsperarYCrearSiguiente());
     }
 
@@ -113,35 +94,35 @@ public class GestorVisitantesSimple : MonoBehaviour
     {
         yield return new WaitForSeconds(tiempoEntreVisitantes);
         esperandoVisitante = false;
-
-        if (visitantesAtendidosEnNoche < maxVisitantesPorNoche && !nocheTerminada)
+        if (!generacionVisitantesPausada && visitantesAtendidosEnNoche < maxVisitantesPorNoche && !nocheTerminada)
             CrearVisitanteActual();
     }
 
     public void ReiniciarNoche()
     {
-        if (visitanteActual != null)
-            Destroy(visitanteActual.gameObject);
-
+        if (visitanteActual != null) Destroy(visitanteActual.gameObject);
         esperandoVisitante = false;
         visitantesAtendidosEnNoche = 0;
         nocheTerminada = false;
-
         EstadoVisitantes.Instancia?.LimpiarEstadoGuardado();
-        CrearVisitanteActual();
+        if (!generacionVisitantesPausada && tutorialCompletado) CrearVisitanteActual();
     }
 
     public void ReiniciarJuegoCompleto()
     {
-        if (EstadoVisitantes.Instancia != null)
-            EstadoVisitantes.Instancia.ReiniciarEstado();
-        ReiniciarNoche();
+        if (EstadoVisitantes.Instancia != null) EstadoVisitantes.Instancia.ReiniciarEstado();
+        tutorialCompletado = false;
+        generacionVisitantesPausada = true;
+        visitantesAtendidosEnNoche = 0;
+        if (visitanteActual != null) Destroy(visitanteActual.gameObject);
+        Debug.Log("GestorVisitantesSimple: Reiniciado, esperando tutorial...");
     }
 
     public void TerminarNoche()
     {
         nocheTerminada = true;
-        if (visitanteActual != null)
-            Destroy(visitanteActual.gameObject);
+        if (visitanteActual != null) Destroy(visitanteActual.gameObject);
     }
+
+    public void PausarGeneracionVisitantes(bool pausar) => generacionVisitantesPausada = pausar;
 }

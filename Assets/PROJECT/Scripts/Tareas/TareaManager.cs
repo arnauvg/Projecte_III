@@ -16,19 +16,14 @@ public class TareaManager : MonoBehaviour
         public GameObject objetoEnEscena;
     }
 
-    [Header("Tareas disponibles")]
     public List<Tarea> tareasPosibles = new List<Tarea>();
-
-    [Header("Configuración de spawn")]
     public int minTareasPorNoche = 1;
     public int maxTareasPorNoche = 2;
-
-    [Header("Referencias UI")]
     public UIManager uiManager;
 
     private Tarea tareaActual;
-    private bool tareaActiva = false;
     private int nocheActual = 1;
+    private bool generacionTareasPausada = false;
 
     void Awake()
     {
@@ -36,7 +31,6 @@ public class TareaManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            Debug.Log("TareaManager: Instancia creada");
         }
         else
         {
@@ -44,16 +38,8 @@ public class TareaManager : MonoBehaviour
         }
     }
 
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        Debug.Log("TareaManager: Suscrito a sceneLoaded");
-    }
-
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
+    void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
+    void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
     void Start()
     {
@@ -61,38 +47,21 @@ public class TareaManager : MonoBehaviour
             uiManager = FindFirstObjectByType<UIManager>();
     }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        Debug.Log($"TareaManager: Escena cargada - {scene.name}");
-        Invoke("BuscarObjetosEnEscenaActual", 0.2f);
-    }
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode) => Invoke("BuscarObjetosEnEscenaActual", 0.2f);
 
     void BuscarObjetosEnEscenaActual()
     {
         string escenaActual = SceneManager.GetActiveScene().name;
-        Debug.Log($"Buscando objetos en escena: {escenaActual}");
-
         foreach (Tarea tarea in tareasPosibles)
         {
             if (tarea.escenaDestino == escenaActual)
             {
-                string tagBuscado = $"Tarea{tarea.id}";
-                GameObject encontrado = GameObject.FindGameObjectWithTag(tagBuscado);
-
+                GameObject encontrado = GameObject.FindGameObjectWithTag($"Tarea{tarea.id}");
                 if (encontrado != null)
                 {
                     tarea.objetoEnEscena = encontrado;
-                    Debug.Log($"✅ Encontrado: {encontrado.name} para tarea {tarea.id}");
-
-                    // Si esta tarea es la actual, activar interactuabilidad
                     if (tareaActual != null && tareaActual.id == tarea.id && !tareaActual.completada)
-                    {
                         ActivarInteractuabilidadEnObjeto(encontrado);
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning($"⚠️ No encontrado objeto con tag '{tagBuscado}'");
                 }
             }
         }
@@ -102,111 +71,73 @@ public class TareaManager : MonoBehaviour
     {
         AbrirMinijuego interactuable = obj.GetComponent<AbrirMinijuego>();
         if (interactuable != null)
-        {
             interactuable.SetPuedeInteractuar(true);
-            Debug.Log($"🔓 Interactuabilidad activada para: {obj.name}");
-        }
     }
 
     public void IniciarNoche(int noche)
     {
-        nocheActual = noche;
+        if (generacionTareasPausada) return;
 
+        nocheActual = noche;
         int numTareas = Random.Range(minTareasPorNoche, maxTareasPorNoche + 1);
 
-        foreach (Tarea tarea in tareasPosibles)
+        foreach (Tarea t in tareasPosibles) t.completada = false;
+
+        List<Tarea> disponibles = new List<Tarea>(tareasPosibles);
+        List<Tarea> seleccionadas = new List<Tarea>();
+
+        for (int i = 0; i < numTareas && disponibles.Count > 0; i++)
         {
-            tarea.completada = false;
+            int idx = Random.Range(0, disponibles.Count);
+            seleccionadas.Add(disponibles[idx]);
+            disponibles.RemoveAt(idx);
         }
 
-        List<Tarea> tareasDisponibles = new List<Tarea>(tareasPosibles);
-        List<Tarea> tareasSeleccionadas = new List<Tarea>();
-
-        for (int i = 0; i < numTareas && tareasDisponibles.Count > 0; i++)
-        {
-            int indice = Random.Range(0, tareasDisponibles.Count);
-            tareasSeleccionadas.Add(tareasDisponibles[indice]);
-            tareasDisponibles.RemoveAt(indice);
-        }
-
-        if (tareasSeleccionadas.Count > 0)
-        {
-            ActivarTarea(tareasSeleccionadas[0]);
-        }
-
-        Debug.Log($"📋 Noche {noche}: {numTareas} tarea(s)");
+        if (seleccionadas.Count > 0) ActivarTarea(seleccionadas[0]);
     }
 
     void ActivarTarea(Tarea tarea)
     {
         tareaActual = tarea;
-        tareaActiva = true;
-
-        if (uiManager != null)
-            uiManager.MostrarAvisoTarea(true, tareaActual.id);
-
-        Debug.Log($"❗ Tarea activada: {tarea.nombre} en {tarea.escenaDestino}");
-
-        // Si ya estamos en la escena correcta, activar interactuabilidad
-        if (tarea.objetoEnEscena != null)
-        {
-            ActivarInteractuabilidadEnObjeto(tarea.objetoEnEscena);
-        }
+        if (uiManager != null) uiManager.MostrarAvisoTarea(true, tareaActual.id);
+        if (tarea.objetoEnEscena != null) ActivarInteractuabilidadEnObjeto(tarea.objetoEnEscena);
     }
 
     public bool PuedeInteractuarConObjeto(GameObject objeto)
     {
-        if (tareaActual == null) return false;
-        if (tareaActual.completada) return false;
-
+        if (tareaActual == null || tareaActual.completada) return false;
         string escenaActual = SceneManager.GetActiveScene().name;
         if (tareaActual.escenaDestino != escenaActual) return false;
-
         return tareaActual.objetoEnEscena == objeto;
     }
 
     public void CompletarTareaActual()
     {
-        if (tareaActual == null) return;
-        if (tareaActual.completada) return;
-
+        if (tareaActual == null || tareaActual.completada) return;
         tareaActual.completada = true;
 
         if (tareaActual.objetoEnEscena != null)
         {
             AbrirMinijuego interactuable = tareaActual.objetoEnEscena.GetComponent<AbrirMinijuego>();
-            if (interactuable != null)
-                interactuable.SetPuedeInteractuar(false);
+            if (interactuable != null) interactuable.SetPuedeInteractuar(false);
         }
 
         GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
-        if (gestion != null)
-            gestion.CompletarTarea();
+        if (gestion != null) gestion.CompletarTarea();
 
-        // Buscar siguiente tarea
-        Tarea siguienteTarea = null;
+        Tarea siguiente = null;
         foreach (Tarea t in tareasPosibles)
         {
-            if (!t.completada && t != tareaActual)
-            {
-                siguienteTarea = t;
-                break;
-            }
+            if (!t.completada && t != tareaActual) { siguiente = t; break; }
         }
 
-        if (siguienteTarea != null)
-        {
-            ActivarTarea(siguienteTarea);
-        }
+        if (siguiente != null) ActivarTarea(siguiente);
         else
         {
-            tareaActiva = false;
             tareaActual = null;
-
-            if (uiManager != null)
-                uiManager.MostrarAvisoTarea(false, "");
-
-            Debug.Log("✅ Todas las tareas completadas");
+            if (uiManager != null) uiManager.MostrarAvisoTarea(false, "");
         }
     }
+
+    public void PausarGeneracionTareas(bool pausar) => generacionTareasPausada = pausar;
 }

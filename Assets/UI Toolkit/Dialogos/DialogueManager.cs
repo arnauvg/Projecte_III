@@ -19,15 +19,17 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private DialogueEntry[] dialogues;
 
     [Header("Typewriter")]
-    [SerializeField] private float charDelay = 1f;
+    [SerializeField] private float charDelay = 0.05f;
     [SerializeField] private AudioClip typingSound;
     [SerializeField] private AudioSource audioSource;
+
+    // 🔥 Evento que se dispara cuando termina un diálogo
+    public static System.Action OnDialogueEnded;
 
     private VisualElement dialogueContainer;
     private Label speakerLabel;
     private Label textLabel;
     private Label nextIndicator;
-
     private bool isActive = false;
     private int currentDialogue = 0;
     private int currentSentence = 0;
@@ -55,7 +57,7 @@ public class DialogueManager : MonoBehaviour
         if (audioSource == null && typingSound != null)
             audioSource = gameObject.AddComponent<AudioSource>();
     }
-    
+
     void Start()
     {
         if (dialogueContainer != null && dialogueContainer.style.display != DisplayStyle.None)
@@ -86,7 +88,6 @@ public class DialogueManager : MonoBehaviour
         isActive = true;
         dialogueContainer.style.display = DisplayStyle.Flex;
 
-        // Iniciar parpadeo del indicador (estará siempre visible)
         if (nextIndicator != null && blinkCoroutine == null)
             blinkCoroutine = StartCoroutine(BlinkIndicator());
 
@@ -107,7 +108,6 @@ public class DialogueManager : MonoBehaviour
     private IEnumerator Typewriter()
     {
         isTyping = true;
-        // Ya no ocultamos el indicador
         if (audioSource != null) audioSource.Stop();
 
         for (int i = 0; i <= fullText.Length; i++)
@@ -122,7 +122,6 @@ public class DialogueManager : MonoBehaviour
 
         if (audioSource != null) audioSource.Stop();
         isTyping = false;
-        // No hacemos nada con el indicador, sigue parpadeando
     }
 
     private void SkipTyping()
@@ -140,19 +139,18 @@ public class DialogueManager : MonoBehaviour
         bool visible = true;
         float blinkSpeed = 0.5f;
 
-        while (isActive) // Parpadea mientras el diálogo esté activo, aunque se esté escribiendo
+        while (isActive)
         {
             visible = !visible;
             nextIndicator.style.opacity = visible ? 1f : 0.4f;
             yield return new WaitForSeconds(blinkSpeed);
         }
-        // Al salir, restaurar opacidad total
         nextIndicator.style.opacity = 1f;
     }
 
     private void Advance()
     {
-        if (!isActive) return; // No se avanza si el diálogo no está activo
+        if (!isActive) return;
 
         var entry = dialogues[currentDialogue];
         currentSentence++;
@@ -175,6 +173,16 @@ public class DialogueManager : MonoBehaviour
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         if (audioSource != null) audioSource.Stop();
         blinkCoroutine = null;
+
+        // 🔥 Reanudar el juego
+        if (PausaManager.Instance != null)
+        {
+            PausaManager.Instance.ReanudarJuego();
+        }
+
+        // 🔥 Disparar evento para que otros sistemas sepan que el diálogo terminó
+        OnDialogueEnded?.Invoke();
+        Debug.Log("📞 Diálogo terminado - Evento disparado");
     }
 
     public void ForceEndDialogue()
@@ -185,20 +193,16 @@ public class DialogueManager : MonoBehaviour
 
     public void MostrarDialogoSimple(string nombre, string mensaje)
     {
-        // Crear una entrada temporal de diálogo
         DialogueEntry entry = new DialogueEntry();
         entry.speakerName = nombre;
-        entry.sentences = new System.Collections.Generic.List<string>();
+        entry.sentences = new List<string>();
         entry.sentences.Add(mensaje);
 
-        // Guardar temporalmente y mostrar
         DialogueEntry[] tempDialogues = dialogues;
         dialogues = new DialogueEntry[] { entry };
 
         StartDialogue(0);
-
-        // Restaurar diálogos originales después de un tiempo
-        StartCoroutine(RestaurarDialogos(tempDialogues, entry.sentences[0].Length * charDelay + 1f));
+        StartCoroutine(RestaurarDialogos(tempDialogues, entry.sentences[0].Length * charDelay + 1.5f));
     }
 
     IEnumerator RestaurarDialogos(DialogueEntry[] original, float tiempo)

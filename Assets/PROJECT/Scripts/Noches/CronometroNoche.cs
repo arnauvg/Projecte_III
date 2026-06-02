@@ -11,25 +11,11 @@ public class CronometroNoche : MonoBehaviour
     [Header("Referencias UI")]
     public TextMeshProUGUI textoReloj;
 
-    [Header("Referencias del sistema de noches")]
-    public GestionNoches gestionNoches;
-
-    [Header("Sistema de tareas")]
-    public TareaManager tareaManager;
-
-    // Datos estáticos para persistencia
-    private static float tiempoRestanteStatic;
-    private static bool nocheActivaStatic = true;
-    private static int ultimoIntervaloMostradoStatic = -1;
-    private static bool nocheTerminadaStatic = false;
-    private static bool tareasSpawnedStatic = false;
-    private static bool inicializadoStatic = false;
-
     private float tiempoRestante;
-    private bool nocheActiva;
-    private int ultimoIntervaloMostrado;
-    private bool nocheTerminada;
-    private bool tareasSpawned;
+    private bool nocheActiva = true;
+    private int ultimoIntervaloMostrado = -1;
+    private bool nocheTerminada = false;
+    private bool tareasSpawned = false;
 
     void Awake()
     {
@@ -39,38 +25,14 @@ public class CronometroNoche : MonoBehaviour
             return;
         }
         Instance = this;
-        // No hacer DontDestroyOnLoad aquí porque el padre ya lo tiene
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
-        if (!inicializadoStatic)
-        {
-            tiempoRestanteStatic = tiempoTotalSegundos;
-            nocheActivaStatic = true;
-            ultimoIntervaloMostradoStatic = -1;
-            nocheTerminadaStatic = false;
-            tareasSpawnedStatic = false;
-            inicializadoStatic = true;
-            Debug.Log("⏰ Cronómetro: primera inicialización");
-        }
-
-        tiempoRestante = tiempoRestanteStatic;
-        nocheActiva = nocheActivaStatic;
-        ultimoIntervaloMostrado = ultimoIntervaloMostradoStatic;
-        nocheTerminada = nocheTerminadaStatic;
-        tareasSpawned = tareasSpawnedStatic;
-
-        // Buscar referencias si no están asignadas
+        tiempoRestante = tiempoTotalSegundos;
         if (textoReloj == null)
             textoReloj = FindFirstObjectByType<TextMeshProUGUI>();
-
-        if (gestionNoches == null)
-            gestionNoches = FindFirstObjectByType<GestionNoches>();
-
-        if (tareaManager == null)
-            tareaManager = FindFirstObjectByType<TareaManager>();
-
         ActualizarTexto();
     }
 
@@ -88,16 +50,15 @@ public class CronometroNoche : MonoBehaviour
 
         ActualizarTexto();
 
-        if (!tareasSpawned && ultimoIntervaloMostrado >= 1)
+        bool juegoPausado = PausaManager.Instance != null && PausaManager.Instance.juegoPausado;
+        if (!tareasSpawned && !juegoPausado && ultimoIntervaloMostrado >= 1)
         {
-            SpawnearTareas();
+            tareasSpawned = true;
+            Debug.Log("📋 Generando tareas...");
+            TareaManager tarea = FindFirstObjectByType<TareaManager>();
+            if (tarea != null)
+                tarea.IniciarNoche(1);
         }
-
-        tiempoRestanteStatic = tiempoRestante;
-        nocheActivaStatic = nocheActiva;
-        ultimoIntervaloMostradoStatic = ultimoIntervaloMostrado;
-        nocheTerminadaStatic = nocheTerminada;
-        tareasSpawnedStatic = tareasSpawned;
     }
 
     void ActualizarTexto()
@@ -109,26 +70,13 @@ public class CronometroNoche : MonoBehaviour
         int horasEnteras = Mathf.FloorToInt(horasFloat);
         int minutos = Mathf.FloorToInt((horasFloat - horasEnteras) * 60);
         int minutosRedondeados = minutos < 30 ? 0 : 30;
-        string ampm = "AM";
-        string horaFormateada = $"{horasEnteras:00}:{minutosRedondeados:00} {ampm}";
+        string horaFormateada = $"{horasEnteras:00}:{minutosRedondeados:00} AM";
         int intervaloActual = horasEnteras * 2 + (minutosRedondeados / 30);
 
         if (intervaloActual != ultimoIntervaloMostrado)
         {
             ultimoIntervaloMostrado = intervaloActual;
             textoReloj.text = horaFormateada;
-        }
-    }
-
-    void SpawnearTareas()
-    {
-        if (tareasSpawned) return;
-        tareasSpawned = true;
-        Debug.Log("📋 Generando tareas para esta noche...");
-        if (tareaManager != null)
-        {
-            int noche = gestionNoches != null ? gestionNoches.GetNocheActual() : 1;
-            tareaManager.IniciarNoche(noche);
         }
     }
 
@@ -139,25 +87,20 @@ public class CronometroNoche : MonoBehaviour
         nocheActiva = false;
         Debug.Log("🌙 NOCHE TERMINADA - 06:00 AM");
         if (textoReloj != null) textoReloj.text = "06:00 AM";
-        if (gestionNoches != null)
-            gestionNoches.TerminarNochePorTiempo();
+
+        GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
+        if (gestion != null)
+            gestion.TerminarNochePorTiempo();
     }
 
     public void ReiniciarCronometro()
     {
-        tiempoRestanteStatic = tiempoTotalSegundos;
-        nocheActivaStatic = true;
-        nocheTerminadaStatic = false;
-        tareasSpawnedStatic = false;
-        ultimoIntervaloMostradoStatic = -1;
-
-        tiempoRestante = tiempoRestanteStatic;
-        nocheActiva = nocheActivaStatic;
-        nocheTerminada = nocheTerminadaStatic;
-        tareasSpawned = tareasSpawnedStatic;
-        ultimoIntervaloMostrado = ultimoIntervaloMostradoStatic;
+        tiempoRestante = tiempoTotalSegundos;
+        nocheActiva = true;
+        nocheTerminada = false;
+        tareasSpawned = false;
+        ultimoIntervaloMostrado = -1;
         ActualizarTexto();
-        Debug.Log("🔄 Cronómetro reiniciado (nueva noche)");
     }
 
     public void DetenerCronometro() => nocheActiva = false;

@@ -2,20 +2,19 @@
 
 public class Telefono : Interactuable
 {
-    [Header("Audio")]
     public AudioClip ringtone;
     public AudioSource audioSource;
-
-    [Header("Diálogo")]
     public DialogueManager dialogueManager;
     public int dialogueIndex = 0;
 
     private bool enMano = false;
     private static bool yaActivado = false;
+    private static bool tutorialCompletado = false; // ← NUEVO
     private Vector3 posOriginal;
     private Quaternion rotOriginal;
     private Transform puntoMano;
     private Rigidbody rb;
+    private bool dialogoEnProgreso = false;
 
     void Start()
     {
@@ -39,10 +38,10 @@ public class Telefono : Interactuable
         {
             audioSource.clip = ringtone;
             audioSource.Play();
+            if (PausaManager.Instance != null) PausaManager.Instance.PausarJuego();
         }
 
-        if (dialogueManager == null)
-            dialogueManager = FindObjectOfType<DialogueManager>();
+        if (dialogueManager == null) dialogueManager = FindFirstObjectByType<DialogueManager>();
     }
 
     public override bool Recoger()
@@ -53,11 +52,12 @@ public class Telefono : Interactuable
             rb.isKinematic = true;
             rb.useGravity = false;
 
-            if (!yaActivado)
+            if (!yaActivado && !dialogoEnProgreso)
             {
                 if (audioSource.isPlaying) audioSource.Stop();
                 if (dialogueManager != null)
                 {
+                    dialogoEnProgreso = true;
                     dialogueManager.StartDialogue(dialogueIndex);
                     yaActivado = true;
                 }
@@ -93,16 +93,20 @@ public class Telefono : Interactuable
     {
         if (!yaActivado)
         {
-            if (audioSource != null && audioSource.isPlaying)
-                audioSource.Stop();
+            if (audioSource != null && audioSource.isPlaying) audioSource.Stop();
             yaActivado = true;
-            Debug.Log("[Cheat] Teléfono desactivado.");
+            if (PausaManager.Instance != null) PausaManager.Instance.ReanudarJuego();
         }
     }
 
     public static void Resetear()
     {
         yaActivado = false;
-        Debug.Log("Teléfono reseteado para nueva partida.");
+        tutorialCompletado = false;
+    }
+
+    public static bool EstaActivo()
+    {
+        return yaActivado;
     }
 }
