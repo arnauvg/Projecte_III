@@ -28,8 +28,6 @@ public class VisitanteSimple : MonoBehaviour
     private bool camuflajeRevelado = false;
     private GestorVisitantesSimple gestor;
     private bool esBueno = true;
-
-    // Referencia al DialogueManager
     private DialogueManager dialogueManager;
     private bool dialogoMostrado = false;
 
@@ -121,10 +119,7 @@ public class VisitanteSimple : MonoBehaviour
             {
                 enCentro = true;
                 Debug.Log("Visitante llegó al centro");
-
-                // Mostrar diálogo de bienvenida
                 MostrarDialogoBienvenida();
-
                 EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
             }
         }
@@ -142,9 +137,16 @@ public class VisitanteSimple : MonoBehaviour
         if (!string.IsNullOrEmpty(datosVisitante.dialogoBienvenida))
         {
             dialogoMostrado = true;
-            // 🔥 Cambiado: siempre muestra "Visitante" como nombre
-            dialogueManager.MostrarDialogoSimple("Visitante", datosVisitante.dialogoBienvenida);
-            Debug.Log($"📢 Visitante: {datosVisitante.dialogoBienvenida}");
+            dialogueManager.MostrarDialogoVisitante(datosVisitante.nombreVisitante, datosVisitante.dialogoBienvenida);
+            Debug.Log($"📢 {datosVisitante.nombreVisitante}: {datosVisitante.dialogoBienvenida}");
+        }
+    }
+
+    private void CerrarDialogo()
+    {
+        if (dialogueManager != null)
+        {
+            dialogueManager.CerrarDialogoVisitante();
         }
     }
 
@@ -161,7 +163,7 @@ public class VisitanteSimple : MonoBehaviour
 
         if (reveladorUsado != datosVisitante.reveladorNecesario)
         {
-            Debug.Log($"Objeto incorrecto. Este visitante no se revela con {reveladorUsado}");
+            Debug.Log($"Objeto incorrecto. No se revela con {reveladorUsado}");
             return;
         }
 
@@ -178,6 +180,9 @@ public class VisitanteSimple : MonoBehaviour
     public void Aceptar()
     {
         if (!enCentro || yaAtendido) return;
+
+        // Cerrar diálogo si está abierto
+        CerrarDialogo();
 
         Debug.Log("=== ACEPTAR VISITANTE ===");
 
@@ -205,6 +210,9 @@ public class VisitanteSimple : MonoBehaviour
     {
         if (!enCentro || yaAtendido) return;
 
+        // Cerrar diálogo si está abierto
+        CerrarDialogo();
+
         Debug.Log("=== RECHAZAR VISITANTE ===");
 
         yaAtendido = true;
@@ -229,26 +237,22 @@ public class VisitanteSimple : MonoBehaviour
 
     IEnumerator MoverHacia(Vector3 destino)
     {
-        Debug.Log($"🚶 Visitante moviéndose desde {transform.position} hacia {destino}");
-
         float yBase = transform.position.y;
         float tiempoReboteLocal = 0f;
 
         while (Vector3.Distance(transform.position, destino) > 0.05f)
         {
             transform.position = Vector3.MoveTowards(transform.position, destino, velocidadMovimiento * Time.deltaTime);
-
             tiempoReboteLocal += Time.deltaTime * frecuenciaRebote;
             float offsetY = Mathf.Abs(Mathf.Sin(tiempoReboteLocal)) * alturaRebote;
             Vector3 pos = transform.position;
             pos.y = yBase + offsetY;
             transform.position = pos;
-
             yield return null;
         }
 
         transform.position = destino;
-        Debug.Log("✅ Visitante llegó al destino");
+        Debug.Log("Visitante llegó al destino");
 
         yield return new WaitForSeconds(0.5f);
 

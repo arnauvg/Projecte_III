@@ -2,14 +2,18 @@
 
 public class Telefono : Interactuable
 {
+    [Header("Audio")]
     public AudioClip ringtone;
     public AudioSource audioSource;
+
+    [Header("Diálogos")]
     public DialogueManager dialogueManager;
-    public int dialogueIndex = 0;
+    public int dialogoTutorialIndex = 0;
+    public int dialogoJefeIndex = 1;
 
     private bool enMano = false;
-    private static bool yaActivado = false;
-    private static bool tutorialCompletado = false; // ← NUEVO
+    private static bool tutorialCompletado = false;
+    private static bool segundaLLamadaPendiente = false;
     private Vector3 posOriginal;
     private Quaternion rotOriginal;
     private Transform puntoMano;
@@ -22,6 +26,7 @@ public class Telefono : Interactuable
         rotOriginal = transform.rotation;
         rb = GetComponent<Rigidbody>();
         if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
 
         GameObject punto = new GameObject("PuntoTelefono");
         punto.transform.SetParent(Camera.main.transform);
@@ -34,32 +39,84 @@ public class Telefono : Interactuable
         audioSource.playOnAwake = false;
         audioSource.loop = true;
 
-        if (!yaActivado && ringtone != null)
+        if (dialogueManager == null) dialogueManager = FindFirstObjectByType<DialogueManager>();
+
+        TareaManager.OnPrimeraTareaActivada += SegundaLlamada;
+
+        if (!tutorialCompletado && ringtone != null)
         {
             audioSource.clip = ringtone;
             audioSource.Play();
             if (PausaManager.Instance != null) PausaManager.Instance.PausarJuego();
+            Debug.Log("📞 Primera llamada (tutorial) - Teléfono sonando");
+        }
+    }
+
+    void OnDestroy()
+    {
+        TareaManager.OnPrimeraTareaActivada -= SegundaLlamada;
+    }
+
+    void SegundaLlamada()
+    {
+        if (segundaLLamadaPendiente) return;
+        if (tutorialCompletado == false) return;
+
+        // 🔥 Cerrar cualquier diálogo de visitante activo
+        if (dialogueManager != null)
+        {
+            dialogueManager.CerrarDialogoVisitante();
         }
 
-        if (dialogueManager == null) dialogueManager = FindFirstObjectByType<DialogueManager>();
+        segundaLLamadaPendiente = true;
+
+        Debug.Log("📞 Segunda llamada: El jefe explica las tareas");
+
+        if (ringtone != null && audioSource != null)
+        {
+            audioSource.clip = ringtone;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+
+        if (PausaManager.Instance != null)
+            PausaManager.Instance.PausarJuego();
+    }
+
+    void OnMouseDown()
+    {
+        Debug.Log("🖱️ OnMouseDown detectado en teléfono");
+        Recoger();
     }
 
     public override bool Recoger()
     {
-        if (!enMano)
+        Debug.Log($"📞 Recogiendo teléfono - enMano={enMano}, dialogoEnProgreso={dialogoEnProgreso}, tutorialCompletado={tutorialCompletado}, segundaLLamadaPendiente={segundaLLamadaPendiente}");
+
+        if (!enMano && !dialogoEnProgreso)
         {
             enMano = true;
             rb.isKinematic = true;
             rb.useGravity = false;
 
-            if (!yaActivado && !dialogoEnProgreso)
+            if (audioSource.isPlaying) audioSource.Stop();
+            audioSource.loop = false;
+
+            if (dialogueManager != null)
             {
-                if (audioSource.isPlaying) audioSource.Stop();
-                if (dialogueManager != null)
+                dialogoEnProgreso = true;
+
+                if (!tutorialCompletado)
                 {
-                    dialogoEnProgreso = true;
-                    dialogueManager.StartDialogue(dialogueIndex);
-                    yaActivado = true;
+                    Debug.Log("📞 Iniciando diálogo del tutorial");
+                    dialogueManager.StartDialogue(dialogoTutorialIndex, false);
+                    tutorialCompletado = true;
+                }
+                else if (segundaLLamadaPendiente)
+                {
+                    Debug.Log("📞 Iniciando diálogo del jefe (tareas)");
+                    dialogueManager.StartDialogue(dialogoJefeIndex, false);
+                    segundaLLamadaPendiente = false;
                 }
             }
             return true;
@@ -74,9 +131,8 @@ public class Telefono : Interactuable
             transform.position = posOriginal;
             transform.rotation = rotOriginal;
             enMano = false;
-            rb.isKinematic = false;
-            rb.useGravity = true;
-            rb.linearVelocity = rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+            rb.useGravity = false;
         }
     }
 
@@ -89,24 +145,39 @@ public class Telefono : Interactuable
         }
     }
 
+    public void OnDialogoTerminado()
+    {
+        dialogoEnProgreso = false;
+        enMano = false;
+        transform.position = posOriginal;
+        transform.rotation = rotOriginal;
+        Debug.Log("📞 Diálogo terminado - Teléfono listo");
+    }
+
     public void SkipPhone()
     {
-        if (!yaActivado)
+        if (!tutorialCompletado)
         {
             if (audioSource != null && audioSource.isPlaying) audioSource.Stop();
-            yaActivado = true;
+            tutorialCompletado = true;
             if (PausaManager.Instance != null) PausaManager.Instance.ReanudarJuego();
+            OnDialogoTerminado();
+            Debug.Log("[Cheat] Tutorial saltado");
+        }
+        else if (segundaLLamadaPendiente)
+        {
+            if (audioSource != null && audioSource.isPlaying) audioSource.Stop();
+            segundaLLamadaPendiente = false;
+            if (PausaManager.Instance != null) PausaManager.Instance.ReanudarJuego();
+            OnDialogoTerminado();
+            Debug.Log("[Cheat] Segunda llamada saltada");
         }
     }
 
     public static void Resetear()
     {
-        yaActivado = false;
         tutorialCompletado = false;
-    }
-
-    public static bool EstaActivo()
-    {
-        return yaActivado;
+        segundaLLamadaPendiente = false;
+        Debug.Log("Teléfono reseteado para nueva partida");
     }
 }

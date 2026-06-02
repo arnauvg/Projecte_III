@@ -21,9 +21,13 @@ public class TareaManager : MonoBehaviour
     public int maxTareasPorNoche = 2;
     public UIManager uiManager;
 
+    // 🔥 Evento para cuando se activa la primera tarea
+    public static System.Action OnPrimeraTareaActivada;
+
     private Tarea tareaActual;
     private int nocheActual = 1;
     private bool generacionTareasPausada = false;
+    private bool primeraTareaYaNotificada = false; // Para que solo suene una vez
 
     void Awake()
     {
@@ -99,8 +103,22 @@ public class TareaManager : MonoBehaviour
     void ActivarTarea(Tarea tarea)
     {
         tareaActual = tarea;
-        if (uiManager != null) uiManager.MostrarAvisoTarea(true, tareaActual.id);
-        if (tarea.objetoEnEscena != null) ActivarInteractuabilidadEnObjeto(tarea.objetoEnEscena);
+
+        if (uiManager != null)
+            uiManager.MostrarAvisoTarea(true, tareaActual.id);
+
+        if (tarea.objetoEnEscena != null)
+            ActivarInteractuabilidadEnObjeto(tarea.objetoEnEscena);
+
+        // 🔥 Si es la primera tarea de la partida y aún no se ha notificado, activar llamada del jefe
+        if (!primeraTareaYaNotificada && nocheActual == 1)
+        {
+            primeraTareaYaNotificada = true;
+            Debug.Log("📞 Primera tarea activada - Llamando al jefe...");
+            OnPrimeraTareaActivada?.Invoke();
+        }
+
+        Debug.Log($"❗ Tarea activada: {tarea.nombre} en {tarea.escenaDestino}");
     }
 
     public bool PuedeInteractuarConObjeto(GameObject objeto)
@@ -140,4 +158,10 @@ public class TareaManager : MonoBehaviour
     }
 
     public void PausarGeneracionTareas(bool pausar) => generacionTareasPausada = pausar;
+
+    public void ReiniciarParaNuevaPartida()
+    {
+        primeraTareaYaNotificada = false;
+        tareaActual = null;
+    }
 }

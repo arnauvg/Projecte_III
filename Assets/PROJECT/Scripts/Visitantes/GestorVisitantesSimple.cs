@@ -21,8 +21,9 @@ public class GestorVisitantesSimple : MonoBehaviour
     private bool esperandoVisitante = false;
     private int visitantesAtendidosEnNoche = 0;
     private bool nocheTerminada = false;
-    private bool generacionVisitantesPausada = true; // Comienza pausado
+    private bool generacionVisitantesPausada = true;
     private bool tutorialCompletado = false;
+    private bool pendingVisitante = false;
 
     void Start()
     {
@@ -30,17 +31,16 @@ public class GestorVisitantesSimple : MonoBehaviour
         nocheTerminada = false;
         generacionVisitantesPausada = true;
         tutorialCompletado = false;
+        pendingVisitante = false;
 
-        // Suscribirse al evento de fin de diálogo
-        DialogueManager.OnDialogueEnded += TutorialCompletado;
+        DialogueManager.OnTutorialEnded += TutorialCompletado;
 
         Debug.Log("GestorVisitantesSimple: Esperando fin del tutorial...");
     }
 
     void OnDestroy()
     {
-        // Limpiar suscripción
-        DialogueManager.OnDialogueEnded -= TutorialCompletado;
+        DialogueManager.OnTutorialEnded -= TutorialCompletado;
     }
 
     void TutorialCompletado()
@@ -51,14 +51,42 @@ public class GestorVisitantesSimple : MonoBehaviour
         generacionVisitantesPausada = false;
         Debug.Log("📞 Tutorial completado - Comienzan a llegar visitantes");
 
+        StartCoroutine(CrearVisitanteConDelay());
+    }
+
+    IEnumerator CrearVisitanteConDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
         CrearVisitanteActual();
     }
 
     void CrearVisitanteActual()
     {
-        if (generacionVisitantesPausada) return;
-        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche) return;
-        if (EstadoVisitantes.Instancia == null) return;
+        Debug.Log($"CrearVisitanteActual - pausada={generacionVisitantesPausada}, atendidos={visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
+
+        if (generacionVisitantesPausada)
+        {
+            pendingVisitante = true;
+            Debug.Log("📌 Generación pausada, visitante pendiente");
+            return;
+        }
+        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
+        {
+            Debug.Log("Máximo de visitantes alcanzado");
+            return;
+        }
+        if (nocheTerminada)
+        {
+            Debug.Log("Noche terminada");
+            return;
+        }
+        if (EstadoVisitantes.Instancia == null)
+        {
+            Debug.LogError("EstadoVisitantes.Instancia es null");
+            return;
+        }
+
+        pendingVisitante = false;
 
         if (EstadoVisitantes.Instancia.VisitanteYaAtendido())
         {
@@ -67,11 +95,16 @@ public class GestorVisitantesSimple : MonoBehaviour
         }
 
         VisitanteDatos datos = EstadoVisitantes.Instancia.ObtenerVisitanteActual();
-        if (datos == null) return;
+        if (datos == null)
+        {
+            Debug.Log("No hay más visitantes");
+            return;
+        }
 
         GameObject nuevoVisitante = Instantiate(prefabVisitante);
         visitanteActual = nuevoVisitante.GetComponent<VisitanteSimple>();
         visitanteActual.ConfigurarVisitante(datos, puntoEntrada, puntoCentro, puntoEntradaEdificio, this);
+        Debug.Log($"✅ Nuevo visitante: {datos.nombreVisitante}");
     }
 
     public VisitanteSimple ObtenerVisitanteActual() => visitanteActual;
@@ -79,9 +112,16 @@ public class GestorVisitantesSimple : MonoBehaviour
     public void VisitanteTerminoSalir()
     {
         if (nocheTerminada) return;
-        visitantesAtendidosEnNoche++;
 
-        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche) return;
+        visitantesAtendidosEnNoche++;
+        Debug.Log($"Visitante atendido. Total: {visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
+
+        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
+        {
+            Debug.Log("Máximo alcanzado");
+            return;
+        }
+
         if (esperandoVisitante) return;
         esperandoVisitante = true;
 
@@ -94,8 +134,16 @@ public class GestorVisitantesSimple : MonoBehaviour
     {
         yield return new WaitForSeconds(tiempoEntreVisitantes);
         esperandoVisitante = false;
+
         if (!generacionVisitantesPausada && visitantesAtendidosEnNoche < maxVisitantesPorNoche && !nocheTerminada)
+        {
             CrearVisitanteActual();
+        }
+        else if (generacionVisitantesPausada)
+        {
+            pendingVisitante = true;
+            Debug.Log("📌 Pausado, pendiente para después");
+        }
     }
 
     public void ReiniciarNoche()
@@ -104,6 +152,7 @@ public class GestorVisitantesSimple : MonoBehaviour
         esperandoVisitante = false;
         visitantesAtendidosEnNoche = 0;
         nocheTerminada = false;
+        pendingVisitante = false;
         EstadoVisitantes.Instancia?.LimpiarEstadoGuardado();
         if (!generacionVisitantesPausada && tutorialCompletado) CrearVisitanteActual();
     }
@@ -114,8 +163,8 @@ public class GestorVisitantesSimple : MonoBehaviour
         tutorialCompletado = false;
         generacionVisitantesPausada = true;
         visitantesAtendidosEnNoche = 0;
+        pendingVisitante = false;
         if (visitanteActual != null) Destroy(visitanteActual.gameObject);
-        Debug.Log("GestorVisitantesSimple: Reiniciado, esperando tutorial...");
     }
 
     public void TerminarNoche()
@@ -124,5 +173,16 @@ public class GestorVisitantesSimple : MonoBehaviour
         if (visitanteActual != null) Destroy(visitanteActual.gameObject);
     }
 
-    public void PausarGeneracionVisitantes(bool pausar) => generacionVisitantesPausada = pausar;
+    public void PausarGeneracionVisitantes(bool pausar)
+    {
+        generacionVisitantesPausada = pausar;
+        Debug.Log($"Generación visitantes {(pausar ? "pausada" : "reanudada")}");
+
+        if (!pausar && pendingVisitante && !nocheTerminada && visitantesAtendidosEnNoche < maxVisitantesPorNoche)
+        {
+            Debug.Log("📌 Reanudando con visitante pendiente");
+            pendingVisitante = false;
+            StartCoroutine(CrearVisitanteConDelay());
+        }
+    }
 }

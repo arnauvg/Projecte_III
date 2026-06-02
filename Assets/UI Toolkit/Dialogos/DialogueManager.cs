@@ -23,8 +23,10 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private AudioClip typingSound;
     [SerializeField] private AudioSource audioSource;
 
-    // 🔥 Evento que se dispara cuando termina un diálogo
-    public static System.Action OnDialogueEnded;
+    // Eventos
+    public static System.Action OnTutorialEnded;
+    public static System.Action OnJefeEnded;
+    public static System.Action OnVisitanteEnded;
 
     private VisualElement dialogueContainer;
     private Label speakerLabel;
@@ -37,6 +39,7 @@ public class DialogueManager : MonoBehaviour
     private string fullText;
     private Coroutine typingCoroutine;
     private Coroutine blinkCoroutine;
+    private bool esDialogoVisitante = false;
 
     private void Awake()
     {
@@ -75,7 +78,7 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void StartDialogue(int dialogueIndex)
+    public void StartDialogue(int dialogueIndex, bool esVisitante = false)
     {
         if (dialogueIndex < 0 || dialogueIndex >= dialogues.Length)
         {
@@ -83,6 +86,7 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
+        esDialogoVisitante = esVisitante;
         currentDialogue = dialogueIndex;
         currentSentence = 0;
         isActive = true;
@@ -92,6 +96,18 @@ public class DialogueManager : MonoBehaviour
             blinkCoroutine = StartCoroutine(BlinkIndicator());
 
         ShowCurrentSentence();
+
+        if (!esVisitante && PausaManager.Instance != null)
+            PausaManager.Instance.PausarJuego();
+    }
+
+    public void CerrarDialogoVisitante()
+    {
+        if (isActive && esDialogoVisitante)
+        {
+            Debug.Log("🔇 Cerrando diálogo de visitante");
+            EndDialogue();
+        }
     }
 
     private void ShowCurrentSentence()
@@ -174,15 +190,32 @@ public class DialogueManager : MonoBehaviour
         if (audioSource != null) audioSource.Stop();
         blinkCoroutine = null;
 
-        // 🔥 Reanudar el juego
-        if (PausaManager.Instance != null)
+        if (!esDialogoVisitante)
         {
-            PausaManager.Instance.ReanudarJuego();
+            Telefono telefono = FindFirstObjectByType<Telefono>();
+            if (telefono != null) telefono.OnDialogoTerminado();
+
+            if (currentDialogue == 0)
+            {
+                OnTutorialEnded?.Invoke();
+                Debug.Log("📢 Evento OnTutorialEnded disparado");
+            }
+            else if (currentDialogue == 1)
+            {
+                OnJefeEnded?.Invoke();
+                Debug.Log("📢 Evento OnJefeEnded disparado");
+            }
+
+            if (PausaManager.Instance != null)
+                PausaManager.Instance.ReanudarJuego();
+        }
+        else
+        {
+            OnVisitanteEnded?.Invoke();
+            Debug.Log("📢 Evento OnVisitanteEnded disparado");
         }
 
-        // 🔥 Disparar evento para que otros sistemas sepan que el diálogo terminó
-        OnDialogueEnded?.Invoke();
-        Debug.Log("📞 Diálogo terminado - Evento disparado");
+        Debug.Log($"📞 Diálogo terminado (tipo: {(esDialogoVisitante ? "visitante" : "sistema")})");
     }
 
     public void ForceEndDialogue()
@@ -191,7 +224,7 @@ public class DialogueManager : MonoBehaviour
         else if (dialogueContainer != null) dialogueContainer.style.display = DisplayStyle.None;
     }
 
-    public void MostrarDialogoSimple(string nombre, string mensaje)
+    public void MostrarDialogoVisitante(string nombre, string mensaje)
     {
         DialogueEntry entry = new DialogueEntry();
         entry.speakerName = nombre;
@@ -201,7 +234,7 @@ public class DialogueManager : MonoBehaviour
         DialogueEntry[] tempDialogues = dialogues;
         dialogues = new DialogueEntry[] { entry };
 
-        StartDialogue(0);
+        StartDialogue(0, true);
         StartCoroutine(RestaurarDialogos(tempDialogues, entry.sentences[0].Length * charDelay + 1.5f));
     }
 

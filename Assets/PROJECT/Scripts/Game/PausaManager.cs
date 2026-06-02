@@ -29,7 +29,6 @@ public class PausaManager : MonoBehaviour
 
         Debug.Log("⏸ Juego pausado");
 
-        // Buscar componentes en escena actual
         CronometroNoche crono = FindFirstObjectByType<CronometroNoche>();
         if (crono != null) crono.DetenerCronometro();
 

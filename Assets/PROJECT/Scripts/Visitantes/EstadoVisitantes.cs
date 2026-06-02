@@ -89,4 +89,13 @@ public class EstadoVisitantes : MonoBehaviour
         indiceVisitanteActual = 0;
         LimpiarEstadoGuardado();
     }
+
+    public void DebugVisitantes()
+    {
+        Debug.Log($"Visitante actual índice: {indiceVisitanteActual}, total: {visitantes.Count}");
+        if (indiceVisitanteActual < visitantes.Count)
+            Debug.Log($"Siguiente visitante: {visitantes[indiceVisitanteActual].nombreVisitante}");
+        else
+            Debug.Log("No hay más visitantes");
+    }
 }
