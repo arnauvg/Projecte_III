@@ -136,18 +136,15 @@ public class VisitanteSimple : MonoBehaviour
         if (dialogueManager == null)
         {
             dialogueManager = FindFirstObjectByType<DialogueManager>();
-            if (dialogueManager == null)
-            {
-                Debug.LogWarning("DialogueManager no encontrado");
-                return;
-            }
+            if (dialogueManager == null) return;
         }
 
         if (!string.IsNullOrEmpty(datosVisitante.dialogoBienvenida))
         {
             dialogoMostrado = true;
-            dialogueManager.MostrarDialogoSimple(datosVisitante.nombreVisitante, datosVisitante.dialogoBienvenida);
-            Debug.Log($"📢 {datosVisitante.nombreVisitante}: {datosVisitante.dialogoBienvenida}");
+            // 🔥 Cambiado: siempre muestra "Visitante" como nombre
+            dialogueManager.MostrarDialogoSimple("Visitante", datosVisitante.dialogoBienvenida);
+            Debug.Log($"📢 Visitante: {datosVisitante.dialogoBienvenida}");
         }
     }
 
