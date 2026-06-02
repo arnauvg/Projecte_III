@@ -1,2 +1,18 @@
-.titulo {
+.boton-siguiente-class {
+    background-color: rgb(0, 165, 146);
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    -unity-font-style: bold;
+    border-radius: 25px;
+    padding: 12px 30px;
+    margin-top: 15px;
+    border-width: 0;
+}
+
+.boton-siguiente-class:hover {
+    background-color: rgb(0, 200, 180);
+}
+
+.boton-siguiente-class:active {
+    background-color: rgb(0, 130, 115);
 }
