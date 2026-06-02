@@ -32,10 +32,19 @@ public class GestionNoches : MonoBehaviour
     void Start()
     {
         sueldoActual = sueldoBase;
-        if (cronometro == null) cronometro = FindFirstObjectByType<CronometroNoche>();
-        if (gestorVisitantes == null) gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
+
+        if (cronometro == null)
+            cronometro = FindFirstObjectByType<CronometroNoche>();
+
+        if (gestorVisitantes == null)
+            gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
+
         ContarTotalVisitantes();
-        Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
+
+        if (TareaManager.Instance != null)
+            TareaManager.Instance.IniciarNoche(nocheActual);
+
+        Debug.Log($"NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
     void ContarTotalVisitantes()
@@ -113,25 +122,63 @@ public class GestionNoches : MonoBehaviour
     private void SiguienteNoche()
     {
         nocheActual++;
+
         ReiniciarVariablesNoche();
-        if (gestorVisitantes != null) gestorVisitantes.ReiniciarNoche();
+
+        if (gestorVisitantes == null)
+            gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
+
+        if (cronometro == null)
+            cronometro = FindFirstObjectByType<CronometroNoche>();
+
+        if (gestorVisitantes != null)
+            gestorVisitantes.ReiniciarNoche();
+
+        if (TareaManager.Instance != null)
+            TareaManager.Instance.IniciarNoche(nocheActual);
+
         uiFinNocheController?.Ocultar();
-        cronometro?.ReiniciarCronometro();
+
+        if (cronometro != null)
+            cronometro.ReiniciarCronometro();
+
         ContarTotalVisitantes();
-        Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
+
+        Debug.Log($"NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 
     private void ReiniciarJuego()
     {
         Telefono.Resetear();
+
         nocheActual = 1;
         sueldoActual = sueldoBase;
+
         ReiniciarVariablesNoche();
-        if (gestorVisitantes != null) gestorVisitantes.ReiniciarJuegoCompleto();
+
+        if (gestorVisitantes == null)
+            gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
+
+        if (cronometro == null)
+            cronometro = FindFirstObjectByType<CronometroNoche>();
+
+        if (gestorVisitantes != null)
+            gestorVisitantes.ReiniciarJuegoCompleto();
+
+        if (TareaManager.Instance != null)
+        {
+            TareaManager.Instance.ReiniciarJuegoCompleto();
+            TareaManager.Instance.IniciarNoche(nocheActual);
+        }
+
         uiFinNocheController?.Ocultar();
-        cronometro?.ReiniciarCronometro();
+
+        if (cronometro != null)
+            cronometro.ReiniciarCronometro();
+
         ContarTotalVisitantes();
-        Debug.Log("🔄 JUEGO REINICIADO");
+
+        Debug.Log("JUEGO REINICIADO");
     }
 
     private void ReiniciarVariablesNoche()

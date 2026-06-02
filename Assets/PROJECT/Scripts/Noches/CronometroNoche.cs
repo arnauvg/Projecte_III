@@ -75,8 +75,7 @@ public class CronometroNoche : MonoBehaviour
     {
         if (!nocheActiva) return;
         if (nocheTerminada) return;
-
-        tiempoRestante -= Time.deltaTime;
+        tiempoRestante -= Time.unscaledDeltaTime;
         if (tiempoRestante <= 0)
         {
             tiempoRestante = 0;
@@ -85,10 +84,10 @@ public class CronometroNoche : MonoBehaviour
 
         ActualizarTexto();
 
-        if (!tareasSpawned && ultimoIntervaloMostrado >= 1)
-        {
-            SpawnearTareas();
-        }
+        //if (!tareasSpawned && ultimoIntervaloMostrado >= 1)
+        //{
+        //    SpawnearTareas();
+        //}
 
         // Guardar en estáticos cada frame
         tiempoRestanteStatic = tiempoRestante;

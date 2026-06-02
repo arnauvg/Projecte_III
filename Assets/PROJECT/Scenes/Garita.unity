@@ -926,6 +926,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abdd745786f961744b42bda67316f3dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minTareasPorNoche: 1
+  maxTareasPorNoche: 2
   tareasPosibles:
   - id: tumbas
     nombre: Regar flores
@@ -947,8 +949,6 @@ MonoBehaviour:
     escenaDestino: Cripta
     completada: 0
     objetoEnEscena: {fileID: 0}
-  minTareasPorNoche: 1
-  maxTareasPorNoche: 2
   uiManager: {fileID: 1138592137}
 --- !u!1 &403294486
 GameObject:
@@ -1194,6 +1194,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cb25851f4d99f5040ad29688d9475794, type: 2}
   - {fileID: 11400000, guid: 6c710fd0a3e0f164aaa063f14e059eba, type: 2}
   - {fileID: 11400000, guid: ac80de20d32f2b94cbea14d08ad8d13f, type: 2}
+  - {fileID: 11400000, guid: 75fe9c13e9f7971408ba8c9ecdbcfba3, type: 2}
+  - {fileID: 11400000, guid: a50a7a562869adc4fbb3b91848c61fa7, type: 2}
   indiceVisitanteActual: 0
   visitantesAtendidosEstaNoche: 0
   nocheTerminada: 0
