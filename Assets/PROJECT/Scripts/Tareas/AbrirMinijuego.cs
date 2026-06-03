@@ -8,6 +8,7 @@ public class AbrirMinijuego : MonoBehaviour
     private Outline outlineComponent;
     private TareaManager tareaManager;
     private bool puedeInteractuar = false;
+    private MouseLook360 mouseLook;
 
     void Start()
     {
@@ -19,6 +20,8 @@ public class AbrirMinijuego : MonoBehaviour
         tareaManager = FindFirstObjectByType<TareaManager>();
         if (tareaManager == null)
             Invoke("BuscarTareaManager", 0.5f);
+
+        mouseLook = FindFirstObjectByType<MouseLook360>();
     }
 
     void BuscarTareaManager()
@@ -52,6 +55,9 @@ public class AbrirMinijuego : MonoBehaviour
 
             if (tareaManager != null)
                 tareaManager.BloquearMapaPorTarea();
+
+            // 🔥 Desactivar el control de la cámara
+            if (mouseLook != null) mouseLook.enabled = false;
 
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;

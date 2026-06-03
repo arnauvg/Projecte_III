@@ -9,6 +9,7 @@ public class CerrarMinijuego : MonoBehaviour
     private AudioSource audioSource;
     private TareaManager tareaManager;
     private bool completado = false;
+    private MouseLook360 mouseLook;
 
     void Start()
     {
@@ -20,6 +21,8 @@ public class CerrarMinijuego : MonoBehaviour
         audioSource.volume = 1f;
 
         tareaManager = FindFirstObjectByType<TareaManager>();
+        mouseLook = FindFirstObjectByType<MouseLook360>();
+
         Debug.Log($"CerrarMinijuego iniciado en {gameObject.name}");
     }
 
@@ -67,8 +70,12 @@ public class CerrarMinijuego : MonoBehaviour
         {
             canvasMinijuego.SetActive(false);
         }
+
         if (tareaManager != null)
             tareaManager.DesbloquearMapaPorTarea();
+
+        // 🔥 Reactivar el control de la cámara
+        if (mouseLook != null) mouseLook.enabled = true;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

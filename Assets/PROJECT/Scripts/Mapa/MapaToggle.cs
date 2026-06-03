@@ -1,10 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MapaToggle : MonoBehaviour
 {
     public GameObject panelMapa;
     private bool mapaAbierto = false;
+    private MouseLook360 mouseLook;
 
     void Start()
     {
@@ -12,7 +13,10 @@ public class MapaToggle : MonoBehaviour
             panelMapa = GameObject.Find("PanelMapa");
 
         if (panelMapa != null) panelMapa.SetActive(false);
+
+        mouseLook = FindFirstObjectByType<MouseLook360>();
     }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.M))
@@ -29,13 +33,17 @@ public class MapaToggle : MonoBehaviour
                 AbrirMapa();
         }
     }
-    
+
     void AbrirMapa()
     {
         if (panelMapa != null)
             panelMapa.SetActive(true);
 
         mapaAbierto = true;
+
+        // 🔥 Desactivar el control de la cámara
+        if (mouseLook != null) mouseLook.enabled = false;
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0f;
@@ -47,6 +55,10 @@ public class MapaToggle : MonoBehaviour
             panelMapa.SetActive(false);
 
         mapaAbierto = false;
+
+        // 🔥 Reactivar el control de la cámara
+        if (mouseLook != null) mouseLook.enabled = true;
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Time.timeScale = 1f;
@@ -54,11 +66,8 @@ public class MapaToggle : MonoBehaviour
 
     public void IrAEscena(string nombreEscena)
     {
-        // Cerrar el mapa si est� abierto
         if (mapaAbierto)
-        {
             CerrarMapa();
-        }
 
         Time.timeScale = 1f;
         SceneManager.LoadScene(nombreEscena);
