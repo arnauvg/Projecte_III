@@ -117,10 +117,25 @@ public class GestionNoches : MonoBehaviour
         nocheActual++;
         ReiniciarVariablesNoche();
 
-        // Reiniciar el gestor de visitantes
+        // 🔥 IMPORTANTE: Reiniciar el gestor de visitantes para la nueva noche
         if (gestorVisitantes != null)
         {
             gestorVisitantes.ReiniciarNoche();
+            Debug.Log("GestorVisitantes reiniciado para nueva noche");
+        }
+        else
+        {
+            // Buscar si existe en la escena
+            gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
+            if (gestorVisitantes != null)
+            {
+                gestorVisitantes.ReiniciarNoche();
+                Debug.Log("GestorVisitantes encontrado y reiniciado");
+            }
+            else
+            {
+                Debug.LogError("GestorVisitantes es NULL - No se pueden crear visitantes en la nueva noche");
+            }
         }
 
         if (uiFinNocheController != null)

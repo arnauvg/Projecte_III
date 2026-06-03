@@ -19,8 +19,6 @@ public class GestorVisitantesSimple : MonoBehaviour
 
     private VisitanteSimple visitanteActual;
     private bool esperandoVisitante = false;
-    private int visitantesAtendidosEnNoche = 0;
-    private bool nocheTerminada = false;
     private bool generacionPausada = false;
     private bool creandoVisitante = false;
 
@@ -33,8 +31,10 @@ public class GestorVisitantesSimple : MonoBehaviour
         }
 
         Debug.Log($"Gestor iniciado. Índice actual: {EstadoVisitantes.Instancia.indiceVisitanteActual}");
+        Debug.Log($"Visitantes atendidos esta noche: {EstadoVisitantes.Instancia.visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
 
-        if (!nocheTerminada && visitantesAtendidosEnNoche < maxVisitantesPorNoche)
+        if (!EstadoVisitantes.Instancia.nocheTerminada &&
+            EstadoVisitantes.Instancia.visitantesAtendidosEnNoche < maxVisitantesPorNoche)
         {
             CrearVisitanteActual();
         }
@@ -54,7 +54,7 @@ public class GestorVisitantesSimple : MonoBehaviour
             return;
         }
 
-        if (nocheTerminada)
+        if (EstadoVisitantes.Instancia.nocheTerminada)
         {
             Debug.Log("Noche terminada");
             return;
@@ -66,9 +66,9 @@ public class GestorVisitantesSimple : MonoBehaviour
             return;
         }
 
-        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
+        if (EstadoVisitantes.Instancia.visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
         {
-            Debug.Log($"Máximo alcanzado: {visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
+            Debug.Log($"Máximo alcanzado: {EstadoVisitantes.Instancia.visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
             return;
         }
 
@@ -80,7 +80,10 @@ public class GestorVisitantesSimple : MonoBehaviour
         }
 
         creandoVisitante = true;
-        Debug.Log($"Creando visitante {visitantesAtendidosEnNoche + 1}/{maxVisitantesPorNoche}: {datos.nombreVisitante} (índice {EstadoVisitantes.Instancia.indiceVisitanteActual})");
+        EstadoVisitantes.Instancia.visitanteActivo = true;
+        EstadoVisitantes.Instancia.nombreVisitanteActivo = datos.nombreVisitante;
+
+        Debug.Log($"Creando visitante {EstadoVisitantes.Instancia.visitantesAtendidosEnNoche + 1}/{maxVisitantesPorNoche}: {datos.nombreVisitante} (índice {EstadoVisitantes.Instancia.indiceVisitanteActual})");
 
         GameObject nuevoVisitante = Instantiate(prefabVisitante);
         visitanteActual = nuevoVisitante.GetComponent<VisitanteSimple>();
@@ -93,22 +96,23 @@ public class GestorVisitantesSimple : MonoBehaviour
 
     public void VisitanteAtendido()
     {
-        visitantesAtendidosEnNoche++;
-        Debug.Log($"Visitante atendido {visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
+        EstadoVisitantes.Instancia.RegistrarVisitanteAtendido();
+        Debug.Log($"Visitante atendido {EstadoVisitantes.Instancia.visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}");
     }
 
     public void VisitanteTerminoSalir()
     {
-        if (nocheTerminada) return;
+        if (EstadoVisitantes.Instancia.nocheTerminada) return;
 
         visitanteActual = null;
+        EstadoVisitantes.Instancia.visitanteActivo = false;
 
-        // 🔥 Siempre avanzar al siguiente visitante cuando se va
+        // 🔥 PRIMERO avanzar el índice, DESPUÉS verificar límite
         EstadoVisitantes.Instancia.SiguienteVisitante();
 
-        if (visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
+        if (EstadoVisitantes.Instancia.visitantesAtendidosEnNoche >= maxVisitantesPorNoche)
         {
-            Debug.Log($"Máximo alcanzado ({visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}). No se crearán más visitantes esta noche.");
+            Debug.Log($"Máximo alcanzado ({EstadoVisitantes.Instancia.visitantesAtendidosEnNoche}/{maxVisitantesPorNoche}). No se crearán más visitantes esta noche.");
             return;
         }
 
@@ -126,8 +130,9 @@ public class GestorVisitantesSimple : MonoBehaviour
         yield return new WaitForSeconds(tiempoEntreVisitantes);
         esperandoVisitante = false;
 
-        if (!generacionPausada && !nocheTerminada && visitanteActual == null &&
-            visitantesAtendidosEnNoche < maxVisitantesPorNoche)
+        if (!generacionPausada && !EstadoVisitantes.Instancia.nocheTerminada &&
+            visitanteActual == null &&
+            EstadoVisitantes.Instancia.visitantesAtendidosEnNoche < maxVisitantesPorNoche)
         {
             CrearVisitanteActual();
         }
@@ -135,7 +140,7 @@ public class GestorVisitantesSimple : MonoBehaviour
 
     public void ReiniciarNoche()
     {
-        Debug.Log("=== REINICIANDO NOCHE ===");
+        Debug.Log("=== GESTOR: REINICIANDO NOCHE ===");
 
         if (visitanteActual != null)
         {
@@ -145,12 +150,11 @@ public class GestorVisitantesSimple : MonoBehaviour
 
         esperandoVisitante = false;
         creandoVisitante = false;
-        visitantesAtendidosEnNoche = 0;
-        nocheTerminada = false;
         generacionPausada = false;
 
-        // 🔥 NO modificar el índice aquí. El índice ya avanzó al final de la noche anterior
-        Debug.Log($"Reiniciando noche. Índice actual (NO MODIFICADO): {EstadoVisitantes.Instancia.indiceVisitanteActual}");
+        EstadoVisitantes.Instancia.ReiniciarNoche();
+
+        Debug.Log($"Reiniciando noche. Índice ACTUAL: {EstadoVisitantes.Instancia.indiceVisitanteActual}");
 
         CrearVisitanteActual();
     }
@@ -167,8 +171,6 @@ public class GestorVisitantesSimple : MonoBehaviour
 
         esperandoVisitante = false;
         creandoVisitante = false;
-        visitantesAtendidosEnNoche = 0;
-        nocheTerminada = false;
         generacionPausada = false;
 
         if (EstadoVisitantes.Instancia != null)
@@ -181,7 +183,7 @@ public class GestorVisitantesSimple : MonoBehaviour
 
     public void TerminarNoche()
     {
-        nocheTerminada = true;
+        EstadoVisitantes.Instancia.nocheTerminada = true;
         if (visitanteActual != null)
         {
             Destroy(visitanteActual.gameObject);
@@ -194,8 +196,8 @@ public class GestorVisitantesSimple : MonoBehaviour
         generacionPausada = pausar;
         Debug.Log($"Generación visitantes {(pausar ? "pausada" : "reanudada")}");
 
-        if (!pausar && visitanteActual == null && !nocheTerminada &&
-            visitantesAtendidosEnNoche < maxVisitantesPorNoche && !creandoVisitante)
+        if (!pausar && visitanteActual == null && !EstadoVisitantes.Instancia.nocheTerminada &&
+            EstadoVisitantes.Instancia.visitantesAtendidosEnNoche < maxVisitantesPorNoche && !creandoVisitante)
         {
             CrearVisitanteActual();
         }

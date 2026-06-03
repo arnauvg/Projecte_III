@@ -3983,7 +3983,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1828898099}
-  - {fileID: 1444707061}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1444707060
@@ -4012,11 +4011,11 @@ Transform:
   m_GameObject: {fileID: 1444707060}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.187571, y: -1.8680396, z: -8.5805855}
+  m_LocalPosition: {x: 0.0024290085, y: -1.8080397, z: -2.7705855}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1442760443}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1444707062
 MonoBehaviour:
@@ -4030,7 +4029,7 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: f1485033bdf4e384a86d000d3e88e02b, type: 2}
+  m_PanelSettings: {fileID: 11400000, guid: a36f03d0fa836734fa7da39a45b495ee, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: de72f9ac86973dc4daf3ccbe2d57b05b, type: 3}
   m_SortingOrder: 0
@@ -5328,6 +5327,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c715ca7b5a8fd154c8e2a4b789293030, type: 2}
   - {fileID: 11400000, guid: 43222d5ce05b7a54dac889930f19d7a3, type: 2}
   indiceVisitanteActual: 0
+  visitantesAtendidosEnNoche: 0
+  nocheTerminada: 0
+  visitanteActivo: 0
+  nombreVisitanteActivo: 
 --- !u!114 &1823520550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5481,9 +5484,9 @@ MonoBehaviour:
   - Afueras
   - Tumbas
   sonidoHover: {fileID: 8300000, guid: f7c15bdba6646f44ba73f452eea35d2c, type: 3}
-  cursorSprite: {fileID: 10912, guid: 0000000000000000f000000000000000, type: 0}
-  hotspot: {x: 0, y: 0}
-  cursorMode: 0
+  colorCursor: {r: 1, g: 1, b: 1, a: 1}
+  "tama\xF1oCursor": 32
+  radioCursor: 14
 --- !u!114 &1823520559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15125,6 +15128,7 @@ MeshRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1444707061}
   - {fileID: 959373510}
   - {fileID: 676407889}
   - {fileID: 1442760443}
