@@ -3982,7 +3982,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1846807983}
   - {fileID: 1828898099}
   - {fileID: 1444707061}
   m_Father: {fileID: 0}
@@ -5199,6 +5198,7 @@ GameObject:
   - component: {fileID: 1823520556}
   - component: {fileID: 1823520557}
   - component: {fileID: 1823520558}
+  - component: {fileID: 1823520559}
   m_Layer: 0
   m_Name: PersistentGameManager
   m_TagString: Untagged
@@ -5281,8 +5281,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8a9319d2c0a69e4aa1b20e1a634d4ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tiempoTotalSegundos: 120
+  tiempoTotalSegundos: 30
   textoReloj: {fileID: 1253324998}
+  gestionNoches: {fileID: 1823520548}
+  tareaManager: {fileID: 1823520550}
 --- !u!114 &1823520548
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5326,11 +5328,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c715ca7b5a8fd154c8e2a4b789293030, type: 2}
   - {fileID: 11400000, guid: 43222d5ce05b7a54dac889930f19d7a3, type: 2}
   indiceVisitanteActual: 0
-  visitanteEnCentro: 0
-  visitanteYaAtendido: 0
-  visitanteNombre: 
-  visitanteIndice: -1
-  visitantePosicion: {x: 0, y: 0, z: 0}
 --- !u!114 &1823520550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5437,7 +5434,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64f5a61beeb68dc458f642302e188a9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiDocument: {fileID: 1846807984}
 --- !u!114 &1823520556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5488,6 +5484,25 @@ MonoBehaviour:
   cursorSprite: {fileID: 10912, guid: 0000000000000000f000000000000000, type: 0}
   hotspot: {x: 0, y: 0}
   cursorMode: 0
+--- !u!114 &1823520559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1823520542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: a36f03d0fa836734fa7da39a45b495ee, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: ff00f0c10381ff2418b1f89912404bbe, type: 3}
+  m_SortingOrder: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
 --- !u!1 &1828898096
 GameObject:
   m_ObjectHideFlags: 0
@@ -5539,57 +5554,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1442760443}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1846807981
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1846807983}
-  - component: {fileID: 1846807984}
-  m_Layer: 0
-  m_Name: SistemaNoches
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1846807983
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846807981}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.1408935, y: -1.2827022, z: -3.2454948}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1442760443}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1846807984
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846807981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: a36f03d0fa836734fa7da39a45b495ee, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: ff00f0c10381ff2418b1f89912404bbe, type: 3}
-  m_SortingOrder: 0
-  m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 1920
-  m_WorldSpaceHeight: 1080
 --- !u!1 &1871973967
 GameObject:
   m_ObjectHideFlags: 0

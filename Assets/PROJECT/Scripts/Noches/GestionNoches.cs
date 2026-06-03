@@ -112,12 +112,25 @@ public class GestionNoches : MonoBehaviour
 
     private void SiguienteNoche()
     {
+        Debug.Log("=== SIGUIENTE NOCHE ===");
+
         nocheActual++;
         ReiniciarVariablesNoche();
-        if (gestorVisitantes != null) gestorVisitantes.ReiniciarNoche();
-        uiFinNocheController?.Ocultar();
-        cronometro?.ReiniciarCronometro();
+
+        // Reiniciar el gestor de visitantes
+        if (gestorVisitantes != null)
+        {
+            gestorVisitantes.ReiniciarNoche();
+        }
+
+        if (uiFinNocheController != null)
+            uiFinNocheController.Ocultar();
+
+        if (cronometro != null)
+            cronometro.ReiniciarCronometro();
+
         ContarTotalVisitantes();
+
         Debug.Log($"🌙 NOCHE {nocheActual} - Sueldo: {sueldoActual}€");
     }
 

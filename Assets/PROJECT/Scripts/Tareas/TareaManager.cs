@@ -27,6 +27,8 @@ public class TareaManager : MonoBehaviour
     private int nocheActual = 1;
     private bool generacionTareasPausada = false;
     private bool primeraTareaYaNotificada = false;
+    private List<Tarea> tareasAsignadasEstaNoche = new List<Tarea>();
+    private int tareaActualIndex = 0;
 
     void Awake()
     {
@@ -65,6 +67,8 @@ public class TareaManager : MonoBehaviour
                     tarea.objetoEnEscena = encontrado;
                     if (tareaActual != null && tareaActual.id == tarea.id && !tareaActual.completada)
                         ActivarInteractuabilidadEnObjeto(encontrado);
+                    else
+                        DesactivarInteractuabilidadEnObjeto(encontrado);
                 }
             }
         }
@@ -77,6 +81,13 @@ public class TareaManager : MonoBehaviour
             interactuable.SetPuedeInteractuar(true);
     }
 
+    void DesactivarInteractuabilidadEnObjeto(GameObject obj)
+    {
+        AbrirMinijuego interactuable = obj.GetComponent<AbrirMinijuego>();
+        if (interactuable != null)
+            interactuable.SetPuedeInteractuar(false);
+    }
+
     public void IniciarNoche(int noche)
     {
         if (generacionTareasPausada)
@@ -86,22 +97,38 @@ public class TareaManager : MonoBehaviour
         }
 
         nocheActual = noche;
+        tareasAsignadasEstaNoche.Clear();
+        tareaActualIndex = 0;
+        primeraTareaYaNotificada = false;
+
+        // Reiniciar estado de todas las tareas
+        foreach (Tarea t in tareasPosibles)
+        {
+            t.completada = false;
+            if (t.objetoEnEscena != null)
+                DesactivarInteractuabilidadEnObjeto(t.objetoEnEscena);
+        }
+
+        // Seleccionar tareas aleatorias para esta noche
         int numTareas = Random.Range(minTareasPorNoche, maxTareasPorNoche + 1);
-
-        foreach (Tarea t in tareasPosibles) t.completada = false;
-
         List<Tarea> disponibles = new List<Tarea>(tareasPosibles);
-        List<Tarea> seleccionadas = new List<Tarea>();
 
         for (int i = 0; i < numTareas && disponibles.Count > 0; i++)
         {
             int idx = Random.Range(0, disponibles.Count);
-            seleccionadas.Add(disponibles[idx]);
+            tareasAsignadasEstaNoche.Add(disponibles[idx]);
             disponibles.RemoveAt(idx);
         }
 
-        if (seleccionadas.Count > 0) ActivarTarea(seleccionadas[0]);
-        else Debug.Log("No hay tareas disponibles");
+        if (tareasAsignadasEstaNoche.Count > 0)
+        {
+            ActivarTarea(tareasAsignadasEstaNoche[0]);
+            Debug.Log($"📋 Noche {noche}: {tareasAsignadasEstaNoche.Count} tarea(s) asignadas");
+        }
+        else
+        {
+            Debug.Log("No hay tareas disponibles");
+        }
     }
 
     void ActivarTarea(Tarea tarea)
@@ -135,28 +162,33 @@ public class TareaManager : MonoBehaviour
     public void CompletarTareaActual()
     {
         if (tareaActual == null || tareaActual.completada) return;
+
         tareaActual.completada = true;
+        Debug.Log($"✅ Tarea completada: {tareaActual.nombre}");
 
         if (tareaActual.objetoEnEscena != null)
         {
-            AbrirMinijuego interactuable = tareaActual.objetoEnEscena.GetComponent<AbrirMinijuego>();
-            if (interactuable != null) interactuable.SetPuedeInteractuar(false);
+            DesactivarInteractuabilidadEnObjeto(tareaActual.objetoEnEscena);
         }
 
         GestionNoches gestion = FindFirstObjectByType<GestionNoches>();
-        if (gestion != null) gestion.CompletarTarea();
+        if (gestion != null)
+            gestion.CompletarTarea();
 
-        Tarea siguiente = null;
-        foreach (Tarea t in tareasPosibles)
+        // Pasar a la siguiente tarea
+        tareaActualIndex++;
+
+        if (tareaActualIndex < tareasAsignadasEstaNoche.Count)
         {
-            if (!t.completada && t != tareaActual) { siguiente = t; break; }
+            // Hay más tareas en la misma noche
+            ActivarTarea(tareasAsignadasEstaNoche[tareaActualIndex]);
         }
-
-        if (siguiente != null) ActivarTarea(siguiente);
         else
         {
+            // No hay más tareas esta noche
             tareaActual = null;
-            if (uiManager != null) uiManager.MostrarAvisoTarea(false, "");
+            if (uiManager != null)
+                uiManager.MostrarAvisoTarea(false, "");
             Debug.Log("✅ Todas las tareas de la noche completadas");
         }
     }
@@ -167,5 +199,7 @@ public class TareaManager : MonoBehaviour
     {
         primeraTareaYaNotificada = false;
         tareaActual = null;
+        tareasAsignadasEstaNoche.Clear();
+        tareaActualIndex = 0;
     }
 }

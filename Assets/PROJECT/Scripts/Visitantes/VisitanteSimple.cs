@@ -28,13 +28,10 @@ public class VisitanteSimple : MonoBehaviour
     private bool camuflajeRevelado = false;
     private GestorVisitantesSimple gestor;
     private bool esBueno = true;
-    private DialogueManager dialogueManager;
-    private bool dialogoMostrado = false;
 
     void Awake()
     {
         escalaOriginal = transform.localScale;
-        dialogueManager = FindFirstObjectByType<DialogueManager>();
     }
 
     public void ConfigurarVisitante(
@@ -46,43 +43,18 @@ public class VisitanteSimple : MonoBehaviour
     {
         datosVisitante = datos;
         esBueno = !datos.esDoble;
-        dialogoMostrado = false;
 
         puntoEntrada = entrada;
         puntoCentro = centro;
         puntoEntradaEdificio = entradaEdificio;
         gestor = gestorVisitantes;
 
-        if (EstadoVisitantes.Instancia != null && EstadoVisitantes.Instancia.HayEstadoGuardado())
-        {
-            enCentro = EstadoVisitantes.Instancia.visitanteEnCentro;
-            yaAtendido = EstadoVisitantes.Instancia.visitanteYaAtendido;
-
-            if (enCentro && !yaAtendido)
-            {
-                transform.position = puntoCentro.position;
-                enMovimiento = false;
-                destinoActual = puntoCentro.position;
-                posicionOriginal = puntoCentro.position;
-            }
-            else
-            {
-                transform.position = puntoEntrada.position;
-                enMovimiento = true;
-                destinoActual = puntoCentro.position;
-                posicionOriginal = puntoEntrada.position;
-                enCentro = false;
-            }
-        }
-        else
-        {
-            enCentro = false;
-            yaAtendido = false;
-            enMovimiento = true;
-            transform.position = puntoEntrada.position;
-            destinoActual = puntoCentro.position;
-            posicionOriginal = puntoEntrada.position;
-        }
+        enCentro = false;
+        yaAtendido = false;
+        enMovimiento = true;
+        transform.position = puntoEntrada.position;
+        destinoActual = puntoCentro.position;
+        posicionOriginal = puntoEntrada.position;
 
         transform.localScale = escalaOriginal;
 
@@ -119,34 +91,7 @@ public class VisitanteSimple : MonoBehaviour
             {
                 enCentro = true;
                 Debug.Log("Visitante llegó al centro");
-                MostrarDialogoBienvenida();
-                EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
             }
-        }
-    }
-
-    void MostrarDialogoBienvenida()
-    {
-        if (dialogoMostrado) return;
-        if (dialogueManager == null)
-        {
-            dialogueManager = FindFirstObjectByType<DialogueManager>();
-            if (dialogueManager == null) return;
-        }
-
-        if (!string.IsNullOrEmpty(datosVisitante.dialogoBienvenida))
-        {
-            dialogoMostrado = true;
-            dialogueManager.MostrarDialogoVisitante(datosVisitante.nombreVisitante, datosVisitante.dialogoBienvenida);
-            Debug.Log($"📢 {datosVisitante.nombreVisitante}: {datosVisitante.dialogoBienvenida}");
-        }
-    }
-
-    private void CerrarDialogo()
-    {
-        if (dialogueManager != null)
-        {
-            dialogueManager.CerrarDialogoVisitante();
         }
     }
 
@@ -181,9 +126,6 @@ public class VisitanteSimple : MonoBehaviour
     {
         if (!enCentro || yaAtendido) return;
 
-        // Cerrar diálogo si está abierto
-        CerrarDialogo();
-
         Debug.Log("=== ACEPTAR VISITANTE ===");
 
         yaAtendido = true;
@@ -198,20 +140,17 @@ public class VisitanteSimple : MonoBehaviour
                 gestion.RegistrarFallo();
         }
 
+        gestor?.VisitanteAtendido();
+
         if (puntoEntradaEdificio != null)
         {
             StartCoroutine(MoverHacia(puntoEntradaEdificio.position));
         }
-
-        EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
     }
 
     public void Rechazar()
     {
         if (!enCentro || yaAtendido) return;
-
-        // Cerrar diálogo si está abierto
-        CerrarDialogo();
 
         Debug.Log("=== RECHAZAR VISITANTE ===");
 
@@ -227,12 +166,12 @@ public class VisitanteSimple : MonoBehaviour
                 gestion.RegistrarFallo();
         }
 
+        gestor?.VisitanteAtendido();
+
         if (puntoEntrada != null)
         {
             StartCoroutine(MoverHacia(puntoEntrada.position));
         }
-
-        EstadoVisitantes.Instancia?.GuardarEstadoVisitante(this);
     }
 
     IEnumerator MoverHacia(Vector3 destino)
@@ -270,16 +209,5 @@ public class VisitanteSimple : MonoBehaviour
         enCentro = false;
         camuflajeRevelado = false;
         enMovimiento = false;
-        dialogoMostrado = false;
-
-        if (puntoEntrada != null)
-        {
-            transform.position = puntoEntrada.position;
-        }
-
-        if (datosVisitante != null && spriteVisitante != null)
-        {
-            spriteVisitante.sprite = datosVisitante.spriteNormal;
-        }
     }
 }

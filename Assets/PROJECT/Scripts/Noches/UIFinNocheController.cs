@@ -1,12 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
 using System;
+using System.Collections;
 
 public class UIFinNocheController : MonoBehaviour
 {
-    [Header("UI Document")]
-    [SerializeField] private UIDocument uiDocument;
-
+    private UIDocument uiDocument;
     private Label labelNoche;
     private Label labelEstado;
     private Label labelNumVisitantes;
@@ -17,19 +16,49 @@ public class UIFinNocheController : MonoBehaviour
     private Button botonContinuar;
 
     private Action onContinueAction;
+    private bool uiConectado = false;
 
     void Awake()
     {
-        if (uiDocument == null)
-            uiDocument = GetComponent<UIDocument>();
-
+        // Obtener el UIDocument
+        uiDocument = GetComponent<UIDocument>();
         if (uiDocument == null)
         {
-            Debug.LogError("UIFinNocheController: No se encontró UIDocument");
+            Debug.LogError("UIFinNocheController: No se encontró UIDocument en el mismo GameObject");
             return;
         }
 
+        // Esperar a que el UIDocument esté listo
+        StartCoroutine(EsperarYConectarUI());
+    }
+
+    IEnumerator EsperarYConectarUI()
+    {
+        // Esperar un frame para que el UIDocument se inicialice
+        yield return null;
+
+        // Intentar conectar la UI
+        ConectarUI();
+
+        // Si falla, esperar otro frame (por si el Source Asset se carga)
+        if (!uiConectado)
+        {
+            yield return null;
+            ConectarUI();
+        }
+    }
+
+    void ConectarUI()
+    {
+        if (uiDocument == null) return;
+
         VisualElement root = uiDocument.rootVisualElement;
+        if (root == null)
+        {
+            Debug.LogWarning("UIFinNocheController: rootVisualElement es null, reintentando...");
+            return;
+        }
+
         labelNoche = root.Q<Label>("noche");
         labelEstado = root.Q<Label>("estado");
         labelNumVisitantes = root.Q<Label>("num-visitantes");
@@ -39,8 +68,11 @@ public class UIFinNocheController : MonoBehaviour
         labelSueldo = root.Q<Label>("sueldo");
         botonContinuar = root.Q<Button>("boton-siguiente");
 
-        if (root != null)
-            root.style.display = DisplayStyle.None;
+        // Ocultar al inicio
+        root.style.display = DisplayStyle.None;
+
+        uiConectado = true;
+        Debug.Log("UIFinNocheController: UI conectada correctamente");
     }
 
     public void MostrarResultados(
@@ -57,10 +89,26 @@ public class UIFinNocheController : MonoBehaviour
         string mensajeEstado,
         Action onContinue)
     {
-        VisualElement root = uiDocument?.rootVisualElement;
-        if (root == null) return;
+        // Si la UI no está conectada, intentar conectar
+        if (!uiConectado)
+        {
+            ConectarUI();
+            if (!uiConectado)
+            {
+                Debug.LogError("No se puede mostrar resultados: UI no disponible");
+                return;
+            }
+        }
 
+        if (uiDocument == null || uiDocument.rootVisualElement == null)
+        {
+            Debug.LogError("No se puede mostrar resultados: UI no disponible");
+            return;
+        }
+
+        VisualElement root = uiDocument.rootVisualElement;
         root.style.display = DisplayStyle.Flex;
+        Debug.Log("Mostrando pantalla de fin de noche");
 
         if (labelNoche != null) labelNoche.text = $"NOCHE {noche}";
         if (labelEstado != null) labelEstado.text = mensajeEstado;
@@ -87,7 +135,6 @@ public class UIFinNocheController : MonoBehaviour
             botonContinuar.clicked += EjecutarContinuar;
         }
 
-        // 🔥 Usar UnityEngine.Cursor explícitamente
         UnityEngine.Cursor.lockState = CursorLockMode.None;
         UnityEngine.Cursor.visible = true;
         Time.timeScale = 1f;
