@@ -34,6 +34,13 @@ public class ManualUI : MonoBehaviour
             if (cc != null) lista.Add(cc);
             scriptsADesactivar = lista.ToArray();
         }
+
+        // Asegurar que el canvas manual está en la raíz del PersistentGameManager
+        if (canvasManual != null && canvasManual.transform.parent != null)
+        {
+            // Si el canvasManual está dentro de PersistentGameManager, no hay problema
+            Debug.Log($"ManualUI: canvasManual en {canvasManual.transform.parent.name}");
+        }
     }
 
     public void Abrir()

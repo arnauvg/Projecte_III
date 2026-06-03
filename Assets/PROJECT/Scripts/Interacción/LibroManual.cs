@@ -2,7 +2,30 @@
 
 public class LibroManual : Interactuable
 {
-    public ManualUI manualUI;
+    // Ya no necesitas asignar manualUI en el Inspector
+    private ManualUI manualUI;
+
+    void Start()
+    {
+        // Buscar ManualUI al inicio
+        BuscarManualUI();
+    }
+
+    void BuscarManualUI()
+    {
+        // Buscar ManualUI en toda la escena (incluyendo objetos desactivados)
+        manualUI = FindFirstObjectByType<ManualUI>(FindObjectsInactive.Include);
+
+        if (manualUI == null)
+        {
+            Debug.LogWarning("ManualUI no encontrado, reintentando en 0.5 segundos...");
+            Invoke(nameof(BuscarManualUI), 0.5f);
+        }
+        else
+        {
+            Debug.Log("ManualUI encontrado: " + manualUI.name);
+        }
+    }
 
     void OnMouseDown()
     {
@@ -12,16 +35,18 @@ public class LibroManual : Interactuable
 
     public override bool Recoger()
     {
-        Debug.Log($"Intentando abrir manual. manualUI = {(manualUI != null ? "asignado" : "NULL")}");
-        if (manualUI != null)
+        if (manualUI == null)
         {
-            manualUI.Abrir();
-            Debug.Log("Manual abierto");
+            BuscarManualUI();
+            if (manualUI == null)
+            {
+                Debug.LogError("No se pudo encontrar ManualUI");
+                return false;
+            }
         }
-        else
-        {
-            Debug.LogError("ManualUI no asignado en LibroManual");
-        }
+
+        Debug.Log($"Abriendo manual. manualUI = {(manualUI != null ? "asignado" : "NULL")}");
+        manualUI.Abrir();
         return false;
     }
 

@@ -45,13 +45,6 @@ public class GameManager : MonoBehaviour
 
         CrearCursorCircularBlanco();
         ConfigurarAudioHover();
-
-        // 🔥 Si estamos en MainMenu, no cargar nada extra
-        if (SceneManager.GetActiveScene().name == mainMenuSceneName)
-        {
-            BuscarYConfigurarMainMenu();
-            SetState(GameState.MainMenu);
-        }
     }
 
     void CrearCursorCircularBlanco()
@@ -92,6 +85,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log($"OnSceneLoaded: {scene.name}");
 
+        // Limpiar referencias anteriores
         pauseRoot = null;
         mainRoot = null;
         pauseUIDocument = null;
@@ -148,13 +142,14 @@ public class GameManager : MonoBehaviour
 
     void BuscarYConfigurarPauseMenu()
     {
-        Debug.Log("Buscando menú de pausa...");
+        Debug.Log("Buscando menú de pausa en la escena actual...");
 
+        // 🔥 Buscar PauseMenuUI en la escena actual
         GameObject pauseMenuGO = GameObject.Find("PauseMenuUI");
 
         if (pauseMenuGO == null)
         {
-            Debug.LogWarning("No se encontró el GameObject 'PauseMenuUI'");
+            Debug.LogWarning($"No se encontró 'PauseMenuUI' en la escena {SceneManager.GetActiveScene().name}");
             return;
         }
 
@@ -182,7 +177,7 @@ public class GameManager : MonoBehaviour
             ConfigurarBotonConHover(continuar, ResumeGame);
             ConfigurarBotonConHover(salirMenu, BackToMainMenu);
             pauseRoot.style.display = DisplayStyle.None;
-            Debug.Log("Menú de pausa configurado correctamente");
+            Debug.Log($"Menú de pausa configurado correctamente en escena: {SceneManager.GetActiveScene().name}");
         }
         else
         {
