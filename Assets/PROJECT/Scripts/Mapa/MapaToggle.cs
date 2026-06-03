@@ -41,7 +41,6 @@ public class MapaToggle : MonoBehaviour
 
         mapaAbierto = true;
 
-        // 🔥 Desactivar el control de la cámara
         if (mouseLook != null) mouseLook.enabled = false;
 
         Cursor.lockState = CursorLockMode.None;
@@ -56,7 +55,6 @@ public class MapaToggle : MonoBehaviour
 
         mapaAbierto = false;
 
-        // 🔥 Reactivar el control de la cámara
         if (mouseLook != null) mouseLook.enabled = true;
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -66,10 +64,25 @@ public class MapaToggle : MonoBehaviour
 
     public void IrAEscena(string nombreEscena)
     {
-        if (mapaAbierto)
-            CerrarMapa();
+        Debug.Log($"IrAEscena llamado: {nombreEscena}, mapaAbierto={mapaAbierto}");
 
+        // Cerrar el mapa si está abierto
+        if (mapaAbierto)
+        {
+            // Desactivar el panel del mapa visualmente
+            if (panelMapa != null)
+                panelMapa.SetActive(false);
+
+            mapaAbierto = false;
+
+            // Reactivar control de cámara (aunque luego se cargará otra escena)
+            if (mouseLook != null) mouseLook.enabled = true;
+        }
+
+        // Asegurar que el tiempo está normalizado
         Time.timeScale = 1f;
+
+        // Cargar la nueva escena
         SceneManager.LoadScene(nombreEscena);
     }
 }
