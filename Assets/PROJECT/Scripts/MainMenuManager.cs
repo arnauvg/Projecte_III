@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
@@ -14,10 +14,19 @@ public class MainMenuManager : MonoBehaviour
 
     void Start()
     {
-        // Configurar el reproductor de sonido hover
         ConfigurarAudioHover();
 
-        // Buscar el UIDocument del menú principal
+        // Resetear el telÃ©fono para que suene en la nueva partida
+        Telefono.Resetear();
+
+        // Asegurar que no hay PersistentGameManager residual
+        PersistentGameManager pgm = FindFirstObjectByType<PersistentGameManager>();
+        if (pgm != null)
+        {
+            Destroy(pgm.gameObject);
+            Debug.Log("PersistentGameManager residual destruido desde MainMenu");
+        }
+
         UIDocument uiDoc = GetComponent<UIDocument>();
         if (uiDoc == null)
             uiDoc = FindFirstObjectByType<UIDocument>();
@@ -29,20 +38,15 @@ public class MainMenuManager : MonoBehaviour
             Button salir = root.Q<Button>("BotonSalir");
 
             if (jugar != null)
-            {
                 ConfigurarBotonConHover(jugar, StartGame);
-            }
-
             if (salir != null)
-            {
                 ConfigurarBotonConHover(salir, QuitGame);
-            }
 
-            Debug.Log("Menú principal configurado correctamente");
+            Debug.Log("MenÃº principal configurado correctamente");
         }
         else
         {
-            Debug.LogError("No se encontró UIDocument en la escena");
+            Debug.LogError("No se encontrÃ³ UIDocument en la escena");
         }
     }
 
@@ -58,11 +62,9 @@ public class MainMenuManager : MonoBehaviour
     {
         if (boton == null) return;
 
-        // Limpiar eventos anteriores para evitar duplicados
         boton.clicked -= accion;
         boton.clicked += accion;
 
-        // Configurar hover
         boton.UnregisterCallback<MouseEnterEvent>(OnMouseEnter);
         boton.RegisterCallback<MouseEnterEvent>(OnMouseEnter);
     }

@@ -85,7 +85,6 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log($"OnSceneLoaded: {scene.name}");
 
-        // Limpiar referencias anteriores
         pauseRoot = null;
         mainRoot = null;
         pauseUIDocument = null;
@@ -144,7 +143,6 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Buscando menú de pausa en la escena actual...");
 
-        // 🔥 Buscar PauseMenuUI en la escena actual
         GameObject pauseMenuGO = GameObject.Find("PauseMenuUI");
 
         if (pauseMenuGO == null)
@@ -244,7 +242,10 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0f;
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
-                AplicarCursorPersonalizado();
+
+                // En pausa, usar cursor del sistema (no el personalizado)
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+
                 if (mouseLook) mouseLook.enabled = false;
 
                 if (pauseRoot != null)
@@ -286,6 +287,15 @@ public class GameManager : MonoBehaviour
     public void BackToMainMenu()
     {
         Debug.Log("BackToMainMenu llamado");
+
+        // Destruir el PersistentGameManager al volver al menú principal
+        PersistentGameManager pgm = FindFirstObjectByType<PersistentGameManager>();
+        if (pgm != null)
+        {
+            Destroy(pgm.gameObject);
+            Debug.Log("PersistentGameManager destruido");
+        }
+
         SceneManager.LoadScene(mainMenuSceneName);
         SetState(GameState.MainMenu);
     }
