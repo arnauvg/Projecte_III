@@ -8138,6 +8138,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 88982298563063539, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 88982298563063539, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: tiempoTotalSegundos
       value: 75
       objectReference: {fileID: 0}
@@ -8145,14 +8149,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: PersistentGameManager
       objectReference: {fileID: 0}
+    - target: {fileID: 742153873633903721, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1773115725959044555, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: objetoConScripts
       value: 
       objectReference: {fileID: 959373507}
+    - target: {fileID: 2968249391411983461, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362567006614338080, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4362567006614338080, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: gestorVisitantes
       value: 
       objectReference: {fileID: 471620197}
+    - target: {fileID: 4362567006614338080, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: penalizacionTareaPendiente
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362567006614338080, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: penalizacionVisitanteIncorrecto
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 4641565787144492409, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.2611337
@@ -8197,6 +8221,22 @@ PrefabInstance:
       propertyPath: uiDocument
       value: 
       objectReference: {fileID: 1828898098}
+    - target: {fileID: 6101750038980801104, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 0c10118e4d81ad64fbc922763bd5b41d, type: 2}
+    - target: {fileID: 6101750038980801104, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 6749037372413247278, guid: 0c10118e4d81ad64fbc922763bd5b41d, type: 2}
+    - target: {fileID: 6101750038980801104, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6241186831343039703, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
