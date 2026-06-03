@@ -45,6 +45,13 @@ public class GameManager : MonoBehaviour
 
         CrearCursorCircularBlanco();
         ConfigurarAudioHover();
+
+        // 🔥 Si estamos en MainMenu, no cargar nada extra
+        if (SceneManager.GetActiveScene().name == mainMenuSceneName)
+        {
+            BuscarYConfigurarMainMenu();
+            SetState(GameState.MainMenu);
+        }
     }
 
     void CrearCursorCircularBlanco()
@@ -83,6 +90,8 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log($"OnSceneLoaded: {scene.name}");
+
         pauseRoot = null;
         mainRoot = null;
         pauseUIDocument = null;
@@ -113,28 +122,34 @@ public class GameManager : MonoBehaviour
 
     void BuscarYConfigurarMainMenu()
     {
+        Debug.Log("Buscando menú principal...");
+
         var documentos = FindObjectsByType<UIDocument>(FindObjectsSortMode.None);
         foreach (var doc in documentos)
         {
-            var root = doc.rootVisualElement;
-            Button jugar = root.Q<Button>("BotonJugar");
-            Button salir = root.Q<Button>("BotonSalir");
-
-            if (jugar != null && salir != null)
+            if (doc.gameObject.name == "MainMenuUI")
             {
-                mainRoot = root;
-                ConfigurarBotonConHover(jugar, StartGame);
-                ConfigurarBotonConHover(salir, QuitGame);
-                mainRoot.style.display = DisplayStyle.Flex;
-                Debug.Log("Menú principal configurado correctamente");
-                break;
+                var root = doc.rootVisualElement;
+                Button jugar = root.Q<Button>("BotonJugar");
+                Button salir = root.Q<Button>("BotonSalir");
+
+                if (jugar != null && salir != null)
+                {
+                    mainRoot = root;
+                    ConfigurarBotonConHover(jugar, StartGame);
+                    ConfigurarBotonConHover(salir, QuitGame);
+                    mainRoot.style.display = DisplayStyle.Flex;
+                    Debug.Log("Menú principal configurado correctamente");
+                    break;
+                }
             }
         }
     }
 
     void BuscarYConfigurarPauseMenu()
     {
-        // 🔥 Buscar el GameObject específico del menú de pausa
+        Debug.Log("Buscando menú de pausa...");
+
         GameObject pauseMenuGO = GameObject.Find("PauseMenuUI");
 
         if (pauseMenuGO == null)
@@ -254,6 +269,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        Debug.Log("StartGame llamado - Cargando primera escena");
         SceneManager.LoadScene(gameSceneNames[0]);
     }
 

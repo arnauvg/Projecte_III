@@ -35,14 +35,56 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI textoVisitantes;
 
     private HashSet<string> tareasActivas = new HashSet<string>();
+    private Canvas canvasPadre;
 
     void Start()
     {
+        InicializarUI();
+    }
+
+    void InicializarUI()
+    {
+        Debug.Log("UIManager: Inicializando UI...");
+
+        // 🔥 Buscar el Canvas padre
+        canvasPadre = GetComponentInParent<Canvas>();
+        if (canvasPadre == null)
+        {
+            canvasPadre = FindFirstObjectByType<Canvas>();
+        }
+
+        if (canvasPadre != null)
+        {
+            canvasPadre.gameObject.SetActive(true);
+            canvasPadre.enabled = true;
+            Debug.Log($"Canvas encontrado: {canvasPadre.name}");
+        }
+        else
+        {
+            Debug.LogError("No se encontró Canvas. Creando uno...");
+            GameObject canvasGO = new GameObject("PersistentCanvas");
+            canvasPadre = canvasGO.AddComponent<Canvas>();
+            canvasPadre.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvasGO.AddComponent<CanvasScaler>();
+            canvasGO.AddComponent<GraphicRaycaster>();
+            canvasGO.transform.SetParent(transform);
+            Debug.Log("Canvas creado por código");
+        }
+
+        // Buscar referencias si no están asignadas
         if (mapaLogo == null)
-            mapaLogo = GetComponentInChildren<Image>();
+        {
+            Transform interficie = transform.Find("UI/Interficie");
+            if (interficie != null)
+                mapaLogo = interficie.Find("MapaLogo")?.GetComponent<Image>();
+        }
 
         if (panelMapa == null)
-            panelMapa = GameObject.Find("PanelMapa");
+        {
+            Transform mapa = transform.Find("UI/Mapa");
+            if (mapa != null)
+                panelMapa = mapa.Find("panelMapa")?.gameObject;
+        }
 
         if (panelMapa != null)
         {
@@ -68,9 +110,15 @@ public class UIManager : MonoBehaviour
             }
         }
 
-        if (mapaLogo != null) mapaLogo.sprite = mapaNormal;
-        if (panelMapa != null) panelMapa.SetActive(false);
+        if (mapaLogo != null)
+            mapaLogo.sprite = mapaNormal;
+
+        if (panelMapa != null)
+            panelMapa.SetActive(false);
+
         ResetearBotonesMapa();
+
+        Debug.Log($"UIManager: UI inicializada. mapaLogo={mapaLogo != null}, panelMapa={panelMapa != null}, canvas={canvasPadre != null}");
     }
 
     public void AgregarTareaActiva(string ubicacion)
@@ -139,7 +187,6 @@ public class UIManager : MonoBehaviour
                 if (botonCripta != null && criptaNotificacion != null)
                 {
                     botonCripta.sprite = criptaNotificacion;
-                    Debug.Log($"✅ Botón Cripta notificación (tarea: {ubicacionLower})");
                 }
             }
             else
