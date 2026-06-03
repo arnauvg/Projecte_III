@@ -20,27 +20,20 @@ public class UIFinNocheController : MonoBehaviour
 
     void Awake()
     {
-        // Obtener el UIDocument
         uiDocument = GetComponent<UIDocument>();
         if (uiDocument == null)
         {
-            Debug.LogError("UIFinNocheController: No se encontró UIDocument en el mismo GameObject");
+            Debug.LogError("UIFinNocheController: No se encontró UIDocument");
             return;
         }
 
-        // Esperar a que el UIDocument esté listo
         StartCoroutine(EsperarYConectarUI());
     }
 
     IEnumerator EsperarYConectarUI()
     {
-        // Esperar un frame para que el UIDocument se inicialice
         yield return null;
-
-        // Intentar conectar la UI
         ConectarUI();
-
-        // Si falla, esperar otro frame (por si el Source Asset se carga)
         if (!uiConectado)
         {
             yield return null;
@@ -55,7 +48,7 @@ public class UIFinNocheController : MonoBehaviour
         VisualElement root = uiDocument.rootVisualElement;
         if (root == null)
         {
-            Debug.LogWarning("UIFinNocheController: rootVisualElement es null, reintentando...");
+            Debug.LogWarning("UIFinNocheController: rootVisualElement es null");
             return;
         }
 
@@ -68,9 +61,7 @@ public class UIFinNocheController : MonoBehaviour
         labelSueldo = root.Q<Label>("sueldo");
         botonContinuar = root.Q<Button>("boton-siguiente");
 
-        // Ocultar al inicio
         root.style.display = DisplayStyle.None;
-
         uiConectado = true;
         Debug.Log("UIFinNocheController: UI conectada correctamente");
     }
@@ -89,7 +80,6 @@ public class UIFinNocheController : MonoBehaviour
         string mensajeEstado,
         Action onContinue)
     {
-        // Si la UI no está conectada, intentar conectar
         if (!uiConectado)
         {
             ConectarUI();
@@ -130,7 +120,20 @@ public class UIFinNocheController : MonoBehaviour
 
         if (botonContinuar != null)
         {
-            botonContinuar.text = victoria ? "VOLVER AL MENÚ" : "SIGUIENTE NOCHE";
+            // 🔥 Cambiar el texto del botón según el estado
+            if (gameOver)
+            {
+                botonContinuar.text = "VOLVER AL MENÚ";
+            }
+            else if (victoria)
+            {
+                botonContinuar.text = "VOLVER AL MENÚ";
+            }
+            else
+            {
+                botonContinuar.text = "SIGUIENTE NOCHE";
+            }
+
             botonContinuar.clicked -= EjecutarContinuar;
             botonContinuar.clicked += EjecutarContinuar;
         }

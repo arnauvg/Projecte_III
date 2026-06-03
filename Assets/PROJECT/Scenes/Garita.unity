@@ -8139,7 +8139,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 88982298563063539, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 88982298563063539, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: tiempoTotalSegundos
@@ -8151,7 +8151,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 742153873633903721, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1773115725959044555, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: objetoConScripts
@@ -8159,11 +8159,15 @@ PrefabInstance:
       objectReference: {fileID: 959373507}
     - target: {fileID: 2968249391411983461, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4362567006614338080, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362567006614338080, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
+      propertyPath: umbralDespido
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 4362567006614338080, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: gestorVisitantes
@@ -8171,11 +8175,11 @@ PrefabInstance:
       objectReference: {fileID: 471620197}
     - target: {fileID: 4362567006614338080, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: penalizacionTareaPendiente
-      value: 300
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4362567006614338080, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: penalizacionVisitanteIncorrecto
-      value: 100
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 4641565787144492409, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8235,7 +8239,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6241186831343039703, guid: e8342769ac7929a49b8e328b8e121210, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

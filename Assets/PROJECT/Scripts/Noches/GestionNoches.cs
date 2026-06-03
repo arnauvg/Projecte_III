@@ -89,9 +89,19 @@ public class GestionNoches : MonoBehaviour
 
         Action onContinue = () =>
         {
-            if (gameOver) ReiniciarJuego();
-            else if (victoria) VolverAlMenuPrincipal();
-            else SiguienteNoche();
+            if (gameOver)
+            {
+                // Game Over: volver al menú principal directamente
+                VolverAlMenuPrincipal();
+            }
+            else if (victoria)
+            {
+                VolverAlMenuPrincipal();
+            }
+            else
+            {
+                SiguienteNoche();
+            }
         };
 
         uiFinNocheController?.MostrarResultados(
@@ -117,7 +127,6 @@ public class GestionNoches : MonoBehaviour
         nocheActual++;
         ReiniciarVariablesNoche();
 
-        // 🔥 IMPORTANTE: Reiniciar el gestor de visitantes para la nueva noche
         if (gestorVisitantes != null)
         {
             gestorVisitantes.ReiniciarNoche();
@@ -125,7 +134,6 @@ public class GestionNoches : MonoBehaviour
         }
         else
         {
-            // Buscar si existe en la escena
             gestorVisitantes = FindFirstObjectByType<GestorVisitantesSimple>();
             if (gestorVisitantes != null)
             {
@@ -174,13 +182,23 @@ public class GestionNoches : MonoBehaviour
 
     private void VolverAlMenuPrincipal()
     {
-        if (CronometroNoche.Instance != null) CronometroNoche.Instance.ReiniciarCronometro();
+        Debug.Log("🔚 Volviendo al menú principal");
+
+        // Destruir el PersistentGameManager para empezar una nueva partida limpia
+        PersistentGameManager pgm = FindFirstObjectByType<PersistentGameManager>();
+        if (pgm != null)
+        {
+            Destroy(pgm.gameObject);
+            Debug.Log("PersistentGameManager destruido al volver al menú");
+        }
+
+        // Cargar el menú principal
         SceneManager.LoadScene("MainMenu");
     }
 
     public int GetNocheActual() => nocheActual;
 
-    // 🆕 Métodos para DevCheats
+    // Métodos para DevCheats
     public void ForceNightComplete()
     {
         if (yaNocheTerminada) return;

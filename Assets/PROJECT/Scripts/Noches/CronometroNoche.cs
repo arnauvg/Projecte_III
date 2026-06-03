@@ -27,6 +27,7 @@ public class CronometroNoche : MonoBehaviour
 
     void Awake()
     {
+        Debug.Log("🔥 CronometroNoche: Awake() ejecutado");
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -38,11 +39,39 @@ public class CronometroNoche : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("🔥 CronometroNoche: Start() ejecutado");
         tiempoRestante = tiempoTotalSegundos;
+
+        // 🔥 Buscar el texto del reloj si no está asignado
         if (textoReloj == null)
-            textoReloj = FindFirstObjectByType<TextMeshProUGUI>();
+        {
+            // Buscar en la jerarquía de PersistentGameManager
+            Transform interficie = transform.Find("UI/Interficie");
+            if (interficie != null)
+            {
+                Transform reloj = interficie.Find("RelojNoche");
+                if (reloj != null)
+                    textoReloj = reloj.GetComponent<TextMeshProUGUI>();
+            }
+
+            // Si no se encuentra, buscar en toda la escena
+            if (textoReloj == null)
+                textoReloj = FindFirstObjectByType<TextMeshProUGUI>();
+
+            Debug.Log($"Buscando textoReloj... {(textoReloj != null ? "ENCONTRADO" : "NO ENCONTRADO")}");
+        }
+
+        if (textoReloj != null)
+        {
+            Debug.Log($"TextoReloj asignado: {textoReloj.gameObject.name}");
+            textoReloj.text = "00:00 AM";
+        }
+        else
+        {
+            Debug.LogError("❌ CRITICO: textoReloj es NULL - El reloj no se verá");
+        }
+
         ActualizarTexto();
-        Debug.Log("Cronómetro iniciado");
     }
 
     void Update()
@@ -85,12 +114,12 @@ public class CronometroNoche : MonoBehaviour
         {
             ultimoIntervaloMostrado = intervaloActual;
             textoReloj.text = horaFormateada;
+            Debug.Log($"🕐 Reloj actualizado: {horaFormateada}");
 
-            // 🔥 Solo disparar evento en HORAS EN PUNTO (minutos = 0) entre 01:00 y 05:00
             if (minutosRedondeados == 0 && horasEnteras >= 1 && horasEnteras <= 5)
             {
                 OnHoraCambiada?.Invoke(horasEnteras, minutosRedondeados);
-                Debug.Log($"🕐 Evento hora en punto: {horasEnteras}:{minutosRedondeados:00}");
+                Debug.Log($"📢 Evento hora: {horasEnteras}:{minutosRedondeados:00}");
             }
         }
     }
