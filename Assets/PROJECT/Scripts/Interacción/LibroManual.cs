@@ -47,6 +47,9 @@ public class LibroManual : Interactuable
 
         Debug.Log($"Abriendo manual. manualUI = {(manualUI != null ? "asignado" : "NULL")}");
         manualUI.Abrir();
+
+        if (TareaManager.Instance != null)
+            TareaManager.Instance.BloquearMapaPorTarea();
         return false;
     }
 

@@ -49,6 +49,10 @@ public class AbrirMinijuego : MonoBehaviour
         if (puedeInteractuar && canvasMinijuego != null)
         {
             canvasMinijuego.SetActive(true);
+
+            if (tareaManager != null)
+                tareaManager.BloquearMapaPorTarea();
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             Time.timeScale = 0f;

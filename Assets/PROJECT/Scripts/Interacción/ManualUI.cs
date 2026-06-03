@@ -54,6 +54,10 @@ public class ManualUI : MonoBehaviour
         paginaActual = 0;
         MostrarPagina();
 
+        // BLOQUEAR MAPA AL ABRIR MANUAL
+        if (TareaManager.Instance != null)
+            TareaManager.Instance.BloquearMapaPorTarea();
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0f;
@@ -72,12 +76,19 @@ public class ManualUI : MonoBehaviour
         if (canvasManual != null)
             canvasManual.SetActive(false);
 
+        // DESBLOQUEAR MAPA AL CERRAR MANUAL
+        if (TareaManager.Instance != null)
+            TareaManager.Instance.DesbloquearMapaPorTarea();
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         Time.timeScale = 1f;
 
         foreach (var script in scriptsADesactivar)
-            if (script != null) script.enabled = true;
+            if (script != null)
+            {
+                script.enabled = true;
+            }
 
         Debug.Log("📖 Manual cerrado");
     }

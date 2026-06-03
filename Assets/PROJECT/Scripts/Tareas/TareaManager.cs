@@ -5,6 +5,19 @@ using UnityEngine.SceneManagement;
 public class TareaManager : MonoBehaviour
 {
     public static TareaManager Instance;
+    public static bool mapaBloqueadoPorTarea = false;
+
+    public void BloquearMapaPorTarea()
+    {
+        mapaBloqueadoPorTarea = true;
+        Debug.Log("🗺️ Mapa bloqueado porque hay una tarea abierta");
+    }
+
+    public void DesbloquearMapaPorTarea()
+    {
+        mapaBloqueadoPorTarea = false;
+        Debug.Log("🗺️ Mapa desbloqueado, ya se puede abrir");
+    }
 
     [System.Serializable]
     public class Tarea

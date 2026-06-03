@@ -13,18 +13,23 @@ public class MapaToggle : MonoBehaviour
 
         if (panelMapa != null) panelMapa.SetActive(false);
     }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.M))
         {
+            if (!mapaAbierto && TareaManager.mapaBloqueadoPorTarea)
+            {
+                Debug.Log("No puedes abrir el mapa mientras hay una tarea abierta");
+                return;
+            }
+
             if (mapaAbierto)
                 CerrarMapa();
             else
                 AbrirMapa();
         }
     }
-
+    
     void AbrirMapa()
     {
         if (panelMapa != null)

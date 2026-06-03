@@ -67,6 +67,8 @@ public class CerrarMinijuego : MonoBehaviour
         {
             canvasMinijuego.SetActive(false);
         }
+        if (tareaManager != null)
+            tareaManager.DesbloquearMapaPorTarea();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
