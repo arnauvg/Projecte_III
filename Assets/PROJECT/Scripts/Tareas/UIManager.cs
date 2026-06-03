@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
@@ -33,19 +34,16 @@ public class UIManager : MonoBehaviour
     [Header("Texto contador")]
     public TextMeshProUGUI textoVisitantes;
 
-    private bool tareaPendiente = false;
-    private string tareaUbicacion = "";
+    private HashSet<string> tareasActivas = new HashSet<string>();
 
     void Start()
     {
-        // Buscar referencias automáticamente si no están asignadas
         if (mapaLogo == null)
             mapaLogo = GetComponentInChildren<Image>();
 
         if (panelMapa == null)
             panelMapa = GameObject.Find("PanelMapa");
 
-        // Buscar los botones dentro del PanelMapa
         if (panelMapa != null)
         {
             if (botonGarita == null)
@@ -75,16 +73,34 @@ public class UIManager : MonoBehaviour
         ResetearBotonesMapa();
     }
 
-    public void MostrarAvisoTarea(bool mostrar, string ubicacion)
+    public void AgregarTareaActiva(string ubicacion)
     {
-        tareaPendiente = mostrar;
-        tareaUbicacion = ubicacion;
-        Debug.Log($"📢 UIManager: tarea={(mostrar ? ubicacion : "ninguna")}");
+        if (string.IsNullOrEmpty(ubicacion)) return;
 
-        if (mapaLogo != null)
-            mapaLogo.sprite = mostrar ? mapaNotificacion : mapaNormal;
+        tareasActivas.Add(ubicacion);
+        Debug.Log($"📢 UIManager: Tarea agregada - {ubicacion}. Total activas: {tareasActivas.Count}");
 
+        ActualizarIconoMapa();
         ActualizarBotonesMapa();
+    }
+
+    public void EliminarTareaActiva(string ubicacion)
+    {
+        if (string.IsNullOrEmpty(ubicacion)) return;
+
+        tareasActivas.Remove(ubicacion);
+        Debug.Log($"📢 UIManager: Tarea eliminada - {ubicacion}. Total activas: {tareasActivas.Count}");
+
+        ActualizarIconoMapa();
+        ActualizarBotonesMapa();
+    }
+
+    void ActualizarIconoMapa()
+    {
+        if (mapaLogo != null)
+        {
+            mapaLogo.sprite = (tareasActivas.Count > 0) ? mapaNotificacion : mapaNormal;
+        }
     }
 
     public void AbrirMapa()
@@ -114,21 +130,21 @@ public class UIManager : MonoBehaviour
     {
         ResetearBotonesMapa();
 
-        if (tareaPendiente && !string.IsNullOrEmpty(tareaUbicacion))
+        foreach (string ub in tareasActivas)
         {
-            string ub = tareaUbicacion.ToLower();
+            string ubicacionLower = ub.ToLower();
 
-            if (ub == "velas" || ub == "pila")
+            if (ubicacionLower == "velas" || ubicacionLower == "pila")
             {
                 if (botonCripta != null && criptaNotificacion != null)
                 {
                     botonCripta.sprite = criptaNotificacion;
-                    Debug.Log($"✅ Botón Cripta notificación (tarea: {ub})");
+                    Debug.Log($"✅ Botón Cripta notificación (tarea: {ubicacionLower})");
                 }
             }
             else
             {
-                switch (ub)
+                switch (ubicacionLower)
                 {
                     case "garita":
                         if (botonGarita != null) botonGarita.sprite = garitaNotificacion;
@@ -154,8 +170,7 @@ public class UIManager : MonoBehaviour
 
     public void MarcarTareaCompletada()
     {
-        tareaPendiente = false;
-        tareaUbicacion = "";
+        tareasActivas.Clear();
         if (mapaLogo != null) mapaLogo.sprite = mapaNormal;
         ResetearBotonesMapa();
     }

@@ -20,11 +20,12 @@ public class CerrarMinijuego : MonoBehaviour
         audioSource.volume = 1f;
 
         tareaManager = FindFirstObjectByType<TareaManager>();
+        Debug.Log($"CerrarMinijuego iniciado en {gameObject.name}");
     }
 
     public void Cerrar()
     {
-        Debug.Log("Cerrando minijuego");
+        Debug.Log("Cerrando minijuego sin completar");
         CerrarCanvas();
     }
 
@@ -33,29 +34,20 @@ public class CerrarMinijuego : MonoBehaviour
         if (completado) return;
         completado = true;
 
-        Debug.Log("Completando tarea");
+        Debug.Log("Completando tarea y cerrando minijuego");
 
-        // Notificar a TareaManager
         if (tareaManager != null)
             tareaManager.CompletarTareaActual();
 
-        UIManager uiManager = FindFirstObjectByType<UIManager>();
-        if (uiManager != null)
-            uiManager.MarcarTareaCompletada();
-
-        // Reproducir sonido y esperar antes de cerrar
         StartCoroutine(ReproducirSonidoYCerrar());
     }
 
     IEnumerator ReproducirSonidoYCerrar()
     {
-        // Reproducir sonido
         if (sonidoCompletado != null && audioSource != null)
         {
             audioSource.PlayOneShot(sonidoCompletado, 1f);
             Debug.Log("🔊 Reproduciendo sonido de completado");
-
-            // Esperar la duración del sonido
             yield return new WaitForSecondsRealtime(sonidoCompletado.length);
         }
         else
@@ -64,7 +56,6 @@ public class CerrarMinijuego : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.5f);
         }
 
-        // Cerrar después del sonido
         CerrarCanvas();
     }
 

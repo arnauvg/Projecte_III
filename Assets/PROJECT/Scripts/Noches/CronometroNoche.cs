@@ -17,6 +17,8 @@ public class CronometroNoche : MonoBehaviour
     [Header("Sistema de tareas")]
     public TareaManager tareaManager;
 
+    public static System.Action<int, int> OnHoraCambiada;
+
     private float tiempoRestante;
     private bool nocheActiva = true;
     private int ultimoIntervaloMostrado = -1;
@@ -55,29 +57,15 @@ public class CronometroNoche : MonoBehaviour
             TerminarNoche();
         }
 
-        // Guardar el intervalo ANTES de actualizar el texto
-        int intervaloAnterior = ultimoIntervaloMostrado;
         ActualizarTexto();
 
-        // Si el intervalo cambió y es >= 1 y aún no se generaron tareas
-        if (!tareasSpawned && ultimoIntervaloMostrado >= 1 && ultimoIntervaloMostrado != intervaloAnterior)
+        bool juegoPausado = PausaManager.Instance != null && PausaManager.Instance.juegoPausado;
+        if (!tareasSpawned && !juegoPausado && ultimoIntervaloMostrado >= 1)
         {
-            bool juegoPausado = PausaManager.Instance != null && PausaManager.Instance.juegoPausado;
-            if (!juegoPausado)
-            {
-                tareasSpawned = true;
-                Debug.Log($"📋 Generando tareas en intervalo {ultimoIntervaloMostrado}...");
-                Invoke(nameof(SpawnearTareas), 0.5f);
-            }
-        }
-    }
-
-    void SpawnearTareas()
-    {
-        if (tareaManager != null)
-        {
-            int noche = gestionNoches != null ? gestionNoches.GetNocheActual() : 1;
-            tareaManager.IniciarNoche(noche);
+            tareasSpawned = true;
+            Debug.Log("📋 Iniciando sistema de tareas...");
+            if (tareaManager != null)
+                tareaManager.IniciarNoche(1);
         }
     }
 
@@ -97,7 +85,13 @@ public class CronometroNoche : MonoBehaviour
         {
             ultimoIntervaloMostrado = intervaloActual;
             textoReloj.text = horaFormateada;
-            Debug.Log($"Reloj actualizado: {horaFormateada} (intervalo {intervaloActual})");
+
+            // 🔥 Solo disparar evento en HORAS EN PUNTO (minutos = 0) entre 01:00 y 05:00
+            if (minutosRedondeados == 0 && horasEnteras >= 1 && horasEnteras <= 5)
+            {
+                OnHoraCambiada?.Invoke(horasEnteras, minutosRedondeados);
+                Debug.Log($"🕐 Evento hora en punto: {horasEnteras}:{minutosRedondeados:00}");
+            }
         }
     }
 

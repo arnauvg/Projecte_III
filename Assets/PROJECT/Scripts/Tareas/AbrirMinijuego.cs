@@ -14,16 +14,16 @@ public class AbrirMinijuego : MonoBehaviour
         outlineComponent = GetComponent<Outline>();
         if (outlineComponent == null)
             outlineComponent = gameObject.AddComponent<Outline>();
-        outlineComponent.enabled = false; // ← desactivado por defecto
+        outlineComponent.enabled = false;
 
-        tareaManager = FindObjectOfType<TareaManager>();
+        tareaManager = FindFirstObjectByType<TareaManager>();
         if (tareaManager == null)
             Invoke("BuscarTareaManager", 0.5f);
     }
 
     void BuscarTareaManager()
     {
-        tareaManager = FindObjectOfType<TareaManager>();
+        tareaManager = FindFirstObjectByType<TareaManager>();
     }
 
     void Update()
